@@ -1,0 +1,213 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .popover-title {
+            color: #000000;
+        }
+        .popover-content{
+            color:#000000;
+        }
+        .modal-details{
+            background: #35aa47;padding: 1px 5px
+        }
+    </style>
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor Sourcing
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('pms_supplier_homepage') }}" style="color: #333 !important;">Vendor</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+            {{ include('::flash-message.html.twig') }}
+
+            <span class="vendorMessege"></span>
+
+
+        </div>
+        <div class="span12">
+
+            <form action="{{ path('pms_supplier_homepage') }}" method="get" name="supplier_report" id="supplier_report">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tbody>
+                        <tr class="numeric">
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.itemType, { 'attr': {'class': 'form-control fontColorBlack select2me', 'placeholder': ' Select Item'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-2">
+                                        <div class="input-icon">
+                                            <div class="input-group input-small  date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                                                <span class="input-group-btn"></span>
+                                                {{ form_widget(form.month, { 'attr': {'class': 'form-control datepicker', 'style': 'width: 197px;'} }) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer fa-align-left">
+            <input type="button" value="Export in excel" name="vendorSourcingExcel" id="vendorSourcingExcel" class="btn blue">
+        </div>
+        <div class="span12">
+
+            <!--BEGIN TABS-->
+            <div class="tabbable tabbable-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="{{ path('pms_supplier_add') }}" style="cursor:pointer;background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                            Add Supplier
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content" style="height: auto;background: #eee;">
+                    <div class="tab-pane active">
+                        <div class="" data-always-visible="1" data-rail-visible="0">
+
+                            <div class="fluid" id="vendor-list-div">
+                                <div class="form-group">
+                                    <div class="portlet-body flip-scroll">
+                                        <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                                            <thead class="flip-content"  style="background: #4b8df8">
+                                            <tr>
+                                                <th class="numeric">Sl</th>
+                                                <th class="numeric">Created Date</th>
+                                                <th class="numeric">Month</th>
+                                                <th class="numeric">Item</th>
+                                                <th class="numeric">Item Type</th>
+                                             {#   <th class="numeric">Specification</th>
+                                                <th class="numeric">Brand</th>#}
+                                                <th class="numeric">Supplier name</th>
+                                                <th class="numeric">Contact person</th>
+                                                <th class="numeric">Email</th>
+                                                <th class="numeric">Created By</th>
+                                                <th class="numeric">Attacment</th>
+                                                <th class="numeric">Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for index, SupplierList in SupplierLists %}
+                                                <tr>
+                                                    <td class="numeric">{{ index+1 }}</td>
+                                                    <td class="numeric">{{ SupplierList.createdDate|date('Y-m-d') }}</td>
+                                                    {#<td class="numeric">{{ SupplierList.createdDate|date('Y-m-d H:i:s') }}</td>#}
+                                                    <td class="numeric">{{ SupplierList.createdDate|date('F') }}</td>
+                                                    <td class="numeric">{{ SupplierList.item|default('') }}</td>
+                                                    <td class="numeric">{{ SupplierList.itemType.itemType|default('') }}</td>
+                                                 {#   <td class="numeric">{{ SupplierList.specification|default('') }}</td>
+                                                    <td class="numeric">{{ SupplierList.brand|default('') }}</td>#}
+                                                    <td class="numeric">{{ SupplierList.name }}</td>
+                                                    <td class="numeric">{{ SupplierList.contactPerson }}</td>
+                                                    <td class="numeric">{{ SupplierList.email }}</td>
+                                                    <td class="numeric">{{ SupplierList.createdBy.username }}</td>
+                                                    <td>
+                                                        {% if SupplierList.documents is not null %}
+                                                            {% for document in SupplierList.documents %}
+                                                             {#   <a class="btn btn-xs" href="{{ path('homepage') }}uploads/file/{{ document.path }}" target="_blank">
+                                                            <i class="fa fa-cloud-upload"></i>
+                                                        </a>#}
+                                                                <a class="btn btn-xs" href="#" onclick="javascript: window.open('/vendor-sourcing/attachment-view/{{ document.path }}')">
+                                                                    <i class="fa fa-cloud-upload"></i>
+                                                                </a>
+                                                                {% endfor %}
+                                                        {% else %}
+                                                            &ensp;
+                                                        {% endif %}
+
+                                                    </td>
+                                                    <td class="numeric">
+                                                        {#<a href="{{ path('pms_supplier_edit',{ id:SupplierList.id }) }}" style="color:#ffffff !important;"
+                                                           class="btn blue btn-xs displayForDesktop"><i class="fa fa-edit"></i>Edit</a>#}
+                                                        <a href="{{ path('supplier_details',{ id:SupplierList.id }) }}" data-target="#ajax" data-toggle="modal"  class="mini modal-details displayForDesktop" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                                        <a href="{{ path('supplier_details_for_mobile',{ id:SupplierList.id }) }}" class="mini modal-details displayForMob" href="#" style="display: none;"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                        <div class="navigation" style="text-align: right">
+                                            {{ knp_pagination_render(SupplierLists) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $('#vendorSourcingExcel').click(function () {
+
+        setTimeout(function(){
+            $('#supplier_report').attr('action', '{{ path('pms_supplier_homepage') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'supplier_report',
+            url: Routing.generate('supplier_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock documentready %}

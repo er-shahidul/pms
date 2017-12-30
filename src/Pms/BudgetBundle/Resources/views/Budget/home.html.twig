@@ -1,0 +1,289 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .popover-title {
+            color: #000000;
+        }
+        .popover-content{
+            color:#000000;
+        }
+        .modal-details{
+            background: #35aa47;padding: 1px 5px
+        }
+    </style>
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Budget
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('budget') }}" style="color: #333 !important;">Budget</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <div class="row-fluid">
+        <div class="span12">
+            <form method="get" style="margin-bottom: 20px;margin-left: -15px;margin-top: -20px;">
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <div class="input-icon">
+                            <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(formDate.month, { 'attr': {'class': 'form-control datepicker', 'style': 'width: 197px;'} }) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-1">
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me'} }) }}
+                    </div>
+                </div>
+
+                <input type="submit" value="Search" class="btn blue" style="margin-left: 55px;">
+
+            </form>
+        </div>
+
+        <div class="span12">
+            <!-- BEGIN SAMPLE TABLE PORTLET-->
+            <div class="portlet box">
+                <div class="portlet-title">
+                    <ul class="nav nav-tabs">
+                    <li class="{% if status == 'all' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('budget',{status:'all'} ) }}">Budget</a></li>
+                    {% if is_granted("ROLE_SUPER_ADMIN") %}
+                        <li class="{% if status == 'hold' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('budget',{status:'hold'} ) }}">Hold</a></li>
+                        <li class="{% if status == 'cancel' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('budget',{status:'cancel'} ) }}">Cancel</a></li>
+                    {% endif %}
+                    {% if is_granted("ROLE_BUDGET_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                            <li style="float: right;margin-right: -1px;">
+                                <a href="{{ path('budget_project_list') }}" data-target="#ajax" data-toggle="modal"
+                                   class="btn btn-xs" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                                    Monthly Budget
+                                </a>
+                            </li>
+                    {% endif %}
+                </ul>
+                </div>
+                <div class="portlet-body flip-scroll">
+                    <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                        <thead class="flip-content"  style="background: #4b8df8">
+                        <tr>
+                            <th class="numeric">Sl</th>
+                            <th class="numeric">Month</th>
+                            <th class="numeric">Project</th>
+                            <th class="numeric">CreatedBy</th>
+                            <th class="numeric">CreatedDate</th>
+                            <th class="numeric">Status</th>
+                            <th class="numeric">Approved%</th>
+                            <th class="numeric">Amount</th>
+                            <th class="numeric">&nbsp;</th>
+                            <th class="numeric">&nbsp;</th>
+                            <th class="numeric">&nbsp;</th>
+                            <th class="numeric">&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set offset = budgets.getItemNumberPerPage * (budgets.currentPageNumber - 1) %}
+
+                        {% for budget in budgets %}
+
+                            <tr>
+                                <td class="numeric">{{ loop.index + offset }}.</td>
+                                <td class="numeric">
+                                    {{ budget.month | date('M-y') }}
+                                </td>
+                                <td class="numeric">
+                                    {{ budget.project.projectName }}
+                                </td>
+                                <td class="numeric">
+                                    {{ budget.createdBy.username }}
+                                </td>
+                                <td class="numeric">
+                                    {{ budget.createdDate | date('d-m-Y') }}
+                                </td>
+                                <td class="numeric">
+                                    {% if budget.approveStatus == 0 %}
+                                        <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                            Created
+                                        </div>
+                                    {% endif %}
+                                    {% if budget.approveStatus == 1 %}
+                                        <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                            Verified
+                                        </div>
+                                    {% endif %}
+                                    {% if budget.approveStatus == 2 %}
+                                        <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                            Validated
+                                        </div>
+                                    {% endif %}
+                                    {% if budget.approveStatus == 3 %}
+                                        <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                            Approved
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+                                    {% if budget.approveStatus == 0 %}
+                                        {% set approvePercentage = 0 %}
+                                    {% elseif budget.approveStatus == 1 %}
+                                        {% set approvePercentage = 33 %}
+                                    {% elseif budget.approveStatus == 2 %}
+                                        {% set approvePercentage = 66 %}
+                                    {% elseif budget.approveStatus == 3 %}
+                                        {% set approvePercentage = 100 %}
+                                    {% endif %}
+                                    <div class="easy-pie-chart">
+                                        <div class="number bounce" data-percent="{{ approvePercentage }}"><span>{{ approvePercentage }}</span>%</div>
+                                    </div>
+                                </td>
+                                <td class="numeric">
+                                    {{ budget.netTotal|number_format(2, '.', ',') }}
+                                </td>
+                                <td class="numeric">
+                                    {% if status == 'all' %}
+                                        {% if is_granted("ROLE_BUDGET_APPROVE_ONE") or is_granted("ROLE_SUPER_ADMIN") %}
+                                            {% if budget.approveStatus == 0 %}
+                                                <a href="{{ path('budget_approve_one', { 'id': budget.id }) }}"
+                                                   class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?">Verify</a>
+                                                <a href="{{ path('budget_approve_one', { 'id': budget.id }) }}"
+                                                   class="btn blue btn-xs confirm displayForMob" title="Do You Want To Approve It?">Verify</a>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if is_granted("ROLE_BUDGET_APPROVE_TWO") or is_granted("ROLE_SUPER_ADMIN") %}
+                                            {% if budget.approveStatus == 1 %}
+                                                <a href="{{ path('budget_approve_two', { 'id': budget.id }) }}"
+                                                   class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?">Validate</a>
+                                                <a href="{{ path('budget_approve_two', { 'id': budget.id }) }}"
+                                                   class="btn blue btn-xs confirm displayForMob" title="Do You Want To Approve It?">Validate</a>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if is_granted("ROLE_BUDGET_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                                            {% if budget.approveStatus == 2 %}
+                                                <a href="{{ path('budget_approve_three', { 'id': budget.id }) }}"
+                                                   class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?">Approve</a>
+                                                <a href="{{ path('budget_approve_three', { 'id': budget.id }) }}"
+                                                   class="btn blue btn-xs confirm displayForMob" title="Do You Want To Approve It?">Approve</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if budget.approveStatus == 3 or status == 'cancel' or status == 'hold' %}
+                                        <a class="btn btn-xs displayForDesktop" style="background:#C0D0E9;color:#ffffff !important;">Approved</a>
+                                        <a class="btn btn-xs displayForMob" style="background:#C0D0E9;color:#ffffff !important;">Approved</a>
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+                                    {% if (budget.status == 1)
+                                    and budget.approveStatus < 3
+                                    and (budget.approvedOne == null
+                                    or budget.approvedTwo == null
+                                    or budget.approvedThree == null) %}
+                                        {% if is_granted("ROLE_BUDGET_APPROVE_ONE") or is_granted("ROLE_BUDGET_APPROVE_TWO") or is_granted("ROLE_BUDGET_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                                            <a href="{{ path('budget_edit', { 'id': budget.id }) }}" style="color:#ffffff !important;" class="btn blue btn-xs displayForDesktop"><i
+                                                        class="fa fa-edit"></i> Edit</a>
+                                            <a href="{{ path('budget_edit', { 'id': budget.id }) }}" style="color:#ffffff !important;" class="btn blue btn-xs displayForMob"><i
+                                                        class="fa fa-edit"></i> Edit</a>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if budget.status == 5
+                                    or budget.status == 6
+                                    or budget.approveStatus == 3
+                                    or budget.approvedThree != null %}
+                                        <a style="background: #DDDADA; color:#ffffff !important;" class="btn btn-xs displayForDesktop"><i
+                                                    class="fa fa-edit "></i> Edit</a>
+                                        <a style="background: #DDDADA; color:#ffffff !important;" class="btn btn-xs displayForMob"><i
+                                                    class="fa fa-edit"></i> Edit</a>
+                                    {% endif %}
+
+                                </td>
+                                <td class="numeric">
+                                    {% if budget.path is not null %}
+                                        <a class="btn btn-xs" href="#" onclick="javascript: window.open('/budget/attachment-view/{{ budget.id }}/1')">
+                                            <i class="fa fa-cloud-upload"></i>
+                                        </a>
+                                    {% else %}
+                                        &ensp;
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+                                    {% if is_granted("ROLE_BUDGET_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                                        <a href="{{ path('budget_additional_list',{ 'id': budget.id }) }}?{{ url }}" data-target="#ajax" data-toggle="modal"
+                                           class="btn blue btn-xs">
+                                            additional
+                                        </a>
+                                    {% endif %}
+                                    <a href="{{ path('budget_details', { 'id': budget.id }) }}" data-target="#ajax" data-toggle="modal" class="mini modal-details displayForDesktop" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                    <a href="{{ path('budget_details_mob', { 'id': budget.id }) }}" class="mini modal-details displayForMob" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="navigation" style="text-align: right">
+                        {{ knp_pagination_render(budgets) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $(".confirm").easyconfirm();
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $('body').on('change', "#budgetprojectlist_project" , function(){
+    var id = $(this).val();
+    if(id == "") {
+    id = "#";
+    }
+    var btn = $("#pms_inventorybundle_projecctList_next");
+    var url = btn.data('url').replace('PROJECT_ID', id)
+    btn.attr("href", url)
+    });
+
+{% endblock %}

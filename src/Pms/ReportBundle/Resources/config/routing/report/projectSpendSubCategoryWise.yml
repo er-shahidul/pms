@@ -1,0 +1,18 @@
+report_project_spend_sub_category_wise:
+    pattern: /project-spend-sub-category-wise-report
+    defaults: { _controller: PmsReportBundle:ProjectSpendSubCategoryWise:projectSpendSubCategoryWise }
+
+report_project_spend_sub_category_wise_item_details:
+    pattern: /project-spend-sub-category-wise-item-report
+    defaults: { _controller: PmsReportBundle:ProjectSpendSubCategoryWise:projectSpendSubCategoryWiseItemDetails }
+    methods:  [POST, GET]
+
+report_project_spend_sub_category_wise_excel:
+    pattern: /project-spend-sub-category-wise-report-excel
+    defaults: { _controller: PmsReportBundle:ProjectSpendSubCategoryWise:projectSpendSubCategoryWiseExcel }
+    options:
+            expose: true
+
+report_project_spend_sub_category_wise_detail:
+    pattern: /project-spend-sub-category-wise-report-detail
+    defaults: { _controller: PmsReportBundle:ProjectSpendSubCategoryWise:projectSpendSubCategoryWiseItemDetail }

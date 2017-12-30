@@ -1,0 +1,38 @@
+PmsSettingBundle_relatedbank:
+    resource: "@PmsSettingBundle/Resources/config/routing/relatedbank.yml"
+
+PmsSettingBundle_item:
+    resource: "@PmsSettingBundle/Resources/config/routing/item.yml"
+
+PmsSettingBundle_item_type:
+    resource: "@PmsSettingBundle/Resources/config/routing/itemType.yml"
+
+PmsSettingBundle_project:
+    resource: "@PmsSettingBundle/Resources/config/routing/project.yml"
+
+PmsSettingBundle_project_type:
+    resource: "@PmsSettingBundle/Resources/config/routing/projectType.yml"
+
+PmsSettingBundle_category:
+    resource: "@PmsSettingBundle/Resources/config/routing/category.yml"
+
+PmsSettingBundle_sub_category:
+    resource: "@PmsSettingBundle/Resources/config/routing/subCategory.yml"
+
+PmsSettingBundle_vendor:
+    resource: "@PmsSettingBundle/Resources/config/routing/vendor.yml"
+
+PmsSettingBundle_area:
+    resource: "@PmsSettingBundle/Resources/config/routing/area.yml"
+
+PmsSettingBundle_company:
+    resource: "@PmsSettingBundle/Resources/config/routing/companySetting.yml"
+
+PmsSettingBundle_cost_header:
+    resource: "@PmsSettingBundle/Resources/config/routing/costHeader.yml"
+
+PmsSettingBundle_terms_and_conditions:
+    resource: "@PmsSettingBundle/Resources/config/routing/termsAndConditions.yml"
+
+PmsSettingBundle_purchase_type:
+    resource: "@PmsSettingBundle/Resources/config/routing/purchaseType.yml"

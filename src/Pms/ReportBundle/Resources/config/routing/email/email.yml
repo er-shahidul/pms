@@ -1,0 +1,11 @@
+email_view:
+    pattern: /email-view
+    defaults: { _controller: PmsReportBundle:Email:emailView }
+
+email_send:
+    pattern: /email-send
+    defaults: { _controller: PmsReportBundle:Email:emailSend }
+
+email_temp:
+    pattern: /email
+    defaults: { _controller: PmsReportBundle:Email:emailTemp }

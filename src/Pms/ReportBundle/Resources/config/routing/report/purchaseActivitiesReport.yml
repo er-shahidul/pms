@@ -1,0 +1,8 @@
+report_activities_purchase:
+    pattern: /purchase-activities-report
+    defaults: { _controller: PmsReportBundle:PurchaseOrderActivitiesReport:purchaseActivities }
+
+purchase_order_item_all:
+    pattern: /purchase-order-item-all/{status}
+    defaults: { _controller: PmsReportBundle:PurchaseOrderActivitiesReport:purchaseOrderItemActivitiesDetail, status:all }
+

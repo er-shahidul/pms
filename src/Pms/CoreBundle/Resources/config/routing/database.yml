@@ -1,0 +1,3 @@
+database_backUp:
+    pattern: /database/backup/
+    defaults: { _controller: PmsCoreBundle:Core:backupDatabase }

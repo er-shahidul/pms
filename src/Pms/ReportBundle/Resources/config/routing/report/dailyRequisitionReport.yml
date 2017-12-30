@@ -1,0 +1,9 @@
+report_daily_requisition:
+    pattern: /requisition-daily-report
+    defaults: { _controller: PmsReportBundle:DailyRequisitionReport:requisitionDaily }
+
+report_daily_requisition_excel:
+    pattern: /requisition-daily-report-excel
+    defaults: { _controller: PmsReportBundle:DailyRequisitionReport:requisitionDailyExcel }
+    options:
+            expose: true

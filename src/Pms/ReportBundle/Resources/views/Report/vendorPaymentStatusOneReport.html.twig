@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor Payment Status One Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_item_report_bundle') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Vendor Payment Status One</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+<div class="row">
+    <div class="col-md-12">
+
+        <form action="{{ path('vendor_payment_status_one_report_bundle') }}" method="get" name="vendor_payment_status_one_report"
+              id="vendor_payment_status_one_report">
+
+            <table id="table_project_cost">
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <div class="col-md-1">
+                                <div class="input-icon right">
+                                    <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class=" input-medium">
+                            {{ form_widget(form.vendor, { 'attr': {'class': 'form-control select2me', 'placeholder': ' Select Item'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <input type="submit" value="Search" class="btn blue" style="margin-left:25px;">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <div class="col-md-12" style="float: left;">
+
+        <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+            <input type="button" value="Export in excel" name="vendorPaymentStatusOneReportExcel"
+                   id="vendorPaymentStatusOneReportExcel" class="btn blue">
+        </div>
+
+        <table class="table" style="">
+            <thead style="background: #4b8df8;color: #fff;">
+            <tr>
+                <th>Sl</th>
+                <th class="col-md-4">Vendor Name</th>
+                <th class="col-md-2">No Of Order</th>
+                <th class="col-md-4">Total Po Amount</th>
+                <th class="col-md-2">Paid Amount</th>
+                <th class="col-md-2">Dues Amount</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for vendorPaymentOne in vendorPaymentsOne %}
+                <tr>
+                    <td>{{ loop.index}}</td>
+                    <td>{{ vendorPaymentOne['vendorName'] }}</td>
+                    <td>{{ vendorPaymentOne['NoOfOrder'] }}</td>
+                    <td>{{ vendorPaymentOne['totalPoAmount'] }}</td>
+                    <td>{{ vendorPaymentOne['paidAmount'] }}</td>
+                    <td>{{ vendorPaymentOne['duesAmount'] }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td class="col-md-4">
+
+                    </td>
+                    <td class="col-md-2">
+
+                    </td>
+                    <td  class="col-md-4 bold" style="text-align: right;">
+                    </td>
+                    <td class="col-md-2 bold">
+
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block documentready %}
+{{ parent() }}
+{#<script>#}
+    $('#vendorPaymentStatusOneReportExcel').click(function () {
+
+        setTimeout(function () {
+            $('#receive_item_report').attr('action', '{{ path('vendor_payment_status_one_report_bundle') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'vendor_payment_status_one_report',
+            url: Routing.generate('vendor_payment_status_one_bundle_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock documentready %}

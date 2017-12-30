@@ -1,0 +1,332 @@
+<div id="reload-all-budget">
+    <div class="modal-dialog " style="width:70%;" >
+        <div class="modal-content">
+            <div class="modal-header" style="background: lightgrey;">
+                <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title bold" style="text-align: center;">Budget details</h4>
+            </div>
+            <div class="col-md-12">
+
+                <div class="col-md-6" >
+                    <table class="table table-hover">
+                        <tr>
+                            <td class="label-td">
+                                Budget :
+                            </td>
+                            <td class="value-td">
+                                {{ budget.month | date('F Y') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                Project :
+                            </td>
+                            <td class="value-td" >
+                                {{ budget.project.projectName }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                Created By :
+                            </td>
+                            <td class="value-td" >
+                                {{ budget.createdBy.username }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                Created Date:
+                            </td>
+                            <td class="value-td" >
+                                {{ budget.createdDate | date('d-m-Y') }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6" >
+                    <table class="table table-hover">
+                        <tr>
+                            <td class="value-td" colspan="2" >
+                                <span style="font-weight: bold;"><u>Approval Info</u></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                Verified :
+                            </td>
+                            <td class="value-td">
+                                <span style="font-weight: bold;">{{ budget.approvedOne.username | default('not aApproved') }}</span>
+                                {% if  budget.approvedOneDate != null %}
+                                    on <span style="font-weight: bold;">{{ budget.approvedOneDate | date('d M Y') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" >
+                                Validated :
+                            </td>
+                            <td class="value-td" >
+                                <span style="font-weight: bold;">{{ budget.approvedTwo.username | default('not validated') }}</span>
+                                {% if  budget.approvedTwoDate != null %}
+                                    on <span style="font-weight: bold;">{{ budget.approvedTwoDate | date('d M Y') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" >
+                                Approved :
+                            </td>
+                            <td class="value-td">
+                                <span style="font-weight: bold;">{{ budget.approvedThree.username | default('not verified') }}</span>
+                                {% if  budget.approvedThreeDate != null %}
+                                    on <span style="font-weight: bold;">{{ budget.approvedThreeDate | date('d M Y') }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="value-td">
+                                {% if budget.path is not null %}
+                                    <a class="btn blue btn-xs" onclick="javascript: window.open('/budget/attachment-view/{{ budget.id }}/1')" >
+                                        Attachment</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-cogs"></i>Budget</div>
+                    </div>
+                    <div class="portlet-body flip-scroll">
+                        <table class="table-bordered table-striped table-condensed flip-content">
+                            <thead class="flip-content" style="background: #4b8df8">
+                            <tr>
+                                <th class="numeric">Sl</th>
+                                <th class="numeric">SubCategory</th>
+                                <th class="numeric">Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for index, budgetForSubCategory in budget.budgetForSubCategories %}
+                                <tr>
+                                    <td class="numeric">
+                                        {{ index + 1 }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ budgetForSubCategory.subCategory.subCategoryName }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ budgetForSubCategory.amount|number_format(2, '.', ',') }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot style="border-top: 5px solid #4b8df8;">
+                            <tr>
+                                <td colspan="2" class="numeric bolder" style="text-align: right;">
+                                    Total :
+                                </td>
+                                <td class="numeric bolder" style="text-align: left;">
+                                    {{ budget.netTotal|number_format(2, '.', ',') }}
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+
+                {% if is_granted("ROLE_BUDGET_APPROVE_ONE") or is_granted("ROLE_BUDGET_APPROVE_TWO") or is_granted("ROLE_BUDGET_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                    <div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table-bordered table-striped table-condensed flip-content">
+                                <thead class="flip-content"  style="background: #4b8df8">
+                                <tr>
+                                    <th class="numeric">Date</th>
+                                    <th class="numeric">Commented By</th>
+                                    <th class="numeric">Comments</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for prc in budget.budgetComment %}
+                                    <tr>
+                                        <td class="numeric">{{ prc.createdDate | date('d M Y') }}</td>
+                                        <td class="numeric">{{ prc.createdBy.username | default() }}</td>
+                                        <td class="numeric">{{ prc.comment | default() }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td class="numeric" colspan="3"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div>
+                        <form method="get" id="pr-comment-form">
+                            <div class="col-md-12">
+                                <div class="col-md-2">Remarks: </div>
+                                <div class="col-md-6"> <textarea class="commentBudget"  name="commentBudget" id="commentBudget"></textarea></div>
+                                <div class="col-md-2"><input type="button" value="Submit Comment" name="commentAdd" id="commentAdd" class="btn blue"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                {% endif %}
+                <div class="clearfix"></div>
+
+                <div class="modal-footer col-md-12" style="width: 100%;background: lightgrey;">
+                    <div class="col-md-6">
+                        {% if budget.status < 5 %}
+                            {% if is_granted("ROLE_BUDGET_APPROVE_ONE") or is_granted("ROLE_SUPER_ADMIN") %}
+                                {% if budget.approveStatus == 0 %}
+                                    <a class="btn blue approveOne onVerified" rel="{{ budget.id }}"  >Verify</a>
+                                {% endif %}
+                            {% endif %}
+                            {% if is_granted("ROLE_BUDGET_APPROVE_TWO") or is_granted("ROLE_SUPER_ADMIN") %}
+                                {% if budget.approveStatus == 1 %}
+                                    <a class="btn blue approveTwo" rel="{{ budget.id }}"  >Validate</a>
+                                {% endif %}
+                            {% endif %}
+                            {% if is_granted("ROLE_BUDGET_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                                {% if budget.approveStatus == 2 %}
+                                    <a class="btn blue approveThree" rel="{{ budget.id }}"  >Approve</a>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                            {% if budget.status < 5 %}
+                                <a href="{{ path('budget_hold', { 'id': budget.id }) }}"
+                                   onclick="return confirm('Do You Want To Hold It?')" class="btn red">Inactive</a>
+                            {% endif %}
+                        {% endif %}
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                            {% if budget.status == 5 %}
+                                <a href="{{ path('budget_open', { 'id': budget.id }) }}"
+                                   onclick="return confirm('Do You Want To Open It?')" class="btn blue" >Active</a>
+                            {% endif %}
+                        {% endif %}
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                            {% if budget.status < 6 and budget.approveStatus != 3 %}
+                                <a href="{{ path('budget_cancel', { 'id': budget.id }) }}"
+                                   onclick="return confirm('Do You Want To Cancel It?')" class="btn red">Cancel</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn blue"
+                           onclick="javascript: window.open('{{ path('budget_pdf', { 'id': budget.id }) }}')">Pdf <i
+                                    class="fa fa-file"></i></a>
+                        <a class="btn blue"
+                           onclick="javascript: window.open('{{ path('budget_print', { 'id': budget.id }) }}').print();">Print <i
+                                    class="fa fa-print"></i></a>
+                        <button type="button" class="btn close-modal-refresh blue"
+                                data-dismiss="modal">Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <input type="hidden" value="" class="verifiedStatus">
+    </div>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+
+            $(".close-modal-refresh").click(function(){
+                location.reload();
+            });
+
+            $("#commentAdd").click(function () {
+                var budgetComment = $("#commentBudget").val();
+                var budgetId = {{ budget.id|json_encode|raw }}
+
+                var budgetCommentArray = new Array(budgetComment, budgetId);
+                var answer = confirm('Do You Want To Add comment');
+                if(answer) {
+                    $.ajax({
+                        type: "post",
+                        url: Routing.generate('budget_comment'),
+                        data: "budgetCommentArray=" + budgetCommentArray,
+                        dataType: 'json',
+                        success: function (msg) {
+                            if(msg.responseCode == 202) {
+                                $(':input','#budget-comment-form')
+                                        .not(':button, :submit, :reset, :hidden')
+                                        .val('');
+                                $("#reload-all-budget").load("/budget/refresh/"+budgetId)
+                            }
+                        }
+                    });
+                }else{
+                    return false;
+                }
+            });
+
+            $(".approveOne").click(function () {
+                var budgetId = {{ budget.id|json_encode|raw }}
+
+                var answer = confirm('Do You Want To Approve It');
+                if(answer) {
+                    $.ajax({
+                        type: "post",
+                        url: Routing.generate('budget_approve_one_ajax'),
+                        data: "budgetId=" + budgetId,
+                        dataType: 'json',
+                        success: function (msg) {
+                            if(msg.responseCode == 202) {
+                                $("#reload-all-budget").load("/budget/refresh/"+budgetId)
+                            }
+                        }
+                    });
+                }else{
+                    return false;
+                }
+            });
+
+            $(".approveTwo").click(function () {
+                var budgetId = {{ budget.id|json_encode|raw }}
+
+                var answer = confirm('Do You Want To Approve It');
+                if(answer) {
+                    $.ajax({
+                        type: "post",
+                        url: Routing.generate('budget_approve_two_ajax'),
+                        data: "budgetId=" + budgetId,
+                        dataType: 'json',
+                        success: function (msg) {
+                            if(msg.responseCode == 202) {
+                                $("#reload-all-budget").load("/budget/refresh/"+budgetId)
+                            }
+                        }
+                    });
+                }else{
+                    return false;
+                }
+            });
+
+            $(".approveThree").click(function () {
+                var budgetId = {{ budget.id|json_encode|raw }}
+
+                var answer = confirm('Do You Want To Approve It');
+                if(answer) {
+                    $.ajax({
+                        type: "post",
+                        url: Routing.generate('budget_approve_three_ajax'),
+                        data: "budgetId=" + budgetId,
+                        dataType: 'json',
+                        success: function (msg) {
+                            if(msg.responseCode == 202) {
+                                $("#reload-all-budget").load("/budget/refresh/"+budgetId)
+                            }
+                        }
+                    });
+                }else{
+                    return false;
+                }
+            });
+
+        });
+    </script>
+</div>

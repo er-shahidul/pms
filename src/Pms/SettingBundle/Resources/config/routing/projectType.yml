@@ -1,0 +1,37 @@
+project_type_refresh:
+    pattern: /company-type/refresh
+    defaults: { _controller: PmsSettingBundle:ProjectType:refresh }
+
+project_type_active:
+    pattern: /company-type/active/{id}
+    defaults: { _controller: PmsSettingBundle:ProjectType:active }
+    requirements:
+          id: \d+
+
+project_type_delete:
+    pattern: /company-type/delete/{id}
+    defaults: { _controller: PmsSettingBundle:ProjectType:delete }
+    requirements:
+          id: \d+
+
+project_type_update:
+    pattern: /company-type/update/{id}
+    defaults: { _controller: PmsSettingBundle:ProjectType:update }
+    requirements:
+          id:  \d+
+
+project_type_check:
+    pattern: /company-type/check
+    defaults: { _controller: PmsSettingBundle:ProjectType:check }
+    options:
+            expose: true
+
+project_type_ajax_add:
+    pattern: /company-type/add
+    defaults: { _controller: PmsSettingBundle:ProjectType:add }
+    options:
+            expose: true
+
+project_type:
+    pattern: /company-type/{status}
+    defaults: { _controller: PmsSettingBundle:ProjectType:index, status:active }

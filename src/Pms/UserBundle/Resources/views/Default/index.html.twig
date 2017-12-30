@@ -1,0 +1,1044 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PMS{% endblock %}
+
+{% block body %}
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Dashboard
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="#" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>Dashboard</li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <!-- BEGIN DASHBOARD STATS -->
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat blue">
+                <div class="visual">
+                    <i>&#2547;</i>
+                </div>
+                <div class="details">
+                    <div class="number" style="font-size: 22px;">
+                        {{  totalPOAmount | number_format(0, '.', ',') }}
+                    </div>
+                    <div class="desc">
+                        Spend Amount
+                    </div>
+                </div>
+                <a class="more" href="#">
+
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat green">
+                <div class="visual">
+                    <i class="fa fa-map-marker"></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        {% set p = 0 %}
+                        {% for project in allProjects %}
+                            {% set p = p + 1 %}
+                        {% endfor %}
+                        {{ p }}
+                    </div>
+                    <div class="desc">
+                        Project
+                    </div>
+                </div>
+                <a class="more" href="#">
+
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat purple">
+                <div class="visual">
+                    <i class="fa fa-shopping-cart"></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        {% set i,j,k = 0,0,0 %}
+
+                        {% for item in allItems %}
+                            {% set i = i + 1 %}
+                        {% endfor %}
+                        {{ i }}
+                    </div>
+                    <div class="desc">
+                        Item
+                    </div>
+                </div>
+                <a class="more" href="#">
+
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat yellow">
+                <div class="visual">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        {% set v = 0 %}
+                        {% for vendor in allVendors %}
+                            {% set v = v + 1 %}
+                        {% endfor %}
+                        {{ v }}
+                    </div>
+                    <div class="desc">
+                        Vendor
+                    </div>
+                </div>
+                <a class="more" href="#">
+
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="tabbable tabbable-custom">
+                <ul class="nav nav-tabs" style="background: #208dbe;font-weight: bolder;">
+                    <li class="active"><a class="tabForTable" rel="#tab_1_1" href="#tab_1_1" style="font-weight: bolder !important;color: black !important;" data-toggle="tab">PR Open</a></li>
+                    <li><a class="tabForTable" rel="#tab_1_2" href="#tab_1_2" style="font-weight: bolder !important;color: black !important;" data-toggle="tab">PR Cancel</a></li>
+                </ul>
+                <div class="tab-content style-content">
+                    <div class="tab-pane active" id="tab_1_1">
+                        <div class="" data-always-visible="1" data-rail-visible="0">
+
+                            <div class="fluid" id="project-list-div">
+                                <div class="form-group">
+                                    <div class="col-md-12 margin-top-10">
+                                        <div class="portlet-body flip-scroll">
+                                        <table class="table-bordered table-striped table-condensed flip-content">
+                                            <thead class="flip-content"  style="background: #4b8df8">
+                                            <tr>
+                                                <th class="numeric">Sl</th>
+                                                <th class="numeric">PR Date</th>
+                                                <th class="numeric">PR No</th>
+                                                <th class="numeric">ProjectName</th>
+                                                <th class="numeric">SubCategoryName</th>
+                                                <th class="numeric">Status</th>
+                                                <th class="numeric">Approved%</th>
+                                                <th class="numeric">%Claimed</th>
+                                                <th class="numeric">PoIssued%</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% set offset = openPurchaseRequisitions.getItemNumberPerPage * (openPurchaseRequisitions.currentPageNumber - 1) %}
+
+                                            {% for purchaseRequisition in openPurchaseRequisitions %}
+
+                                                {% if purchaseRequisition.totalRequisitionItem == 0 %}
+                                                    {% set totalRequisitionItem = 1 %}
+                                                {% else %}
+                                                    {% set totalRequisitionItem = purchaseRequisition.totalRequisitionItem %}
+                                                {% endif %}
+
+                                                {% if purchaseRequisition.totalRequisitionItemQuantity == 0 %}
+                                                    {% set totalRequisitionItemQuantity = 1 %}
+                                                {% else %}
+                                                    {% set totalRequisitionItemQuantity = purchaseRequisition.totalRequisitionItemQuantity %}
+                                                {% endif %}
+
+                                                <tr>
+                                                    <td class="numeric">{{ loop.index + offset }}.</td>
+                                                    <td class="numeric">{{ purchaseRequisition.dateOfRequisition|date('d M Y') }}</td>
+                                                    <td class="numeric">{{ purchaseRequisition.id }}</td>
+                                                    <td class="numeric" >{{ purchaseRequisition.project.projectName }}</td>
+                                                    <td class="numeric">{{ purchaseRequisition.subCategory.SubcategoryName }}</td>
+                                                    <td class="numeric">
+
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus != 1
+                                                        and purchaseRequisition.approveStatus != 2
+                                                        and purchaseRequisition.approveStatus != 3 %}
+                                                            <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                                                Created
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus == 1
+                                                        and purchaseRequisition.approveStatus != 2
+                                                        and purchaseRequisition.approveStatus != 3 %}
+                                                            <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                                                Verified
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus != 1
+                                                        and purchaseRequisition.approveStatus == 2
+                                                        and purchaseRequisition.approveStatus != 3 %}
+                                                            <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                                Validated
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus != 1
+                                                        and purchaseRequisition.approveStatus != 2
+                                                        and purchaseRequisition.approveStatus == 3
+                                                        and purchaseRequisition.totalRequisitionItemClaimed == null
+                                                        and purchaseRequisition.totalOrderItemQuantity == 0 %}
+                                                            <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                                Approved
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus == 3
+                                                        and purchaseRequisition.totalRequisitionItemClaimed != null
+                                                        and purchaseRequisition.totalRequisitionItemClaimed < purchaseRequisition.totalRequisitionItem %}
+                                                            <div style="text-align:center;background: #4b8df8; color: #ffffff;height: 20px;">
+                                                                PartialClaim
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus == 3
+                                                        and purchaseRequisition.totalRequisitionItemClaimed != null
+                                                        and purchaseRequisition.totalRequisitionItemClaimed == purchaseRequisition.totalRequisitionItem
+                                                        and purchaseRequisition.totalRequisitionItemQuantity > purchaseRequisition.totalOrderItemQuantity %}
+                                                            <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                                                <a href="#" data-trigger="hover" class="popover-link"
+                                                                   title="Order Numbers"
+                                                                   data-url="{{ path('purchase_requisition_check_po',{id:purchaseRequisition.id}) }}">
+                                                                    InProgress</a>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus == 3
+                                                        and purchaseRequisition.totalOrderItemQuantity >= purchaseRequisition.totalRequisitionItemQuantity %}
+                                                            <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                                                <a href="#" data-trigger="hover" class="popover-link"
+                                                                   title="Order Numbers"
+                                                                   data-url="{{ path('purchase_requisition_check_po',{id:purchaseRequisition.id}) }}">
+                                                                    PoIssued</a>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 5 %}
+                                                            <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                                Hold
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 6 %}
+                                                            <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                                Cancel
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="numeric">
+                                                        {% if purchaseRequisition.approveStatus == 0 %}
+                                                            {% set approvePercentage = 0 %}
+                                                        {% elseif purchaseRequisition.approveStatus == 1 %}
+                                                            {% set approvePercentage = 33 %}
+                                                        {% elseif purchaseRequisition.approveStatus == 2 %}
+                                                            {% set approvePercentage = 66 %}
+                                                        {% elseif purchaseRequisition.approveStatus == 3 %}
+                                                            {% set approvePercentage = 100 %}
+                                                        {% endif %}
+                                                        <div class="easy-pie-chart">
+                                                            <div class="number bounce" data-percent="{{ approvePercentage }}"><span>{{ approvePercentage }}</span>%</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="numeric">
+                                                        {% if ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) > 100 %}
+                                                            {% set claimPercentage = 100 %}
+                                                        {% else %}
+                                                            {% set claimPercentage = ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | length > 3 ? ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | slice(0, 2) ~ '' : ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) %}
+                                                        {% endif %}
+                                                        <div class="easy-pie-chart">
+                                                            <div class="number visits" data-percent="{{ (purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem }}"><span>{{ claimPercentage }}</span>%</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="numeric">
+                                                        {% if ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) > 100 %}
+                                                            {% set poIssuedPercentage = 100 %}
+                                                        {% else %}
+                                                            {% set poIssuedPercentage = ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | length > 3 ? ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | slice(0, 2) ~ '' : ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) %}
+                                                        {% endif %}
+                                                        <a href="#" data-trigger="hover" class="popover-link" title="Order Numbers"
+                                                           data-url="{{ path('purchase_requisition_check_po',{'id':purchaseRequisition.id}) }}">
+                                                            <div class="easy-pie-chart">
+                                                                <div class="number transactions" data-percent="{{ (purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity }}"><span style="color: #000000!important;">{{ poIssuedPercentage }}%</span></div>
+                                                            </div>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="9" align="center"> No data available!</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <div class="navigation text-right">
+                                            <a href="{{ path('purchase_requisition', {'status': 'open'} ) }}" style="color: #000000!important;">More</a>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_1_2">
+                        <div class="" style="" data-always-visible="1" data-rail-visible1="1">
+
+                            <div class="fluid" id="project-list-div">
+                                <div class="form-group">
+                                    <div class="col-md-12 margin-top-10">
+                                        <div class="portlet-body flip-scroll">
+                                        <table class="table-bordered table-striped table-condensed flip-content">
+                                            <thead class="flip-content" style="background: #4b8df8">
+                                            <tr>
+                                                <th class="numeric">Sl</th>
+                                                <th class="numeric">PR Date</th>
+                                                <th class="numeric">PR No</th>
+                                                <th class="numeric">ProjectName</th>
+                                                <th class="numeric">SubCategoryName</th>
+                                                <th class="numeric">Status</th>
+                                                <th class="numeric">Approved%</th>
+                                                <th class="numeric">%Claimed</th>
+                                                <th class="numeric">PoIssued%</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% set offset = closePurchaseRequisitions.getItemNumberPerPage * (closePurchaseRequisitions.currentPageNumber - 1) %}
+
+                                            {% for purchaseRequisition in closePurchaseRequisitions %}
+
+                                                {% if purchaseRequisition.totalRequisitionItem == 0 %}
+                                                    {% set totalRequisitionItem = 1 %}
+                                                {% else %}
+                                                    {% set totalRequisitionItem = purchaseRequisition.totalRequisitionItem %}
+                                                {% endif %}
+
+                                                {% if purchaseRequisition.totalRequisitionItemQuantity == 0 %}
+                                                    {% set totalRequisitionItemQuantity = 1 %}
+                                                {% else %}
+                                                    {% set totalRequisitionItemQuantity = purchaseRequisition.totalRequisitionItemQuantity %}
+                                                {% endif %}
+
+                                                <tr>
+                                                    <td class="numeric">{{ loop.index + offset }}.</td>
+                                                    <td class="numeric">{{ purchaseRequisition.dateOfRequisition|date('d M Y') }}</td>
+                                                    <td class="numeric">{{ purchaseRequisition.id }}</td>
+                                                    <td class="numeric" >{{ purchaseRequisition.project.projectName }}</td>
+                                                    <td class="numeric">{{ purchaseRequisition.subCategory.SubcategoryName }}</td>
+                                                    <td class="numeric">
+
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus != 1
+                                                        and purchaseRequisition.approveStatus != 2
+                                                        and purchaseRequisition.approveStatus != 3 %}
+                                                            <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                                                Created
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus == 1
+                                                        and purchaseRequisition.approveStatus != 2
+                                                        and purchaseRequisition.approveStatus != 3 %}
+                                                            <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                                                Verified
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus != 1
+                                                        and purchaseRequisition.approveStatus == 2
+                                                        and purchaseRequisition.approveStatus != 3 %}
+                                                            <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                                Validated
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus != 1
+                                                        and purchaseRequisition.approveStatus != 2
+                                                        and purchaseRequisition.approveStatus == 3
+                                                        and purchaseRequisition.totalRequisitionItemClaimed == null
+                                                        and purchaseRequisition.totalOrderItemQuantity == 0 %}
+                                                            <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                                Approved
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus == 3
+                                                        and purchaseRequisition.totalRequisitionItemClaimed != null
+                                                        and purchaseRequisition.totalRequisitionItemClaimed < purchaseRequisition.totalRequisitionItem %}
+                                                            <div style="text-align:center;background: #4b8df8; color: #ffffff;height: 20px;">
+                                                                PartialClaim
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus == 3
+                                                        and purchaseRequisition.totalRequisitionItemClaimed != null
+                                                        and purchaseRequisition.totalRequisitionItemClaimed == purchaseRequisition.totalRequisitionItem
+                                                        and purchaseRequisition.totalRequisitionItemQuantity > purchaseRequisition.totalOrderItemQuantity %}
+                                                            <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                                                <a href="#" data-trigger="hover" class="popover-link"
+                                                                   title="Order Numbers"
+                                                                   data-url="{{ path('purchase_requisition_check_po',{id:purchaseRequisition.id}) }}">
+                                                                    InProgress</a>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 1
+                                                        and purchaseRequisition.approveStatus == 3
+                                                        and purchaseRequisition.totalOrderItemQuantity >= purchaseRequisition.totalRequisitionItemQuantity %}
+                                                            <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                                                <a href="#" data-trigger="hover" class="popover-link"
+                                                                   title="Order Numbers"
+                                                                   data-url="{{ path('purchase_requisition_check_po',{id:purchaseRequisition.id}) }}">
+                                                                    PoIssued</a>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 5 %}
+                                                            <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                                Hold
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if purchaseRequisition.status == 6 %}
+                                                            <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                                Cancel
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="numeric">
+                                                        {% if purchaseRequisition.approveStatus == 0 %}
+                                                            {% set approvePercentage = 0 %}
+                                                        {% elseif purchaseRequisition.approveStatus == 1 %}
+                                                            {% set approvePercentage = 33 %}
+                                                        {% elseif purchaseRequisition.approveStatus == 2 %}
+                                                            {% set approvePercentage = 66 %}
+                                                        {% elseif purchaseRequisition.approveStatus == 3 %}
+                                                            {% set approvePercentage = 100 %}
+                                                        {% endif %}
+                                                        <div class="easy-pie-chart">
+                                                            <div class="number bounce" data-percent="{{ approvePercentage }}"><span>{{ approvePercentage }}</span>%</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="numeric">
+                                                        {% if ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) > 100 %}
+                                                            {% set claimPercentage = 100 %}
+                                                        {% else %}
+                                                            {% set claimPercentage = ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | length > 3 ? ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | slice(0, 2) ~ '' : ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) %}
+                                                        {% endif %}
+                                                        <div class="easy-pie-chart">
+                                                            <div class="number visits" data-percent="{{ (purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem }}"><span>{{ claimPercentage }}</span>%</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="numeric">
+                                                        {% if ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) > 100 %}
+                                                            {% set poIssuedPercentage = 100 %}
+                                                        {% else %}
+                                                            {% set poIssuedPercentage = ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | length > 3 ? ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | slice(0, 2) ~ '' : ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) %}
+                                                        {% endif %}
+                                                        <a href="#" data-trigger="hover" class="popover-link" title="Order Numbers"
+                                                           data-url="{{ path('purchase_requisition_check_po',{'id':purchaseRequisition.id}) }}">
+                                                            <div class="easy-pie-chart">
+                                                                <div class="number transactions" data-percent="{{ (purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity }}"><span style="color: #000000!important;">{{ poIssuedPercentage }}%</span></div>
+                                                            </div>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="9" align="center"> No data available!</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <div class="navigation text-right">
+                                            <a href="{{ path('purchase_requisition', {'status': 'cancel'}) }}" style="color: #000000!important;">More</a>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="tabbable tabbable-custom">
+                <ul class="nav nav-tabs" style="background: #208dbe;font-weight: bolder;">
+                    <li class="active"><a class="tabForTable" rel="#tab_1_11" href="#tab_1_11" style="font-weight: bolder !important;color: black !important;" data-toggle="tab">PO Open</a></li>
+                    <li><a class="tabForTable" rel="#tab_1_22" href="#tab_1_22" style="font-weight: bolder !important;color: black !important;" data-toggle="tab">PO Cancel</a></li>
+                </ul>
+                <div class="tab-content style-content">
+                    <div class="tab-pane active" id="tab_1_11">
+                        <div class="" data-always-visible="1" data-rail-visible="0">
+
+                            <div class="fluid" id="project-list-div">
+                                <div class="form-group">
+                                    <div class="col-md-12 margin-top-10">
+                                        <div class="portlet-body flip-scroll">
+                                            <table class="table-bordered table-striped table-condensed flip-content">
+                                                <thead class="flip-content"  style="background: #4b8df8">
+                                                <tr>
+                                                    <th class="numeric">Sl</th>
+                                                    <th class="numeric">Date</th>
+                                                    <th class="numeric">PONo</th>
+                                                    <th class="numeric">Vendor/Buyer</th>
+                                                    <th class="numeric">Status</th>
+                                                    <th class="numeric">Amount</th>
+                                                    <th class="numeric">CreatedBy</th>
+                                                    <th class="numeric">DeliveryDate</th>
+                                                    <th class="numeric">Received%</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% set offset = openPurchaseOrders.getItemNumberPerPage * (openPurchaseOrders.currentPageNumber - 1) %}
+
+                                                {% for purchaseOrder in openPurchaseOrders %}
+
+                                                    {% set amendment = '' %}
+                                                    {% set amendmentRef = '' %}
+                                                    {% for purchaseOrderItem in purchaseOrder.purchaseOrderItems %}
+
+                                                        {% if purchaseOrderItem.amendment == 7 %}
+                                                            {% set amendment = 'amendment' %}
+                                                        {% endif %}
+
+                                                        {% if purchaseOrderItem.amendment == 8 %}
+                                                            {% set amendmentRef = 'amendmentRef' %}
+                                                        {% endif %}
+
+                                                    {% endfor %}
+
+                                                    <tr>
+                                                        <td class="numeric">{{ loop.index + offset }}.</td>
+                                                        <td class="numeric">{{ purchaseOrder.createdDate|date('d M Y') }}</td>
+                                                        <td class="numeric">{{ purchaseOrder.id }}</td>
+                                                        <td class="numeric">{{ purchaseOrder.vendorOrBuyer|default() }}</td>
+                                                        <td class="numeric">
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.status != 5
+                                                            and purchaseOrder.status != 6
+                                                            and purchaseOrder.approveStatus != 1
+                                                            and purchaseOrder.approveStatus != 2
+                                                            and purchaseOrder.approveStatus != 3 %}
+                                                                <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                                                    Created
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus == 1
+                                                            and purchaseOrder.approveStatus != 2
+                                                            and purchaseOrder.approveStatus != 3 %}
+                                                                <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                                                    Verified
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus != 1
+                                                            and purchaseOrder.approveStatus == 2
+                                                            and purchaseOrder.approveStatus != 3 %}
+                                                                <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                                    Validated
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus != 1
+                                                            and purchaseOrder.approveStatus != 2
+                                                            and purchaseOrder.approveStatus == 3
+                                                            and purchaseOrder.totalOrderReceiveQuantity is null %}
+                                                                <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                                    Approved
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus == 3
+                                                            and purchaseOrder.totalOrderReceiveQuantity is not null
+                                                            and purchaseOrder.totalOrderItemQuantity > purchaseOrder.totalOrderReceiveQuantity %}
+                                                                <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                                                    InProgress
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus == 3
+                                                            and purchaseOrder.totalOrderReceiveQuantity is not null
+                                                            and purchaseOrder.totalOrderReceiveQuantity >= purchaseOrder.totalOrderItemQuantity %}
+                                                                <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                                                    Received
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                                    {{ amendment }}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            {% if purchaseOrder.status == 5 %}
+                                                                <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                                    Hold
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+
+                                                            {% if purchaseOrder.status == 6 %}
+                                                                <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                                    Cancel
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+
+                                                        </td>
+                                                        <td class="numeric">{{ purchaseOrder.netTotal|number_format(2, '.', ',') }}</td>
+                                                        <td class="numeric">
+                                                            {{ purchaseOrder.createdBy.username }}
+                                                        </td>
+                                                        <td class="numeric">
+                                                            {{ purchaseOrder.dateOfDelivered|date('d M Y') }}
+                                                        </td>
+                                                        <td>
+                                                            {% if purchaseOrder.totalOrderItemQuantity == null %}
+                                                                {% set totalOrderItemQuantity = 0 %}
+                                                            {% else %}
+                                                                {% set totalOrderItemQuantity = purchaseOrder.totalOrderItemQuantity %}
+                                                            {% endif %}
+
+                                                            {% if purchaseOrder.totalOrderReceiveQuantity == null %}
+                                                                {% set totalOrderReceiveQuantity = 0 %}
+                                                            {% else %}
+                                                                {% set totalOrderReceiveQuantity = purchaseOrder.totalOrderReceiveQuantity %}
+                                                            {% endif %}
+
+                                                            {% if ((totalOrderReceiveQuantity * 100) / totalOrderItemQuantity) > 100 %}
+                                                                {% set receivePercentage = 100 %}
+                                                            {% else %}
+                                                                {% set receivePercentage = ((totalOrderReceiveQuantity * 100) / totalOrderItemQuantity) | length > 3 ? ((totalOrderReceiveQuantity * 100) / totalOrderItemQuantity) | slice(0, 2) ~ '' : ((totalOrderReceiveQuantity * 100) / totalOrderItemQuantity) %}
+                                                            {% endif %}
+
+                                                            <div class="easy-pie-chart">
+                                                                <div class="number transactions" data-percent="{{ (totalOrderReceiveQuantity * 100) / totalOrderItemQuantity }}"><span>{{ receivePercentage }}</span>%</div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% else %}
+                                                    <tr>
+                                                        <td colspan="9" align="center"> No data available!</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="navigation text-right">
+                                            <a href="{{ path('purchase_order', {'status': 'open'}) }}" style="color: #000000!important;">More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_1_22">
+                        <div class="" style="" data-always-visible="1" data-rail-visible1="1">
+
+                            <div class="fluid" id="project-list-div">
+                                <div class="form-group">
+                                    <div class="col-md-12 margin-top-10">
+                                        <div class="portlet-body flip-scroll">
+                                            <table class="table-bordered table-striped table-condensed flip-content">
+                                                <thead class="flip-content"  style="background: #4b8df8">
+                                                <tr>
+                                                    <th class="numeric">Sl</th>
+                                                    <th class="numeric">Date</th>
+                                                    <th class="numeric">PONo</th>
+                                                    <th class="numeric">Vendor/Buyer</th>
+                                                    <th class="numeric">Status</th>
+                                                    <th class="numeric">Amount</th>
+                                                    <th class="numeric">CreatedBy</th>
+                                                    <th class="numeric">DeliveryDate</th>
+                                                    <th class="numeric">Received%</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% set offset = closePurchaseOrders.getItemNumberPerPage * (openPurchaseOrders.currentPageNumber - 1) %}
+
+                                                {% for purchaseOrder in closePurchaseOrders %}
+
+                                                    {% set amendment = '' %}
+                                                    {% set amendmentRef = '' %}
+                                                    {% for purchaseOrderItem in purchaseOrder.purchaseOrderItems %}
+
+                                                        {% if purchaseOrderItem.amendment == 7 %}
+                                                            {% set amendment = 'amendment' %}
+                                                        {% endif %}
+
+                                                        {% if purchaseOrderItem.amendment == 8 %}
+                                                            {% set amendmentRef = 'amendmentRef' %}
+                                                        {% endif %}
+
+                                                    {% endfor %}
+
+                                                    <tr>
+                                                        <td class="numeric">{{ loop.index + offset }}.</td>
+                                                        <td class="numeric">{{ purchaseOrder.createdDate|date('d M Y') }}</td>
+                                                        <td class="numeric">{{ purchaseOrder.id }}</td>
+                                                        <td class="numeric">{{ purchaseOrder.vendorOrBuyer|default() }}</td>
+                                                        <td class="numeric">
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.status != 5
+                                                            and purchaseOrder.status != 6
+                                                            and purchaseOrder.approveStatus != 1
+                                                            and purchaseOrder.approveStatus != 2
+                                                            and purchaseOrder.approveStatus != 3 %}
+                                                                <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                                                    Created
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus == 1
+                                                            and purchaseOrder.approveStatus != 2
+                                                            and purchaseOrder.approveStatus != 3 %}
+                                                                <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                                                    Verified
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus != 1
+                                                            and purchaseOrder.approveStatus == 2
+                                                            and purchaseOrder.approveStatus != 3 %}
+                                                                <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                                    Validated
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus != 1
+                                                            and purchaseOrder.approveStatus != 2
+                                                            and purchaseOrder.approveStatus == 3
+                                                            and purchaseOrder.totalOrderReceiveQuantity is null %}
+                                                                <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                                    Approved
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus == 3
+                                                            and purchaseOrder.totalOrderReceiveQuantity is not null
+                                                            and purchaseOrder.totalOrderItemQuantity > purchaseOrder.totalOrderReceiveQuantity %}
+                                                                <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                                                    InProgress
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+                                                            {% if purchaseOrder.status == 1
+                                                            and purchaseOrder.approveStatus == 3
+                                                            and purchaseOrder.totalOrderReceiveQuantity is not null
+                                                            and purchaseOrder.totalOrderReceiveQuantity >= purchaseOrder.totalOrderItemQuantity %}
+                                                                <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                                                    Received
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                                    {{ amendment }}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            {% if purchaseOrder.status == 5 %}
+                                                                <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                                    Hold
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+
+                                                            {% if purchaseOrder.status == 6 %}
+                                                                <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                                    Cancel
+                                                                </div>
+                                                                <div style="text-align:center; background: #696969;color: white;font-size: 10px;">{{ amendment }}</div>
+                                                            {% endif %}
+
+                                                        </td>
+                                                        <td class="numeric">{{ purchaseOrder.netTotal|number_format(2, '.', ',') }}</td>
+                                                        <td class="numeric">
+                                                            {{ purchaseOrder.createdBy.username }}
+                                                        </td>
+                                                        <td class="numeric">
+                                                            {{ purchaseOrder.dateOfDelivered|date('d M Y') }}
+                                                        </td>
+                                                        <td>
+                                                            {% if purchaseOrder.totalOrderItemQuantity == null %}
+                                                                {% set totalOrderItemQuantity = 0 %}
+                                                            {% else %}
+                                                                {% set totalOrderItemQuantity = purchaseOrder.totalOrderItemQuantity %}
+                                                            {% endif %}
+
+                                                            {% if purchaseOrder.totalOrderReceiveQuantity == null %}
+                                                                {% set totalOrderReceiveQuantity = 0 %}
+                                                            {% else %}
+                                                                {% set totalOrderReceiveQuantity = purchaseOrder.totalOrderReceiveQuantity %}
+                                                            {% endif %}
+                                                            {% if purchaseOrder.totalOrderReceiveQuantity != 0 and purchaseOrder.status != 6 %}
+
+                                                                {% if ((totalOrderReceiveQuantity * 100) / totalOrderItemQuantity) > 100 %}
+                                                                    {% set receivePercentage = 100 %}
+                                                                {% else %}
+                                                                    {% set receivePercentage = ((totalOrderReceiveQuantity * 100) / totalOrderItemQuantity) | length > 3 ? ((totalOrderReceiveQuantity * 100) / totalOrderItemQuantity) | slice(0, 2) ~ '' : ((totalOrderReceiveQuantity * 100) / totalOrderItemQuantity) %}
+                                                                {% endif %}
+
+                                                            {% else  %}
+                                                                {% set receivePercentage = 0 %}
+                                                            {% endif %}
+
+                                                            <div class="easy-pie-chart">
+                                                                <div class="number transactions" data-percent="{{ receivePercentage }}"><span>{{ receivePercentage }}</span>%</div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% else %}
+                                                    <tr>
+                                                        <td colspan="9" align="center"> No data available!</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="navigation text-right">
+                                            <a href="{{ path('purchase_order', {'status': 'cancel'}) }}" style="color: #000000!important;">More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+        <div class="tabbable tabbable-custom">
+            <ul class="nav nav-tabs" style="background: #208dbe;font-weight: bolder;">
+                <li class="active"><a class="tabForTable" rel="#tab_1_13" href="#tab_1_13" style="font-weight: bolder !important;color: black !important;" data-toggle="tab">PR Approval</a></li>
+                <li><a class="tabForTable" rel="#tab_1_24" href="#tab_1_24" style="font-weight: bolder !important;color: black !important;" data-toggle="tab">PO Approval</a></li>
+            </ul>
+        <div class="tab-content style-content">
+        <div class="tab-pane active" id="tab_1_13">
+            <div class="" data-always-visible="1" data-rail-visible="0">
+
+                <div class="fluid" id="project-list-div">
+                    <div class="form-group">
+                        <div class="col-md-12 margin-top-10">
+                            <table class="table table-striped table-hover">
+
+                                {% for purchaseRequisition in pr1 %}
+                                    {% set i = i + 1 %}
+                                    {% set bgColor = ["#fff"] %}
+
+                                    <tr style="height: 30px;background: {{ bgColor|join("") }};border-top: 0 solid #eee !important;">
+                                        <td>
+                                            PR No.
+                                            <span style="font-weight: bold"> {{ purchaseRequisition.id }}</span><br>
+                                            Project
+                                            <span style="font-weight: bold"> {{ purchaseRequisition.project.projectName }}</span><br>
+                                            Created By
+                                            <span style="font-weight: bold"> {{ purchaseRequisition.createdBy }}</span><br>
+                                            Created Date
+                                            <span style="font-weight: bold"> {{ purchaseRequisition.createdDate|date() }}</span>
+
+                                        </td>
+                                        <td>
+
+                                            {% if purchaseRequisition.approveStatus == 0 %}
+                                                <div style="text-align:center;background: #35aa47; color: #ffffff; width: 62px; height: 20px;">
+                                                    created
+                                                </div>
+                                            {% endif %}
+                                            {% if purchaseRequisition.approveStatus == 1 %}
+                                                <div style="text-align:center;background: #ffb848; color: #ffffff; width: 62px; height: 20px;">
+                                                    approved
+                                                </div>
+                                            {% endif %}
+                                            {% if purchaseRequisition.approveStatus == 2 %}
+                                                <div style="text-align:center;background: #852b99; color: #ffffff; width: 62px; height: 20px;">
+                                                    validated
+                                                </div>
+                                            {% endif %}
+                                            {% if purchaseRequisition.approveStatus == 3 %}
+                                                <div style="text-align:center;background: #555555; color: #ffffff; width: 62px; height: 20px;">
+                                                    verified
+                                                </div>
+                                            {% endif %}
+                                            {% if purchaseRequisition.approveStatus == 4 %}
+                                                <div style="text-align:center;background: #27a9e3; color: #ffffff; width: 62px; height: 20px;">
+                                                    open
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="tab-pane" id="tab_1_24">
+            <div class="" style="" data-always-visible="1" data-rail-visible1="1">
+
+                <div class="fluid" id="project-list-div">
+                    <div class="form-group">
+                        <div class="col-md-12 margin-top-10">
+                            <table class="table table-striped table-hover">
+
+                                {% for purchaseOrder in po %}
+                                    {% set i = i + 1 %}
+                                    {% set bgColor = ["#fff"] %}
+
+                                    <tr style="height: 30px;background: {{ bgColor|join("") }};border-top: 0 solid #eee !important;">
+                                        <td>
+                                            Purchase Order No.
+                                            <span style="font-weight: bold"> {{ purchaseOrder.id }}</span><br>
+                                            Amount
+                                            <span style="font-weight: bold"> {{ purchaseOrder.netTotal|number_format(2, '.', ',') }} </span><br>
+                                            Created By
+                                            <span style="font-weight: bold"> {{ purchaseOrder.createdBy }}</span><br>
+                                            Created Date
+                                            <span style="font-weight: bold"> {{ purchaseOrder.createdDate|date() }}</span>
+
+                                        </td>
+                                        <td>
+                                            {% if purchaseOrder.approveStatus == 0 %}
+                                                <div style="text-align:center;background: #35aa47; color: #ffffff; width: 62px; height: 20px;">
+                                                    created
+                                                </div>
+                                            {% endif %}
+                                            {% if purchaseOrder.approveStatus == 1 %}
+                                                <div style="text-align:center;background: #ffb848; color: #ffffff; width: 62px; height: 20px;">
+                                                    approved
+                                                </div>
+                                            {% endif %}
+                                            {% if purchaseOrder.approveStatus == 2 %}
+                                                <div style="text-align:center;background: #852b99; color: #ffffff; width: 62px; height: 20px;">
+                                                    validated
+                                                </div>
+                                            {% endif %}
+                                            {% if purchaseOrder.approveStatus == 3 %}
+                                                <div style="text-align:center;background: #555555; color: #ffffff; width: 62px; height: 20px;">
+                                                    verified
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+        </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="tabbable tabbable-custom">
+                <ul class="nav nav-tabs" style="background: #208dbe;font-weight: bolder;">
+                    <li class="active"><a class="tabForTable" rel="#tab_1_1" href="#tab_1_1" style="color: black !important;font-weight: bolder !important;" data-toggle="tab">Item Claim</a></li>
+                </ul>
+                <div class="tab-content style-content">
+                    <div class="tab-pane active" id="tab_1_1">
+                        <div class="" data-always-visible="1" data-rail-visible="0">
+
+                            <div class="fluid" id="project-list-div">
+                                <div class="form-group">
+                                    <div class="col-md-12 margin-top-10">
+                                        <table class="table table-striped table-hover">
+
+                                            {% for requisitionItem in pri %}
+                                                {% set i = i + 1 %}
+                                                {% set bgColor = ["#fff"] %}
+
+                                                <tr style="height: 30px;background: {{ bgColor|join("") }};border-top: 0 solid #eee !important;">
+                                                    <td style="font-size: 11px;">
+                                                        Project <span style="font-weight: bold">
+                                                    {{ requisitionItem.purchaseRequisition.project.projectName }}
+                                                    </span>
+                                                        PR no. <span style="font-weight: bold">
+                                                    {{ requisitionItem.purchaseRequisition.id }}
+                                                    </span>
+                                                        item <span style="font-weight: bold">
+                                                    {{ requisitionItem.item.itemName }}
+                                                    </span>
+                                                        Quantity <span style="font-weight: bold">
+                                                    {{ requisitionItem.quantity }} {{ requisitionItem.item.itemUnit }}
+                                                    </span>
+                                                    </td>
+                                                    <td>
+                                                        <div style="font-size: 11px;text-align:left;height: 20px;width: auto;">
+                                                            Claimed by {{ requisitionItem.claimedBy.username | default('___') }}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!--END TABS-->
+    </div>
+
+    <!-- END DASHBOARD STATS -->
+
+{% endblock %}
+{#<script>#}
+{% block documentready %}
+    {{ parent() }}
+
+{% endblock %}

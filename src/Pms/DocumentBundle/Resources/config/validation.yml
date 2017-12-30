@@ -1,0 +1,14 @@
+Pms\DocumentBundle\Entity\Document:
+    properties:
+        file:
+            - NotBlank: { message: "File should not be blank" }
+        invoiceOrCalan:
+            - NotBlank: { message: "Please select one option" }
+        billNumber:
+            - NotBlank: { message: "bill Number should Not be blank" }
+        billAmount:
+            - NotBlank: { message: "bill Amount should Not be blank" }
+        dateOfBill:
+            - NotBlank: { message: "date should Not be blank" }
+        purchaseOrder:
+            - NotBlank: { message: "PO should Not be blank" }

@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Company Setting
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Company Setting</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <!-- END DASHBOARD STATS -->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="companyMessege"></span>
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            {% if val == 1 %}
+                <li style="float: right;margin-right: -1px;">
+                    <a href="{{ path('company_add') }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                        Company Setting Add
+                    </a>
+                </li>
+            {% endif %}
+            {% for company in companySetting %}
+                {% if company.name != null %}
+                    <li style="float: right;margin-right: -1px;">
+                        <a href="/company/update/{{ company.id }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                            Company Setting Update
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <div class="tab-content" style="height: auto;background: #eee;">
+            <div class="tab-pane active">
+                <div data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="area-list-div">
+                        <div class="form-group">
+                            <div class="col-md-12" style="margin-top: 30px;">
+
+                            <table>
+                                {% for company in companySetting %}
+                                    <tr>
+                                        <td>
+                                            Name :
+                                        </td>
+                                        <td>
+                                                {{ company.name }}
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Details :
+                                        </td>
+                                        <td>
+                                            {{ company.details }}
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Logo :
+                                        </td>
+                                        <td>
+                                            {% if company.path is not null %}
+                                                <img src='{{ asset('../uploads/company/'~company.path) }}' style="width: 120px;height: 40px;"/>
+                                            {% else %}
+                                                No logo was upload.
+                                            {% endif %}
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}

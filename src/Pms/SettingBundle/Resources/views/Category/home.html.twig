@@ -1,0 +1,216 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Category
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Category</a>
+                </li>
+                <li class="pull-right">
+                    <div class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="categoryMessege"></span>
+    {% if is_granted("ROLE_CATEGORY_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+    <div class="modal-dialog" style="width: 1000px;padding-top: 15px !important;">
+        <div class="modal-content" style="background: white;">
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'category-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'category-form', 'novalidate': 'novalidate'} }) }}
+                            <div class="form-group">
+                                {{ form_label(form.categoryName, 'Category :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                                ) }}
+                                <div class="col-md-8">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.categoryName, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;', 'placeholder': 'Add category name' } }) }}
+                                    </div>
+                                    <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.categoryName) }}</span>
+                                </div>
+                                <span class="userMessege" style="margin-left: 195px;"></span>
+                            </div>
+                            <div class="form-group" style="text-align: right;margin-right: 100px;">
+                                <input type="button" name="ajaxSaveCategory" value="Save" id="ajaxSaveCategory" class="btn button-width" style="width: 100px;background: #0353D6; color: white !important;margin-left:10px;height:32px;">
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            <li class="{% if status == 'active' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('category',{status:'active'} ) }}">All</a></li>
+            <li class="{% if status == 'delete' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('category',{status:'delete'} ) }}">Deleted</a></li>
+        </ul>
+        <div class="tab-content" style="height: auto;background: #eee;">
+            <div class="tab-pane active">
+                <div data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="category-refresh">
+                        <div class="form-group">
+                            <div class="col-md-12" style="margin-top: 30px;">
+
+                                <table class="table bold" style="border: 1px solid ghostwhite;">
+                                    <thead style="background: #4b8df8;color: #fff;">
+                                    <tr>
+                                        <th>Sl</th>
+                                        <th class="sorted col-md-10">Category Name</th>
+                                        <th class="col-md-2"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% set offset = categories.getItemNumberPerPage * (categories.currentPageNumber - 1) %}
+
+                                    {% for category in categories %}
+
+                                        <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                                            <td>{{ loop.index + offset }}.</td>
+                                            <td>{{ category.categoryName }}</td>
+                                            <td>
+                                                {% if category.status == 1 %}
+                                                    <a href="/category/delete/{{ category.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-trash-o"></i> Delete</a>
+
+                                                    <a href="/category/update/{{ category.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-edit"></i> Update</a>
+                                                {% endif %}
+                                                {% if category.status == 0 %}
+                                                    <a href="#" class="btn default btn-xs" style="width: 65px;"><i
+                                                                class="fa fa-times"></i> Deleted</a>
+
+                                                    <a href="/category/active/{{ category.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                                                class="fa fa-repeat"></i> Restore</a>
+                                                {% endif %}
+
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                                <div class="navigation" style="text-align: right">
+                                    {{ knp_pagination_render(categories) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $("#ajaxSaveCategory").click(function () {
+        var sPageURL = window.location.pathname;
+        var sURLVariables = sPageURL.split('/');
+        var categoryName = $("#category_categoryName").val();
+
+        var categoryArray = new Array(categoryName, sURLVariables[3]);
+        $.ajax({
+            type: "post",
+            url: Routing.generate('category_ajax_add'),
+            data: "categoryArray=" + categoryArray,
+            dataType: 'json',
+            success: function (msg) {
+                if(msg.responseCode == 200) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Category already exist</span></div>');
+                    $('.categoryMessege').css('color', 'red').html(msg.category_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#category-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                } else if(msg.responseCode == 204) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Please Insert Categories Field</span></div>');
+                    $('.categoryMessege').css('color', 'red').html(msg.category_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#category-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                } else if(msg.responseCode == 202) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Category Update Successfully</span></div>');
+                    $('.categoryMessege').css('color', 'green').html(msg.category_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#category-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                    window.location.pathname = 'category';
+                } else {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Category Add Successfully</span></div>');
+                    $('.categoryMessege').css('color', 'green').html(msg.category_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#category-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                }
+
+                $('.userMessege').fadeOut();
+                $("#category-refresh").load("/category/refresh")
+            }
+        });
+    });
+
+    $("#category_categoryName").keyup(function () {
+        var categoryName = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('category_check'),
+            data: "categoryName=" + categoryName,
+            dataType: 'json',
+            success: function (msg) {
+                if (msg.responseCode == 200) {
+                    $('.userMessege').css('color', 'red').html(msg.category_name).fadeIn(1000);
+                }
+                else {
+                    $('.userMessege').css('color', 'green').html(msg.category_name).fadeIn(1000);
+                }
+            }
+        });
+    });
+
+{% endblock %}

@@ -1,0 +1,530 @@
+{% block body %}
+
+<div id="reload-all-receive">
+    <form action="{{ path('payment_receive') }}" method="post">
+    <div class="modal-dialog" style="width: 1000px;">
+    <div class="modal-content">
+    <div class="modal-header" style="background: lightgrey;">
+        <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title bold" style="text-align: center;">Ready for payment details</h4>
+    </div>
+
+    <div class="col-md-12">
+        <table>
+            <tr>
+                <td style="width: 1000px;">
+                    <table class="col-md-6" style="margin-top: 20px;margin-bottom: 50px;padding-top:20px;float: left;">
+                        <tr>
+                            <td>Project Name:</td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {% set projectName = '' %}
+                                    {% for ri in receive.receiveItems %}
+                                        {% set projectName = ri.project.projectName %}
+                                    {% endfor %}
+                                    {{ projectName }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                GRN#:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ receive.id }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Ref GRN#:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ receive.refGrn }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Request Payment ID:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {% if receive.readyForPayment %}{{ receive.readyForPayment.id }}{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Bill Number:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                 {% if receive.readyForPayment %}{{ receive.readyForPayment.billNumber|default(0) }}{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Bill Date:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {% if receive.readyForPayment %}{{ receive.readyForPayment.billDate|date('d-m-Y') }}{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Ref. No :
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ receive.refGrn }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Received By:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ receive.receivedBy.username }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Received Date :
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ receive.receivedDate | date('d M Y') }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                PO Issued by:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                {{ receive.poIssued }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Created By:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                {% if receive.readyForPayment %}{{ receive.readyForPayment.createdBy |default('') }}{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <table class="col-md-6" style="margin-top: 20px;padding-top:20px;float: right;">
+                        <tr>
+                            <td>
+                                Vendor Name:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ receive.vendor.vendorName | default(' ') }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% if receive.vendor.vendorAttach is defined %}
+                        {% for attach in receive.vendor.vendorAttach %}
+                        <tr>
+                            <td>
+                                {{ attach.fileName }}:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    <a href="#" onclick="javascript: window.open('/vendor/attachment-view/{{ attach.path }}')">
+                                        <img src="{{ asset('assets/img/file-ico.png') }}" style="color:white;width: 30px;height: 24px;" />
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+
+                        <tr>
+                            <td>
+                                Name, Account No, Bank name :
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{  receive.vendor.bankAccountName |default ('tt') }},
+                                    {{ receive.vendor.bankAccountNo |default ('xx')}},
+                                    {{ receive.vendor.branchName |default ('')}},
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Payment Type:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ receive.paymentType }}
+                                </span>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Payment Mode:
+                            </td>
+                                <td>
+                                <span style="font-weight: bold;">
+                                    {{ receive.paymentMethod }}
+                                </span>
+                                </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                From Payment:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                {{ receive.isHeadOrLocal }} Office
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 1000px;">
+                    <table id="table_requisition" class="table col-md-12" style="border: 1px solid ghostwhite;">
+                        <thead style="background-color:#4b8df8;">
+                        <tr style="height: 30px;">
+                            <th>Sl</th>
+                            <th class="col-md-1">Particulars</th>
+                            <th class="col-md-1">PRNo</th>
+                            <th class="col-md-1">PRQty</th>
+                            <th class="col-md-1">PRAttach</th>
+                            <th class="col-md-1">PONo</th>
+                            <th class="col-md-1">POQty</th>
+                            <th class="col-md-1">POAmount</th>
+                            <th class="col-md-1">POAttach</th>
+                            <th class="col-md-1">RecNo</th>
+                            <th class="col-md-1">RecQty</th>
+                            <th class="col-md-1">RecAmount</th>
+                            <th class="col-md-1">RecAttach</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set totalPoAmount = 0 %}
+                        {% set totalBillAmount = 0 %}
+                        {% set poNo = 0 %}
+                        {% set ReceivedId = 0 %}
+                        {% set closeDate = ''  %}
+                        {% for index, receivedItem in receive.receiveItems %}
+
+                            {% set poNo = receivedItem.purchaseOrderItem.purchaseOrder.id %}
+                            {% set ReceivedId = receivedItem.receive.id %}
+                            {%  set totalPoAmount = totalPoAmount + receivedItem.purchaseOrderItem.amount %}
+                            {%  set totalBillAmount = totalBillAmount + (receivedItem.quantity * receivedItem.purchaseOrderItem.price) %}
+                            <tr style="height: 30px;background: #fff;border-top: 1px solid #eee !important;">
+                                <td>{{ index + 1 }}.</td>
+                                <td>{{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemName }}</td>
+                                <td>
+                                    <a style="color:#000000!important;line-height:5px;text-decoration: underline; cursor:pointer;font-weight:bolder;font-size:11px;" onclick="javascript: window.open('/purchase-requisition/details-others/{{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.id }}')" data-target="#ajax" data-toggle="modal">
+                                        {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.quantity |number_format(2, '.', ',') }}
+                                    {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemUnit }}
+                                </td>
+                                <td>
+                                    {% if receivedItem.purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.path is not null %}
+                                        <a href="#" onclick="javascript: window.open('/purchase-requisition/attachment-view/{{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.id }}/1')">
+                                            <img src="{{ asset('assets/img/file-ico.png') }}" style="color:white;width: 30px;height: 24px;" />
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a style="color:#000000!important;line-height:5px;text-decoration: underline; cursor:pointer;font-weight:bolder;font-size:11px;" onclick="javascript: window.open('/purchase-order/details-others/{{ receivedItem.purchaseOrderItem.purchaseOrder.id }}')" data-target="#ajax" data-toggle="modal">
+                                        {{ receivedItem.purchaseOrderItem.purchaseOrder.id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ receivedItem.purchaseOrderItem.quantity |number_format(2, '.', ',') }}
+                                    {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemUnit }}
+                                </td>
+                                <td>{{ receivedItem.purchaseOrderItem.amount |number_format(2, '.', ',') }} </td>
+                                <td>
+                                    {% if receivedItem.purchaseOrderItem.purchaseOrder.path is not null %}
+                                        <a href="#" onclick="javascript: window.open('/purchase-order/attachment-view/{{ receivedItem.purchaseOrderItem.purchaseOrder.id }}/1')">
+                                            <img src="{{ asset('assets/img/file-ico.png') }}" style="color:white;width: 30px;height: 24px;" />
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ receivedItem.receive.id }}</td>
+                                <td>
+                                    {{ receivedItem.quantity |number_format(2, '.', ',') }}
+                                    {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemUnit }}
+                                </td>
+                                <td>{{ (receivedItem.quantity * receivedItem.purchaseOrderItem.price) | number_format(2, '.', ',') }} </td>
+                                <td>
+                                    {% if receive.path is not null %}
+                                        <a href="#" onclick="javascript: window.open('/receive/attachment-view/{{ receivedItem.receive.id }}/1')">
+                                            <img src="{{ asset('assets/img/file-ico.png') }}" style="color:white;width: 30px;height: 24px;" />
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td colspan="2">
+                                Total PO Amount:
+                            </td>
+                            <td>
+                            <strong>{{ totalPoAmount | number_format(2, '.', ',') }} BDT</strong>
+                            </td>
+                            <td></td>
+                            <td colspan="2">
+                                Total Receive Amount:
+                            </td>
+                            <td>
+                            <strong>{{ totalBillAmount | number_format(2, '.', ',') }} BDT</strong>
+                            </td>
+                            <td></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 1000px;">
+                    <table id="RequestedTable" class="table col-md-12" style="border: 1px solid ghostwhite;">
+                        <thead style="background-color:#4b8df8;">
+                        <tr style="height: 30px;">
+                            <th  colspan="{% if advancePayment %} 3 {% else %} 4 {% endif %}">Payment </th>
+                            {% if advancePayment %}
+                            <th colspan="1">Advance Paid: {{ advancePayment.poPaymentAmount }} BDT</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="height: 30px;background: #fff;border-top: 1px solid #eee !important;">
+                                <td class="col-md-2">PO No</td>
+                                <td>{{ poNo }}</td>
+                                <td class="col-md-2">Request Date</td>
+                                <td> {{ receive.closedDate | date('d-m-Y') }}</td>
+                            </tr>
+                            <tr style="height: 30px;background: #fff;border-top: 1px solid #eee !important;">
+                                <td class="col-md-2">Request Amount</td>
+                                <td class="requestAmount">
+                                    {% if advancePayment %}
+                                    {{ totalBillAmount - advancePayment.poPaymentAmount }}
+                                    {% else  %}
+                                    {{ totalBillAmount }}
+                                    {% endif %}
+
+                                    BDT</td>
+                                <td class="col-md-2">Payment Amount</td>
+                                <td><input type="text" id="paymentAmountx" name="paymentAmountx" value="{% if receive.readyForPayment %}{{ receive.readyForPayment.poPaymentAmount }}{% endif %}"> BDT</td>
+
+                            </tr>
+                            <tr style="height: 30px;background: #fff;border-top: 1px solid #eee !important;">
+                                <td class="col-md-2">Bill Number</td>
+                                <td><input type="text" id="billDate"
+                                           name="billDate" class="datepicker"
+                                           value=" {% if receive.readyForPayment %}{{ receive.readyForPayment.billDate|date('Y-m-d') }}{% endif %}">
+                                    <input style="width:70px;" type="text" id="billNumber" name="billNumber"
+                                           placeholder="0000"
+                                           value="{% if receive.readyForPayment %}{{ receive.readyForPayment.billNumber|default(0) }}{% endif %}">
+
+                                </td>
+                                <td>
+                                    <select class="span6 m-wrap" id="bank" tabindex="1">
+                                        <option value="">Select Bank Name</option>
+                                    {% for bank in banks %}
+                                        <option value="{{ bank.id }}" {% if(receive.readyForPayment.relatedBank |default('')) %}{{ receive.readyForPayment.relatedBank.id == bank.id  ? 'selected= "selected" ' : '' }} {% endif %} >{{ bank.name }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </td>
+                                <td><input type="text" id="chequeNo" placeholder="Cheque no" name="chequeNo" value="{% if receive.readyForPayment %}{{ receive.readyForPayment.cheque }}{% endif %}"></td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="modal-footer" style="width: 100%;background: lightgrey;">
+        <input type="hidden" name="poAmount" id ='poAmount' value="{{ totalPoAmount }}">
+        <input type="hidden" name="PoReceiveAmount" id ='PoReceiveAmount' value="{{ totalBillAmount }}">
+        <input type="hidden" name="closedDate" id ='closedDate' value="{{ receive.closedDate | date('d-m-Y') }}">
+        <input type="hidden" name="grn" id ='grn' value="{{ receive.id }}">
+        <input type="hidden" name="poNo" id ='poNo' value="{{ poNo }}">
+        <input type="hidden" name="receiveId" id ='receiveId' value="{{ ReceivedId }}">
+        <input type="hidden" name="paymentId" id ='paymentId' value="{% if receive.readyForPayment %}{{ receive.readyForPayment.id }}{% endif %}">
+        <input type="hidden" id="vendorId" value=" {{ receive.vendor.id | default('') }}">
+        {% if receive.invoice.path is defined %}
+            <a class="btn" style="float:left;width: 130px;background: #0353D6; color: white !important;" href="/document/attachment-view/{{ receive.invoice.path }}?1" target="_blank">Invoice <i
+                        class="fa fa-file"></i></a>
+        {% endif %}
+        {% if receive.calan.path is defined %}
+            <a class="btn" style="float:left;width: 130px;background: #0353D6; color: white !important;" href="/document/attachment-view/{{ receive.calan.path }}?1" target="_blank">Challan <i
+                        class="fa fa-file"></i></a>
+        {% endif %}
+        {% if receive.path %}
+            <a class="btn" style="float:left;width: 130px;background: #0353D6; color: white !important;" href="/receive/attachment-view/{{ receive.id }}/1" target="_blank">Grn <i
+                        class="fa fa-file"></i></a>
+        {% endif %}
+        {% if status != 'archive' %}
+            <button type="button" id="readyForPaymentReceive" class="btn btn-primary" style="width: 100px;background: #0353D6; color: white !important;">Paid
+            </button>
+        {% elseif is_granted("ROLE_SUPER_ADMIN") %}
+            <button type="button" id="readyForPaymentReceive" class="btn btn-primary" style="width: 100px;background: #0353D6; color: white !important;">Paid
+            </button>
+        {% else %}
+
+        {% endif %}
+        <button type="button" class="btn close-modal-refresh" style="width: 100px;background: #0353D6; color: white !important;"
+                data-dismiss="modal">Close
+        </button>
+
+    </div>
+
+    </div>
+    </div>
+</form>
+    {% block stylesheets %}
+
+        {% stylesheets filter='cssrewrite'
+
+            'assets/plugins/select2/select2_metro.css'
+            'assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css'
+            'assets/plugins/bootstrap-datepicker/css/datepicker.css'
+            'assets/plugins/bootstrap-timepicker/compiled/timepicker.css'
+            'assets/plugins/bootstrap-datetimepicker/css/datetimepicker.css'
+            'assets/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css'
+            'assets/plugins/bootstrap-editable/inputs-ext/address/address.css'
+
+        %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+
+    {% endblock %}
+
+    {% block javascriptBlock %}
+        {% javascripts
+
+        'assets/plugins/jquery-1.10.2.min.js'
+        'assets/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js'
+        %}
+        {% endjavascripts %}
+    {% endblock %}
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+            $( ".datepicker" ).datepicker({
+                'format':'dd-mm-yyyy'
+            });
+            $(".close-modal-refresh").click(function(){
+                    location.reload();
+            });
+
+            $('#billNumber').inputmask('[9999]',{ showMaskOnFocus: true });
+
+            function checkMaxAmount(paymentAmount,requestAmount){
+
+                        if(paymentAmount > requestAmount ){
+                            return false;
+                        } else{
+                            return true;
+                        }
+            }
+
+            $('#readyForPaymentReceive').click( function () {
+
+                var paymentAmount = parseFloat($('#paymentAmountx').val());
+                var requestAmount = parseFloat($('.requestAmount').text());
+                var billNumber = $('#billDate').val()+'-'+$('#billNumber').val();
+                var PoReceiveAmount = $('#PoReceiveAmount').val();
+                var closedDate = $('#closedDate').val();
+                var grn = $('#grn').val();
+                var poNo = $('#poNo').val();
+                var poAmount = $('#poAmount').val();
+                var receiveId = $('#receiveId').val();
+                var paymentId = $('#paymentId').val();
+                var vendorId = $('#vendorId').val();
+                var bank = $('#bank').val();
+                var chequeNo = $('#chequeNo').val();
+
+                if(billNumber && paymentAmount ) {
+
+                    if(checkMaxAmount(paymentAmount,requestAmount)) {
+
+
+                        $.ajax({
+                            type: "post",
+                            url: Routing.generate('payment_receive'),
+                            data: {
+                                paymentAmount: paymentAmount,
+                                billNumber: billNumber,
+                                poAmount: poAmount,
+                                closedDate: closedDate,
+                                PoReceiveAmount: PoReceiveAmount,
+                                poNo: poNo,
+                                grn: grn,
+                                receiveId: receiveId,
+                                paymentId: paymentId,
+                                vendorId: vendorId,
+                                bank: bank,
+                                chequeNo: chequeNo
+                            }
+                        }).done(function (msg) {
+                            if (msg) {
+                                alert(msg);
+                            } else {
+                                location.reload();
+                            }
+
+
+                        });
+                    } else {
+                        alert('payment amount should be less then request amount');
+                        return false;
+                    }
+                } else{
+
+                    alert('please fill bill number and payment amount');
+                    return false;
+                }
+            });
+
+        });
+    </script>
+</div>
+
+{% endblock %}
+
+
+

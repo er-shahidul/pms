@@ -1,0 +1,409 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .pagination > li > a, .pagination > li > span
+        {
+            background-color: #eee !important;
+            color: #000000 !important;
+        }
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+            background-color: #428bca !important;
+        }
+        .addBtn{
+            float: right;
+            margin-right: 1px;
+        }
+        .addBtnLink{
+            background: #4b8df8;
+            float: right;
+            height: 41px;
+            color:#ffffff;
+            padding: 9px 14px !important;
+            text-decoration: none!important;
+        }
+
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Transaction
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Petty Cash</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Transaction</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    {{ include('::flash-message.html.twig') }}
+
+    <form method="get" name="petty_transaction" id="petty_transaction">
+
+        <table id="table_project_cost">
+            <tbody>
+            <tr>
+                <td>
+                    <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                        <span class="input-group-btn"></span>
+                        {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                    </div>
+                </td>
+                <td>
+                    <input type="submit" value="Search" class="btn blue" style="margin-left:25px;">
+                </td>
+                <td>
+                    <a  class="btn blue" href="{{ path('transaction_history') }}"style="margin-left:25px;cursor: pointer;">All</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form><br/>
+
+    <input type="button" value="Export in excel" name="PettyTransactionExcel"
+           id="PettyTransactionExcel" class="btn blue">
+
+<div class="tabbable tabbable-custom">
+    <ul class="nav nav-tabs">
+        {% if is_granted("ROLE_BANK_TRANSACTION_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+            <div class="col-md-offset-3 addBtn">
+                <a href="/transaction/add" class="addBtnLink">Transaction</a>
+            </div>
+        {% endif %}
+        <li class="active"><a class="tabForTable" rel="#tab_1_0" href="#tab_1_0" style="color: black !important;" data-toggle="tab">All</a></li>
+        <li class=""><a class="tabForTable" rel="#tab_1_1" href="#tab_1_1" style="color: black !important;" data-toggle="tab">Transaction Send</a></li>
+        <li><a class="tabForTable" rel="#tab_1_2" href="#tab_1_2" style="color: black !important;" data-toggle="tab">Transaction Receive</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1_0">
+            <div class="" data-always-visible="1" data-rail-visible="0">
+
+                <div class="fluid" id="cost-header-list-div">
+                    <div class="form-group">
+                        <div class="col-md-12" style="margin-top: 3px;">
+
+                            <table class="table table-striped table-bordered table-hover" style="border: 1px solid ghostwhite;">
+                                <thead style="background: #4b8df8;color: #fff;">
+                                <tr>
+                                    <th></th>
+                                    <th>Transaction Id</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>As</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Due Amount</th>
+                                    {#<th>Notes</th>#}
+                                    <th>Status</th>
+                                    <th>View</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for index, transactionList in transactionLists %}
+                                {% set totalHistoryAmount = 0 %}
+                                    {% for index, transactionHistory in transactionList.transactionHistory %}
+                                       {%  set totalHistoryAmount = totalHistoryAmount+transactionHistory.transactionHistoryAmount %}
+                                {% endfor %}
+                                <tr>
+                                    <td><span id="{{transactionList.id}}" class="toggle  row-details row-details-close" style="cursor:pointer;"><span>[+]</span></span></td>
+                                    <td width="5%" >{{ transactionList.id }}</td>
+                                    <td width="10%">{{ transactionList.CreatedDate | date('d M Y') }}</td>
+                                    <td width="8%" >{{ transactionList.transactionAmount|number_format(2, '.', ',') }}</td>
+                                    <td width="10%">{{ transactionList.transactionType }}</td>
+                                    <td width="10%">{{ transactionList.createdBy }}</td>
+                                    <td width="10%">{{ transactionList.transactTo }}</td>
+                                    <td width="8%" >{{ (transactionList.transactionAmount - totalHistoryAmount)|number_format(2, '.', ',') }}</td>
+                                    {#<td width="10%">{{ transactionList.notes }}</td>#}
+                                    <td width="5%" >{{ transactionList.status }}</td>
+                                    <td width="12%">
+                                        {% if transactionList.path or transactionList.pathTwo or transactionList.pathThree is not null %}
+                                            <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/1')">
+                                                <i class="fa fa-cloud-upload"></i>
+                                            </a>
+                                            <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/2')">
+                                                <i class="fa fa-cloud-upload"></i>
+                                            </a>
+                                            <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/3')">
+                                                <i class="fa fa-cloud-upload"></i>
+                                            </a>
+                                        {% else %}
+                                            &ensp;
+                                        {% endif %}
+                                    </td>
+                                    <td width="20%">
+                                    {% if(app.user.id == transactionList.createdBy.id) and (transactionList.status != 'acknowledged') %}
+                                        <a href="/transaction/update/{{ transactionList.id }}" style="width: 65px; color:#ffffff !important;" class="btn blue btn-xs"><i class="fa fa-edit"></i> Edit</a></a>
+                                        <a href="/transaction/delete/{{ transactionList.id }}" style="width: 65px;" class="btn default btn-xs" onclick="return confirm('Are you sure want to delete this transaction?')"><i class="fa fa-trash-o"></i> Delete</a>
+                                        {% elseif(app.user.id == transactionList.transactTo.id) and (transactionList.status == 'acknowledged') %}
+                                            {% if transactionList.transactionAmount <= totalHistoryAmount  %}
+                                            {% else %}
+                                                <a href="{{ path('transaction_history_add', {'id': transactionList.id}) }}"  class="btn blue btn-xs">Payment</a>
+                                                {% endif %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                    <tr class="showing-overview" id="show-{{ transactionList.id }}" style="display: none;">
+                                        <td colspan="12">
+                                            <table class="table table-striped table-bordered table-hover">
+                                            <thead style="background: #4b8df8;color: darkgray;">
+                                                <tr class="numeric">
+                                                    <th>SL/NO</th>
+                                                    <th>History Date</th>
+                                                    <th>Transaction Id</th>
+                                                    <th>History Amount</th>
+                                                    <th>As</th>
+                                                    <th>From</th>
+                                                    <th>TO</th>
+                                                    <th>Notes</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            {% for index, transactionHistory in transactionList.transactionHistory %}
+
+                                                <tr class="numeric">
+                                                    <td>{{ index+1 }}</td>
+                                                    <td>{{ transactionHistory.createdDate|date('Y-m-d') }}</td>
+                                                    <td>{{ transactionList.id }}</td>
+                                                    <td>{{ transactionHistory.transactionHistoryAmount|number_format(2, '.', ',') }}</td>
+                                                    <td>{{ transactionHistory.transactionType|default() }}</td>
+                                                    <td>{{ transactionHistory.createdBy|default() }}</td>
+                                                    <td>{{ transactionList.createdBy|default() }}</td>
+                                                    <td>{{ transactionHistory.notes|default() }}</td>
+                                                    <td>
+                                                        {% if (transactionHistory.path or transactionHistory.pathTwo or transactionHistory.pathThree) %}
+                                                        <a class="btn btn-xs" href="{{ path('homepage') }}uploads/PettyCashDocuments/{{ transactionHistory.path  }}" target="_blank">
+                                                            <i class="fa fa-cloud-upload"></i>
+                                                        </a>
+                                                        <a class="btn btn-xs" href="{{ path('homepage') }}uploads/PettyCashDocuments/{{ transactionHistory.pathTwo  }}" target="_blank">
+                                                            <i class="fa fa-cloud-upload"></i>
+                                                        </a>
+                                                        <a class="btn btn-xs" href="{{ path('homepage') }}uploads/PettyCashDocuments/{{ transactionHistory.pathThree }}" target="_blank">
+                                                            <i class="fa fa-cloud-upload"></i>
+                                                        </a>
+                                                        {% else %}
+
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+
+                                            </tbody>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="navigation" style="text-align: right">
+                                {{ knp_pagination_render(transactionLists) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="tab-pane" id="tab_1_1">
+            <div class="" data-always-visible="1" data-rail-visible="0">
+
+                <div class="fluid" id="cost-header-list-div">
+                    <div class="form-group">
+                        <div class="col-md-12" style="margin-top: 3px;">
+
+                            <table class="table bold" style="border: 1px solid ghostwhite;">
+                                <thead style="background: #4b8df8;color: #fff;">
+                                <tr>
+                                    <th>SL/NO</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>As</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                    <th>View</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for index, transactionList in transactionLists %}
+                                    <tr>
+                                        {% if(app.user.id == transactionList.createdBy.id ) %}
+                                        <td  width="5%" >{{ index + 1 }}</td>
+                                        <td  width="10%">{{ transactionList.CreatedDate | date('d M Y') }}</td>
+                                        <td  width="8%" >{{ transactionList.transactionAmount|number_format(2, '.', ',') }}</td>
+                                        <td  width="10%">{{ transactionList.transactionType }}</td>
+                                        <td  width="10%">{{ transactionList.createdBy }}</td>
+                                        <td  width="10%">{{ transactionList.transactTo }}</td>
+                                        <td  width="10%">{{ transactionList.notes }}</td>
+                                        <td  width="5%" >{{ transactionList.status }}</td>
+                                        <td>
+                                            {% if transactionList.path or transactionList.pathTwo or transactionList.pathThree is not null %}
+                                                <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/1')">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                </a>
+                                                <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/2')">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                </a>
+                                                <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/3')">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                </a>
+                                            {% else %}
+                                                &ensp;
+                                            {% endif %}
+                                        </td>
+                                        <td width="20%">
+                                        {% if(transactionList.status != 'acknowledged') %}
+                                            <a href="/transaction/update/{{ transactionList.id }}" style="width: 65px; color:#ffffff !important;" class="btn blue btn-xs"><i class="fa fa-edit"></i> Edit</a></a>
+                                            <a href="/transaction/delete/{{ transactionList.id }}" onclick="return confirm('Do You Want To Delete This Transaction?')" style="width: 65px;" class="btn default btn-xs"><i class="fa fa-trash-o"></i> Delete</a></a>
+                                        {% endif %}
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="navigation" style="text-align: right">
+                                {{ knp_pagination_render(transactionLists) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="tab-pane" id="tab_1_2">
+            <div class="" data-always-visible="1" data-rail-visible="0">
+
+                <div class="fluid" id="cost-header-list-div">
+                    <div class="form-group">
+                        <div class="col-md-12" style="margin-top: 30px;">
+
+                            <table class="table bold" style="border: 1px solid ghostwhite;">
+                                <thead style="background: #4b8df8;color: #fff;">
+                                <tr>
+                                    <th>SL/NO</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>As</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                    <th>View</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for index , transactionList in transactionLists %}
+                                    <tr>
+                                        {% if(app.user.id == transactionList.transactTo.id ) %}
+                                        <td  width="5%" >{{ index + 1 }}</td>
+                                        <td  width="10%">{{ transactionList.CreatedDate | date('d M Y') }}</td>
+                                        <td  width="8%" >{{ transactionList.transactionAmount|number_format(2, '.', ',') }}</td>
+                                        <td  width="10%">{{ transactionList.transactionType }}</td>
+                                        <td  width="10%">{{ transactionList.createdBy }}</td>
+                                        <td  width="10%">{{ transactionList.transactTo }}</td>
+                                        <td  width="10%">{{ transactionList.notes }}</td>
+                                        <td  width="5%" >{{ transactionList.status }}</td>
+                                        <td>
+                                            {% if transactionList.path or transactionList.pathTwo or transactionList.pathThree is not null %}
+                                                <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/1')">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                </a>
+                                                <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/2')">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                </a>
+                                                <a class="btn btn-xs" href="#" onclick="javascript: window.open('/transaction/attachment-view/{{ transactionList.id }}/3')">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                </a>
+                                            {% else %}
+                                                &ensp;
+                                            {% endif %}
+                                         </td>
+                                        <td width="20%">
+                                        {% if(transactionList.status != 'acknowledged') %}
+                                                <a href="/transaction/status/{{ transactionList.id }}" onclick="return confirm('Do You Want To Acknowledge It?')" class="btn blue btn-xs" style="width: 87px;color:#ffffff !important;">Acknowledge</a>
+                                        {% endif %}
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="navigation" style="text-align: right">
+                                {{ knp_pagination_render(transactionLists) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+{#<script>#}
+
+    $(".start_date").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $(".toggle").click(function () {
+        var id = $(this).attr('id');
+        //$('.showing-overview').hide();
+        $("#show-" + id).slideToggle(100);
+    }).toggle(function () {
+        $(this).children("span").text("[-]");
+    }, function () {
+        $(this).children("span").text("[+]");
+    });
+
+    $('#PettyTransactionExcel').click(function () {
+
+    setTimeout(function(){
+    $('#petty_transaction').attr('action', '{{ path('transaction_history') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'petty_transaction',
+    url: Routing.generate('petty_transaction_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock %}

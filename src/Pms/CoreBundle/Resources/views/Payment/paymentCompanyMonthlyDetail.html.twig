@@ -1,0 +1,388 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Payment
+
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('payment') }}" style="color: #333 !important;">Payment</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <div id="reload-all-receive">
+
+            <div class="modal-dialog" style="width: 1000px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background: lightgrey;">
+                        <button type="button" class="close close-modal-refresh closeBack" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title bold" style="text-align: center;">Monthly</h4>
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="portlet box green">
+                            <div class="portlet-title">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#portlet_tab1" style="color: black !important;" data-toggle="tab">
+                                            Po Information </a>
+                                    </li>
+                                    <li>
+                                        <a href="#portlet_tab2" style="color: black !important;" data-toggle="tab">
+                                            Receive Information </a>
+                                    </li>
+                                    <li>
+                                        <a href="#portlet_tab3" style="color: black !important;" data-toggle="tab">
+                                            Payment Request Information </a>
+                                    </li>
+                                    <li>
+                                        <a href="#portlet_tab4" style="color: black !important;" data-toggle="tab">
+                                            Payment Information </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {#<div class="portlet-title">
+                                <div class="caption"><i class="icon-cogs"></i>Monthly Detail Payment of <strong>{{ month }}</strong></div>
+                            </div>#}
+                            <div class="portlet-body flip-scroll">
+                                <div class="tab-content">
+
+                                    <div class="tab-pane active" id="portlet_tab1">
+                                        <form name="poInfoReportExcelFrm" id="poInfoReportExcelFrm">
+                                            <input type="hidden" name="dateValue" value="{{ dateValue }}">
+                                            <input type="hidden" name="monthValue" value="{{ monthValue }}">
+                                            <input type="hidden" name="companyType" value="{{ companyType }}">
+                                        <input type="button" value="Export in excel" name="poInfoReportExcel" id="poInfoReportExcel" class="btn blue">
+                                        </form>
+                                        <table class="table-bordered table-striped table-condensed flip-content">
+                                        <thead style="background: #4b8df8">
+                                        <tr>
+                                            <th>PO Number</th>
+                                            <th>PO Issued  Date</th>
+                                            <th>PO Issued Month</th>
+                                            <th>Project Name</th>
+                                            <th>PO Amount</th>
+                                            <th>VAT Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for paymentCompanyMonthlyDetail in paymentCompanyMonthlyDetails[0] %}
+
+                                            <tr>
+
+                                                <td>{{ paymentCompanyMonthlyDetail['poId']  }}</td>
+                                                <td>{{  paymentCompanyMonthlyDetail['poDate']|date('Y-m-d')  }}</td>
+                                                <td>{{  paymentCompanyMonthlyDetail['poDate']|date('F-Y')  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['projectName']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['poAmount']|number_format(2, '.', ',')   }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['tax']|number_format(2, '.', ',')   }}</td>
+                                            </tr>
+
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                    <div class="tab-pane" id="portlet_tab2">
+                                        <form name="receiveInfoReportExcelFrm" id="receiveInfoReportExcelFrm">
+                                            <input type="hidden" name="dateValue" value="{{ dateValue }}">
+                                            <input type="hidden" name="monthValue" value="{{ monthValue }}">
+                                            <input type="hidden" name="companyType" value="{{ companyType }}">
+                                            <input type="button" value="Export in excel" name="receiveInfoReportExcel" id="receiveInfoReportExcel" class="btn blue">
+                                        </form>
+
+                                        <table class="table-bordered table-striped table-condensed flip-content">
+                                        <thead class="flip-content" style="background: #4b8df8">
+                                        <tr>
+                                            <th>PO Number</th>
+                                            <th>PO Issued  Date</th>
+                                            <th>Po Issued Month</th>
+                                            <th>Project Name</th>
+                                            <th>GRN Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for paymentCompanyMonthlyDetail in paymentCompanyMonthlyDetailsReceive[0] %}
+                                            <tr>
+
+                                                <td>{{ paymentCompanyMonthlyDetail['poId']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['poDate']|date('Y-m-d')  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['poDate']|date('F-Y')  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['projectName']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['GrnAmount']|number_format(2, '.', ',')   }}</td>
+                                            </tr>
+
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                     </div>
+                                    <div class="tab-pane" id="portlet_tab3">
+                                        <form name="paymentRequestInfoReportExcelFrm" id="paymentRequestInfoReportExcelFrm">
+                                            <input type="hidden" name="dateValue" value="{{ dateValue }}">
+                                            <input type="hidden" name="monthValue" value="{{ monthValue }}">
+                                            <input type="hidden" name="companyType" value="{{ companyType }}">
+                                            <input type="button" value="Export in excel" name="paymentRequestInfoReportExcel" id="paymentRequestInfoReportExcel" class="btn blue">
+                                        </form>
+
+                                        <table class="table-bordered table-striped table-condensed flip-content">
+                                        <thead class="flip-content" style="background: #4b8df8">
+                                        <tr>
+                                            <th>PO Number</th>
+                                            <th>PO Issued  Date</th>
+                                            <th>Po Issued Month</th>
+                                            <th>Project Name</th>
+                                            <th>Payment Request Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for paymentCompanyMonthlyDetail in readyForPayment[0] %}
+
+                                            <tr>
+
+                                                <td>{{ paymentCompanyMonthlyDetail['poId']|default }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['poDate']|date('Y-m-d') }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['poDate']|date('F-Y')  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['projectName']|default  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['requestAmount']|default|number_format(2, '.', ',')   }}</td>
+                                            </tr>
+
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                    <div class="tab-pane" id="portlet_tab4">
+                                        <form name="paymentInfoReportExcelFrm" id="paymentInfoReportExcelFrm">
+                                            <input type="hidden" name="dateValue" value="{{ dateValue }}">
+                                            <input type="hidden" name="monthValue" value="{{ monthValue }}">
+                                            <input type="hidden" name="companyType" value="{{ companyType }}">
+                                            <input type="button" value="Export in excel" name="paymentInfoReportExcel" id="paymentInfoReportExcel" class="btn blue">
+                                        </form>
+
+                                        <table class="table-bordered table-striped table-condensed flip-content">
+                                        <thead class="flip-content" style="background: #4b8df8">
+                                        <tr>
+                                            <th>PO Number</th>
+                                            <th>PO Issued  Date</th>
+                                            <th>Po Issued Month</th>
+                                            <th>Project Name</th>
+                                            <th>Payment Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for paymentCompanyMonthlyDetail in payment[0] %}
+                                            <tr>
+
+                                                <td>{{ paymentCompanyMonthlyDetail['poId']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['poDate']|date('Y-m-d')  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['poDate']|date('F-Y')  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['projectName']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['paymentAmount']|number_format(2, '.', ',')   }}</td>
+                                            </tr>
+
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    </div>
+
+                                </div>
+
+
+                                {#<table class="table-bordered table-striped table-condensed flip-content">
+                                    <thead class="flip-content" style="background: #4b8df8">
+                                    <tr>
+                                        <th class="numeric">PO</th>
+                                        <th class="numeric">Receive</th>
+                                        <th class="numeric">Payment Request</th>
+                                        <th class="numeric">Payment</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td style="vertical-align: top;">
+                                            <table class="table-bordered table-striped table-condensed flip-content">
+                                                <thead style="background: #4b8df8">
+                                                <tr>
+                                                    <th>Po</th>
+                                                    <th>Project</th>
+                                                    <th>Amount</th>
+                                                    <th>VAT</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for paymentCompanyMonthlyDetail in paymentCompanyMonthlyDetails[0] %}
+                                                    <tr>
+                                                        <td>{{ paymentCompanyMonthlyDetail['poId']  }}</td>
+                                                        <td>{{ paymentCompanyMonthlyDetail['projectName']  }}</td>
+                                                        <td>{{ paymentCompanyMonthlyDetail['poAmount']|number_format(2, '.', ',')   }}</td>
+                                                        <td>{{ paymentCompanyMonthlyDetail['tax']|number_format(2, '.', ',')   }}</td>
+                                                    </tr>
+
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </td>
+
+                                        <td style="vertical-align: top;">
+                                            <table class="table-bordered table-striped table-condensed flip-content">
+                                                <thead class="flip-content" style="background: #4b8df8">
+                                                <tr>
+                                                    <th>Po</th>
+                                                    <th>Project</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% for paymentCompanyMonthlyDetail in paymentCompanyMonthlyDetailsReceive[0] %}
+                                                <tr>
+                                                <td>{{ paymentCompanyMonthlyDetail['poId']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['projectName']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['GrnAmount']|number_format(2, '.', ',')   }}</td>
+                                                </tr>
+
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <table class="table-bordered table-striped table-condensed flip-content">
+                                                <thead class="flip-content" style="background: #4b8df8">
+                                                <tr>
+                                                    <th>Po</th>
+                                                    <th>Project</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% for paymentCompanyMonthlyDetail in readyForPayment[0] %}
+
+                                                <tr>
+                                                <td>{{ paymentCompanyMonthlyDetail['poId']|default }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['projectName']|default  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['requestAmount']|default|number_format(2, '.', ',')   }}</td>
+                                                </tr>
+
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <table class="table-bordered table-striped table-condensed flip-content">
+                                                <thead class="flip-content" style="background: #4b8df8">
+                                                <tr>
+                                                    <th>Po</th>
+                                                    <th>Project</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% for paymentCompanyMonthlyDetail in payment[0] %}
+                                                <tr>
+                                                <td>{{ paymentCompanyMonthlyDetail['poId']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['projectName']  }}</td>
+                                                <td>{{ paymentCompanyMonthlyDetail['paymentAmount']|number_format(2, '.', ',')   }}</td>
+                                                </tr>
+
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+
+                                    </tbody>
+                                    <tfoot>
+
+                                     <tr>
+                                       &#123;&#35; <td colspan="4">Total Request Amount :</td>
+                                        <td colspan="2">{{ total_request_amount|number_format(2, '.', ',') }}</td>&#35;&#125;
+                                    </tr>
+
+                                    </tfoot>
+                                </table>#}
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                     <div class="modal-footer" style="width: 100%;background: lightgrey;"></div>
+
+                </div>
+            </div>
+
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+{#<script>#}
+    {{ parent() }}
+
+        $(".closeBack").click( function (){
+        window.history.back();
+        });
+
+    $('#poInfoReportExcel').click(function () {
+
+        $.ajax({
+            form: 'poInfoReportExcelFrm',
+            url: Routing.generate('payment_monthly_report_po_info_excel'),
+            dataType: 'form html'
+        });
+    });
+    $('#receiveInfoReportExcelFrm').click(function () {
+
+        $.ajax({
+            form: 'receiveInfoReportExcelFrm',
+            url: Routing.generate('payment_monthly_report_receive_info_excel'),
+            dataType: 'form html'
+        });
+    });
+
+    $('#paymentRequestInfoReportExcel').click(function () {
+
+        $.ajax({
+            form: 'paymentRequestInfoReportExcelFrm',
+            url: Routing.generate('payment_monthly_report_payment_request_info_excel'),
+            dataType: 'form html'
+        });
+    });
+    $('#paymentInfoReportExcel').click(function () {
+
+            $.ajax({
+                form: 'paymentInfoReportExcelFrm',
+                url: Routing.generate('payment_monthly_report_payment_info_excel'),
+                dataType: 'form html'
+            });
+    });
+
+{% endblock %}

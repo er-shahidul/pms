@@ -1,0 +1,237 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Payment Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_payment') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Payment Report</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+<div class="row">
+    <div class="col-md-12">
+
+        <form method="get" name="payment_report" id="payment_report">
+
+            <table id="table_project_cost">
+                <tbody>
+                <tr>
+                    {#<td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <div class="col-md-1">
+                                <div class="input-icon right">
+                                    <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                        </div>
+                    </td>#}
+                    <td>
+                        {#<div class=" input-medium">
+                            {{ form_widget(form.vendor, { 'attr': {'class': 'form-control select2me', 'placeholder': ' Select vendor'} }) }}
+                        </div>#}
+                        <div class=" input-medium">
+                            <input type="hidden" value="{{ app.request.query.get('vendor') }}" class="form-control  fontColorBlack
+                     select2AutoVendorComplete" placeholder="Select Vendor" name="vendor">
+                        </div>
+                    </td>
+                    <td>
+                        <div class=" input-medium">
+                            {{ form_widget(form.poNo, { 'attr': {'class': 'form-control  fontColorBlack select2AutoComplete', 'placeholder': ' Select PO No'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <input type="submit" value="Search" class="btn blue" style="margin-left:25px;">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <div class="col-md-12" style="float: left;">
+
+        <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+            <input type="button" value="Export in excel" name="paymentReportExcel"
+                   id="paymentReportExcel" class="btn blue">
+        </div>
+        <div class="portlet-body flip-scroll">
+            <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                <thead class="flip-content"  style="background: #4b8df8">
+            <tr class="numeric">
+                <th>Sl</th>
+                <th>Request Date</th>
+                <th>Payment Date</th>
+                <th>PO Date</th>
+                <th>Vendor</th>
+                <th>PO No</th>
+                <th>Total PO Amount</th>
+                <th>Payment Amount</th>
+                <th>Bank Name</th>
+                <th>Cheque No</th>
+                {#<th>Bill No</th>#}
+            </tr>
+            </thead>
+            <tbody>
+            {% for index, payment in payments %}
+                <tr>
+                    <td class="numeric">{{ index + 1 }}</td>
+                    {#<td>{{ payment['id'] }}</td>#}
+                    <td class="numeric">{{ payment['requestDate'] | date('d-m-Y') }}</td>
+                    <td class="numeric">{{ payment['paymentDate'] | date('d-m-Y') }}</td>
+                    <td class="numeric">{{ payment['createdDate'] | date('d-m-Y') }}</td>
+                    <td class="numeric">{{ payment['vendorName'] | default('N/A') }}</td>
+                    <td class="numeric">{{ payment['poId'] | default('') }}</td>
+                    <td class="numeric">{{ payment['netTotal'] | default('') }}</td>
+                    {#<td>#}
+                        {#{% for rfp in payment.readyForPayments %}#}
+                            {#{{ rfp.grn.id | default('ADV') }},#}
+                        {#{% endfor %}#}
+                    {#</td>#}
+                    <td class="numeric">{{ payment['paymentAmount'] | default('') }}</td>
+                    <td class="numeric">{{ payment['name'] | default('N/A') }}</td>
+                    <td class="numeric">{{ payment['cheque'] | default('') }}</td>
+                    {#<td class="numeric">{{ payment['billNumber'] | default('N/A') }}</td>#}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+            <div class="navigation" style="text-align: right">
+                {{ knp_pagination_render(payments) }}
+            </div>
+</div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block documentready %}
+{{ parent() }}
+{#<script>#}
+
+    $(".select2AutoComplete").select2({
+        ajax: {
+
+            url: Routing.generate('purchase_order_no_auto_complete'),
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+            return m;
+        },
+        formatResult: function(item){ return item.id}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.id}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+            return callback({ id : element.val()});
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+    $('#paymentReportExcel').click(function () {
+
+        setTimeout(function(){
+            $('#payment_report').attr('action', '{{ path('report_payment') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'payment_report',
+            url: Routing.generate('report_payment_excel'),
+            dataType: 'form html'
+        });
+    });
+
+    var $url = Routing.generate('report_supplier_payment_auto_vendor');
+    var selectedItemId = {{ app.request.query.get('vendor')}}
+
+            $(".select2AutoVendorComplete").select2({
+
+                ajax: {
+
+                    url: $url,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params, page) {
+                        return {
+                            q: params,
+                            page_limit: 100
+                        };
+                    },
+                    results: function (data, page) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (m) {
+
+                    return m;
+                },
+                formatResult: function(vendor){ return vendor.text}, // omitted for brevity, see the source of this page
+                formatSelection: function(vendor){return vendor.text}, // omitted for brevity, see the source of this page
+                initSelection: function(element, callback) {
+
+                    $.ajax({
+                        url: $url,
+                        data: 'vendor=' + selectedItemId,
+                        dataType: 'json'
+                    }).done(function(data){
+                        callback(data);
+                    });
+                },
+                allowClear: true,
+                minimumInputLength:1
+            });
+
+{% endblock documentready %}

@@ -1,0 +1,7 @@
+report_price_compare:
+    pattern: /price-compare-report
+    defaults: { _controller: PmsReportBundle:PriceCompareReport:PriceCompareReport }
+
+
+
+

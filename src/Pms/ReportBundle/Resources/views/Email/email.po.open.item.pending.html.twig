@@ -1,0 +1,37 @@
+<h3 class="page-title">
+    NPMS
+</h3>
+
+<small> Pending for open order item list </small>
+<table style="width:100%;text-align: left;border: 1px solid #808080;font-family: arial,sans-serif;font-size:9.0pt;color:#414141">
+    <thead>
+    <tr>
+        <th style="width:5%;">Sl</th>
+        <th style="width:10%;">PR Number</th>
+        <th style="width:10%;">Approval Date</th>
+        <th style="width:15%;">Item Name</th>
+        <th style="width:10%;">Claimed Date</th>
+        <th style="width:10%;">Claimed By</th>
+        <th style="width:15%;">Project Name</th>
+        <th style="width:15%;">SubCategory Name</th>
+        <th style="width:10%;">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for purchaseRequisitionItem in poPending %}
+        <tr>
+            <td style="border: 1px solid #808080;">{{ loop.index }}.</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.id }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.approvedDateCategoryHeadTwo | date('d-M-Y') }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.itemName }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.claimedDate | date('d-M-Y') }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.username }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.projectName }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.subCategoryName }}</td>
+            <td style="border: 1px solid #808080;">
+                InProgress
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

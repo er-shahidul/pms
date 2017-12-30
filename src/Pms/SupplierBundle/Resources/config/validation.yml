@@ -1,0 +1,24 @@
+Pms\SupplierBundle\Entity\Supplier:
+    properties:
+        name:
+            - NotBlank: { message: "Name should not be blank" }
+        itemType:
+            - NotBlank: { message: "Item Type should not be blank" }
+        item:
+            - NotBlank: { message: "Item should not be blank" }
+        contactPerson:
+            - NotBlank: { message: "Contact Person should not be blank" }
+        contactNo:
+            - NotBlank: { message: "Contact No should not be blank" }
+        specification:
+            - NotBlank: { message: "Specification should not be blank" }
+        brand:
+            - NotBlank: { message: "Brand should not be blank" }
+        email:
+            - NotBlank: { message: "Email should not be blank" }
+        files:
+            - NotBlank: { message: "Files should not be blank" }
+        category:
+            - NotBlank: { message: "Category should not be blank" }
+        subCategory:
+            - NotBlank: { message: "Sub Category should not be blank" }

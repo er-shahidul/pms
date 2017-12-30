@@ -1,0 +1,17 @@
+relatedbank_new:
+    pattern:  /relatedbank/new
+    defaults: { _controller: "PmsSettingBundle:RelatedBank:new" }
+
+relatedbank_update:
+    pattern:  /relatedbank/{id}/update
+    defaults: { _controller: "PmsSettingBundle:RelatedBank:update" }
+
+relatedbank_delete:
+    pattern:  /relatedbank/{id}/delete
+    defaults: { _controller: "PmsSettingBundle:RelatedBank:delete" }
+
+relatedbank:
+    pattern:  /relatedbank/
+    defaults: { _controller: "PmsSettingBundle:RelatedBank:index" }
+
+

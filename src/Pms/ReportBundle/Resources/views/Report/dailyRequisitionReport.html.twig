@@ -1,0 +1,337 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+        <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+                <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                <h3 class="page-title">
+                    Daily basis PR
+                    <small></small>
+                </h3>
+                <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                    <li>
+                        <i class="fa fa-home"></i>
+                        <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                        <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="{{ path('report_daily_requisition') }}" style="color: #333 !important;">Report</a>
+                        <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="#" style="color: #333 !important;">Daily basis PR</a>
+                    </li>
+                    <li class="pull-right" style="margin-right: -7px;">
+                        <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                            <i class="fa fa-calendar"></i>
+                            {{ "now"|date("d-F-Y") }}
+                        </div>
+                    </li>
+                </ul>
+                <!-- END PAGE TITLE & BREADCRUMB-->
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+                {{ include('::flash-message.html.twig') }}
+
+                <span class="dailyPoMessege"></span>
+
+                <form action="{{ url('report_daily_requisition') }}" method="get" name="search" style="margin-bottom: 20px;" id="requisition_report_daily_search_form">
+
+                    <div class="portlet-body flip-scroll">
+                        <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                            <tbody>
+                            <tr class="numeric">
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-1">
+                                        <div class="input-icon right">
+                                            <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-1">
+                                        <div class="input-icon right">
+                                            <span style="font-size: 15px;font-weight: bolder;line-height: 30px;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group input-medium">
+                                    {{ form_widget(form.project, { 'attr': {'class': 'col-md-3 form-control select2me fontColorBlack', 'placeholder': ' Select Project'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-1">
+                                        <div class="input-icon right">
+                                            <span style="font-size: 15px;font-weight: bolder;line-height: 30px;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group input-medium">
+                                    {{ form_widget(form.subCategory, { 'attr': {'class': 'col-md-3 form-control select2me fontColorBlack', 'placeholder': ' Select Sub Category'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" name="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                    </table>
+                   </div>
+
+
+                </form>
+            </div>
+        <div class="span12">
+                <div class="modal-footer" style="margin-left: -18px;border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                    <input type="button" value="Export in excel" name="requisitionDailyExcel" id="requisitionDailyExcel" class="btn blue">
+                </div>
+
+                <!--BEGIN TABS-->
+            <div class="portlet-body flip-scroll">
+                <table class="table table-bordered table-striped table-condensed flip-content responsiveDiv">
+                    <thead class="flip-content tableHeadColor">
+                    <tr class="numeric">
+                            <td></td>
+                            <th>PRNo</th>
+                            <th>PR Ref.No</th>
+                            <th>IssueDate</th>
+                            <th>Created By</th>
+                            <th>ApproveDate</th>
+                            <th>ProjectName</th>
+                            <th>PurchaseFrom</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for index , budgetDaily in purchaseRequisitions %}
+
+                            <tr class="numeric">
+                                <td class="numeric"><span id="{{ index + 1 }}" class="toggle  row-details row-details-close" style="cursor:pointer;"><span>[+]</span></span></td>
+                                <td>{{ budgetDaily['id'] }}</td>
+                                <td>{{ budgetDaily['refNo'] }}</td>
+                                <td>{{ budgetDaily['createdDate'] | date('d-M-Y') }}</td>
+                                <td>{{ budgetDaily['createdBy'] }}</td>
+                                <td>{{ budgetDaily['approvedDateCategoryHeadTwo'] | date('d-M-Y') }}</td>
+                                <td>{{ budgetDaily['projectName'] }}</td>
+                                <td>{{ budgetDaily['isHeadOrLocal'] ~ ' office'}}</td>
+                                <td>
+
+                                    {% if budgetDaily['status'] == 1
+                                    and budgetDaily['approveStatus'] != 1
+                                    and budgetDaily['approveStatus'] != 2
+                                    and budgetDaily['approveStatus'] != 3 %}
+                                            Created
+                                    {% endif %}
+
+                                    {% if budgetDaily['status'] == 1
+                                    and budgetDaily['approveStatus'] == 1
+                                    and budgetDaily['approveStatus'] != 2
+                                    and budgetDaily['approveStatus'] != 3 %}
+                                        Verified
+                                    {% endif %}
+
+                                    {% if budgetDaily['status'] == 1
+                                    and budgetDaily['approveStatus'] != 1
+                                    and budgetDaily['approveStatus'] == 2
+                                    and budgetDaily['approveStatus'] != 3 %}
+                                        Validated
+                                    {% endif %}
+
+                                    {% if budgetDaily['status'] == 1
+                                    and budgetDaily['approveStatus'] != 1
+                                    and budgetDaily['approveStatus'] != 2
+                                    and budgetDaily['approveStatus'] == 3
+                                    and budgetDaily['totalRequisitionItemClaimed'] == null
+                                    and budgetDaily['totalOrderItemQuantity'] == 0 %}
+                                        Approved
+                                    {% endif %}
+
+                                    {% if budgetDaily['status'] == 1
+                                    and budgetDaily['approveStatus'] == 3
+                                    and budgetDaily['totalRequisitionItemClaimed'] != null
+                                    and budgetDaily['totalRequisitionItemClaimed'] < budgetDaily['totalRequisitionItem'] %}
+                                        PartialClaim
+                                    {% endif %}
+
+                                    {% if budgetDaily['status'] == 1
+                                    and budgetDaily['approveStatus'] == 3
+                                    and budgetDaily['totalRequisitionItemClaimed'] != null
+                                    and budgetDaily['totalRequisitionItemClaimed'] == budgetDaily['totalRequisitionItem']
+                                    and budgetDaily['totalRequisitionItemQuantity'] > budgetDaily['totalOrderItemQuantity'] %}
+                                        InProgress
+                                    {% endif %}
+
+                                    {% if budgetDaily['status'] == 1
+                                    and budgetDaily['approveStatus'] == 3
+                                    and budgetDaily['totalOrderItemQuantity'] >= budgetDaily['totalRequisitionItemQuantity'] %}
+                                        PoIssued
+                                    {% endif %}
+
+                                    {% if budgetDaily['status'] == 5 %}
+                                            Hold
+                                    {% endif %}
+
+                                    {% if budgetDaily['status'] == 6 %}
+                                            Cancel
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                            <tr class="showing-overview" id="show-{{ index + 1 }}" style="display: none;">
+                                <td colspan="9">
+                                    <table class="inner-table" style="width: 100%">
+
+                                            <tr class="inner-numeric"><td>ItemName</td><td class="numeric">{{ budgetDaily['itemName'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>ItemType</td><td class="numeric">{{ budgetDaily['itemType'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>Category</td><td class="numeric">{{ budgetDaily['categoryName'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>SubCategory</td><td class="numeric">{{ budgetDaily['subCategoryName'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>CostHeader</td><td class="numeric">{{ budgetDaily['title'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>PRQty</td><td class="numeric">{{ budgetDaily['quantity'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>PRAmount</td><td class="numeric">{{ budgetDaily['totalPrice'] |number_format(2, '.', ',') }}</td></tr>
+                                            <tr class="inner-numeric"><td>ClaimedBy</td><td class="numeric">{{ budgetDaily['claimedBy'] | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>ClaimedDate</td><td class="numeric">{{ budgetDaily['claimedDate'] ? budgetDaily['claimedDate']| date('d-M-Y') : '...' }}</td></tr>
+                                            <tr class="inner-numeric"><td>Claimed%</td>
+                                                <td class="numeric">
+                                                    {% if budgetDaily['totalRequisitionItem'] == 0 %}
+                                                        {% set totalRequisitionItem = 1 %}
+                                                    {% else %}
+                                                        {% set totalRequisitionItem = budgetDaily['totalRequisitionItem'] %}
+                                                    {% endif %}
+
+                                                    {% if budgetDaily['totalRequisitionItemQuantity'] == 0 %}
+                                                        {% set totalRequisitionItemQuantity = 1 %}
+                                                    {% else %}
+                                                        {% set totalRequisitionItemQuantity = budgetDaily['totalRequisitionItemQuantity'] %}
+                                                    {% endif %}
+
+                                                    {% if (((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) | length > 4 ? ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) | slice(0, 3) ~ '' : ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem)) > 100 %}
+                                                        {% set claimPercentage = 100 %}
+                                                    {% else %}
+                                                        {% set claimPercentage = ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) | length > 4 ? ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) | slice(0, 3) ~ '' : ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) %}
+                                                    {% endif %}
+                                                    {{ claimPercentage }} %
+                                                </td>
+                                            </tr>
+                                            <tr class="inner-numeric"><td>%Complete</td>
+                                                <td class="numeric">
+                                                    {% if (((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) | length > 4 ? ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) | slice(0, 3) ~ '' : ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity)) > 100 %}
+                                                        {% set poPercentage = 100 %}
+                                                    {% else %}
+                                                        {% set poPercentage = ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) | length > 4 ? ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) | slice(0, 3) ~ '' : ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) %}
+                                                    {% endif %}
+                                                    {{ poPercentage }} %
+                                                </td>
+                                            </tr>
+                                            <tr class="inner-numeric"><td>Closing%</td>
+                                                <td class="numeric">
+                                                    {% if (((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) | length > 4 ? ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) | slice(0, 3) ~ '' : ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity)) > 100 %}
+                                                        {% set receivePercentage = 100 %}
+                                                    {% else %}
+                                                        {% set receivePercentage = ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) | length > 4 ? ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) | slice(0, 3) ~ '' : ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) %}
+                                                    {% endif %}
+                                                    {{ receivePercentage }} %
+                                                </td>
+                                            </tr>
+                                            <tr class="inner-numeric"><td>VerifiedBy</td><td class="numeric">{{ budgetDaily['approvedByOne'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>ValidatedBy</td><td class="numeric">{{ budgetDaily['approvedByTwo'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>ApprovedBy</td><td class="numeric">{{ budgetDaily['approvedByThree'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>Status</td>
+                                                <td class="numeric">
+                                                    {% if budgetDaily['approveStatus'] == 0 %}
+                                                        created
+                                                    {% endif %}
+                                                    {% if budgetDaily['approveStatus'] == 1 %}
+                                                        Verified
+                                                    {% endif %}
+                                                    {% if budgetDaily['approveStatus'] == 2 %}
+                                                        validated
+                                                    {% endif %}
+                                                    {% if budgetDaily['approveStatus'] == 3 and budgetDaily['totalRequisitionItemClaimed'] == 0 %}
+                                                        Approved
+                                                    {% endif %}
+                                                    {% if budgetDaily['approveStatus'] == 3 and budgetDaily['totalRequisitionItemClaimed'] > 0 and ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) < 100 %}
+                                                        inprogress
+                                                    {% endif %}
+                                                    {% if ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) > 99 and (budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity == 0 %}
+                                                        Complete
+                                                    {% endif %}
+                                                    {% if ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) > 99 and ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) < 99 and ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) > 1 %}
+                                                        Partial PO Issued
+                                                    {% endif %}
+                                                    {% if ((budgetDaily['totalRequisitionItemClaimed'] * 100) / totalRequisitionItem) > 99 and ((budgetDaily['totalOrderItemQuantity'] * 100) / totalRequisitionItemQuantity) > 99 %}
+                                                        PO Issued
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% if(budgetDaily['closedBy'] is not empty) %}
+                                            <tr class="inner-numeric"><td>ClosedBy</td><td class="numeric">{{ budgetDaily['closedBy'] }}</td></tr>
+                                            <tr class="inner-numeric"><td>Close Remark</td><td class="numeric">{{ budgetDaily['closeRemark'] }}</td></tr>
+                                                {% endif %}
+
+                                    </table>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+        </div>
+        </div>
+        <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+
+    $(".toggle").click(function(){
+    var id = $(this).attr('id');
+    //$('.showing-overview').hide();
+    $("#show-"+id).slideToggle(100);
+    }).toggle( function() {
+    $(this).children("span").text("[-]");
+    }, function() {
+    $(this).children("span").text("[+]");
+    });
+
+    $('#requisitionDailyExcel').click(function () {
+
+        $.ajax({
+            form: 'requisition_report_daily_search_form',
+            url: Routing.generate('report_daily_requisition_excel'),
+            dataType: 'form html',
+            success:function(data){
+                //Handle The response data
+            }
+        });
+    });
+
+    {{ parent() }}
+
+{% endblock %}

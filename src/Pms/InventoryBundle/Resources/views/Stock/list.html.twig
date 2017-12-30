@@ -1,0 +1,317 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<style>
+.pagination > li > a, .pagination > li > span
+{
+background-color: #eee !important;
+color: #000000 !important;
+}
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+background-color: #428bca !important;
+}
+
+</style>
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+<div class="col-md-12">
+<!-- BEGIN PAGE TITLE & BREADCRUMB-->
+<h3 class="page-title">
+Stock Item
+<small></small>
+</h3>
+<ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+<li>
+<i class="fa fa-home"></i>
+<a href="/" style="color: #333 !important;">Home</a>
+<i class="fa fa-angle-right"></i>
+</li>
+<li>
+<a href="{{ path('stock_list') }}" style="color: #333 !important;">Stock</a>
+</li>
+<li class="pull-right">
+<div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+    <i class="fa fa-calendar"></i>
+    {{ "now"|date("d-F-Y") }}
+</div>
+</li>
+</ul>
+<!-- END PAGE TITLE & BREADCRUMB-->
+</div>
+</div>
+<!-- END PAGE HEADER-->
+
+{{ include('::flash-message.html.twig') }}
+
+{#  <form action="" method="get" style="margin-bottom:10px;">
+
+<div class="form-group">
+<div class="col-md-3">
+<div class="input-icon right">
+<select class="select2 form-control" name="project" style="margin-left: -13px;">
+    <option value="">Select project</option>
+    {%  set projectID = app.request.query.get('project') %}
+    {% for pro in projects %}
+        <option {% if(projectID == pro.id ) %} selected {% endif %} value="{{ pro.id }}">{{ pro.projectName }}</option>
+    {% endfor %}
+</select>
+</div>
+</div>
+</div>
+
+<div class="form-group">
+<div class="col-md-3">
+<div class="input-icon right">
+&#123;&#35;<select class="select2 form-control" name="item">
+    {%  set itemID = app.request.query.get('item') %}
+    {{ itemID }}
+    <option value="">Select item</option>
+    {%  for item in totalItems  %}
+        <option {% if(itemID == item.id ) %} selected="selected" {% endif %}
+                value="{{ item.id }}">{{ item.itemName }}</option>
+    {% endfor %}
+</select>&#35;&#125;
+<input type="hidden" value="{{ app.request.query.get('item') }}" class="form-control  fontColorBlack
+ select2AutoComplete" placeholder="Select Item" name="item">
+</div>
+</div>
+</div>
+<input type="submit" value="Search" name="submit" class="btn blue">
+</form>#}
+
+<div class="span12">
+
+<form action="" method="get" style="margin-bottom:10px;" id="stockItemFrm">
+<div class="portlet-body flip-scroll">
+<table id="table_stock_report" class="table-striped table-condensed flip-content">
+<tbody>
+<tr class="numeric">
+    <td>
+        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+            <span class="input-group-btn"></span>
+            {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+        </div>
+    </td>
+    <td style="display: none;">
+        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+            <span class="input-group-btn"></span>
+            {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+        </div>
+    </td>
+    <td>
+        <div class="input-group input-medium">
+            {#{{ form_widget(form.item, { 'attr': {'class': 'form-control fontColorBlack select2AutoComplete', 'placeholder': ' Select Item'} }) }}#}
+            <input type="hidden" value="{{ app.request.query.get('item') }}" class="form-control  fontColorBlack
+            select2AutoComplete" placeholder="Select Item" name="item">
+        </div>
+    </td>
+    <td>
+        <div class="input-icon right">
+            <select class="select2 form-control" name="project" style="margin-left: -13px;">
+                <option value="">Select project</option>
+                {%  set projectID = app.request.query.get('project') %}
+                {% for pro in projects %}
+                    <option {% if(projectID == pro.id ) %} selected {% endif %} value="{{ pro.id }}">{{ pro.projectName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </td>
+    <td>
+        <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+    </td>
+</tr>
+</tbody>
+</table>
+</div>
+</form>
+</div>
+
+<span class="buyerMessege"></span>
+
+<!--BEGIN TABS-->
+<div class="tabbable tabbable-custom">
+<ul class="nav nav-tabs">
+<li class="active"><a class="tabForTable" rel="#tab_1_1" href="#tab_1_1" style="color: black !important;" data-toggle="tab">All</a></li>
+{% if is_granted("ROLE_INVENTORY_STOCK_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+<li style="float: right;margin-right: -1px;">
+<a href="{{ path('stock_item_add') }}"
+   class="btn btn-xs" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+    Add Stock
+</a>
+</li>
+{% endif %}
+<li>
+<input type="button" value="Export in excel" name="stockItemReportExcel" id="stockItemReportExcel" class="btn blue">
+</li>
+</ul>
+<div class="tab-content style-content">
+<div class="tab-pane active" id="tab_1_1">
+<div class="" data-always-visible="1" data-rail-visible="0">
+
+<div class="fluid" id="project-list-div">
+    <div class="form-group">
+        <div class="portlet-body flip-scroll">
+            <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                <thead class="flip-content"  style="background: #4b8df8">
+                <tr>
+                    <th class="numeric">Sl</th>
+                    <th class="numeric">Item</th>
+                    <th class="numeric">Unit</th>
+                    <th class="numeric">Opening</th>
+                    <th class="numeric">Received By PO</th>
+                    <th class="numeric">Received By Project</th>
+                    <th class="numeric">Delivered Qty</th>
+                    <th class="numeric">Stock In Hand</th>
+                    <th class="numeric">Min Stock</th>
+                    <th class="numeric">Max Stock</th>
+                    {% if is_granted("ROLE_INVENTORY_STOCK_EDIT") or is_granted("ROLE_SUPER_ADMIN") %}
+                        <th class="numeric">Action</th>
+                    {% else %}
+                        <th class="numeric">&nbsp;</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for index, stockList in stockLists %}
+                    <tr>
+                        <td class="numeric"> {{ index +1 }}</td>
+                        <td class="numeric">{{ stockList.item }}</td>
+                        <td class="numeric">{{ stockList.unit }}</td>
+                        <td class="numeric">{{ stockList.openItem }}</td>
+                        <td class="numeric">{{ stockList.receivingItem }}</td>
+                        <td class="numeric">{{ stockList.projectTo|default }}</td>
+                        <td class="numeric">{{ stockList.issuingItem  }}</td>
+                        <td class="numeric">{{ stockList.closingItem}}</td>
+                        <td class="numeric">
+                            <a href="javascript:;" class="minStock displayForDesktop" style="color: #000000 !important;" data-pk = "{{stockList.id}}">{{ stockList.minStockCount }}</a>
+                            <a href="javascript:;" class="minStock displayForMob" style="color: #000000 !important;" data-pk = "{{stockList.id}}">{{ stockList.minStockCount }}</a>
+                        </td>
+                        <td class="numeric">
+                            <a href="javascript:;" class="maxStock displayForDesktop" style="color: #000000 !important;" data-pk = "{{stockList.id}}">{{ stockList.maxStockCount }}</a>
+                            <a href="javascript:;" class="maxStock displayForMob" style="color: #000000 !important;" data-pk = "{{stockList.id}}">{{ stockList.maxStockCount }}</a>
+                        </td>
+                    {% if is_granted("ROLE_INVENTORY_STOCK_EDIT") or is_granted("ROLE_SUPER_ADMIN") %}
+                        <td class="numeric"><a href="{{ path('stock_update',{id:stockList.id}) }}" class="btn blue btn-xs displayForDesktop"><i class="fa fa-edit"></i> Update</a>
+                        <td class="numeric displayForMob"><a href="{{ path('stock_update',{id:stockList.id}) }}" class="btn blue btn-xs displayForMob"><i class="fa fa-edit"></i> Update</a>
+                        </td>
+                    {% else %}
+                        <td>&nbsp;</td>
+                    {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="navigation text-right">
+                {{ knp_pagination_render(stockLists) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+{#<script>#}
+{{ parent() }}
+
+$('select').select2();
+
+var $url = Routing.generate('item_auto_delivery_complete');
+var selectedItemId = {{ app.request.query.get('item')}}
+
+        $(".select2AutoComplete").select2({
+
+            ajax: {
+
+                url: $url,
+                dataType: 'json',
+                delay: 250,
+                data: function (params, page) {
+                    return {
+                        q: params,
+                        page_limit: 100
+                    };
+                },
+                results: function (data, page) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (m) {
+
+                return m;
+            },
+            formatResult: function (item) {
+                return item.text
+            }, // omitted for brevity, see the source of this page
+            formatSelection: function (item) {
+                return item.text
+            }, // omitted for brevity, see the source of this page
+            initSelection: function (element, callback) {
+
+                $.ajax({
+                    url: $url,
+                    data: 'item=' + selectedItemId,
+                    dataType: 'json'
+                }).done(function (data) {
+                    callback(data);
+                });
+            },
+            allowClear: true,
+            minimumInputLength: 1
+        });
+
+$('.minStock').editable({
+    type: 'text',
+    url: Routing.generate('stock_add'),
+    pk: $(this).attr('data-pk'),
+    title: 'min Stock',
+    ajaxOptions: {
+        type: "PUT"
+    }
+});
+$('.maxStock').editable({
+    type: 'text',
+    url: Routing.generate('stock_max_add'),
+    pk: $(this).attr('data-pk'),
+    title: 'max Stock',
+    ajaxOptions: {
+        type: "PUT"
+    }
+});
+
+$('.openItem ').editable({
+    type: 'text',
+    url: Routing.generate('stock_open_item'),
+    pk: $(this).attr('data-pk'),
+    title: 'Opening Item',
+    ajaxOptions: {
+        type: "PUT"
+    }
+});
+
+$('#stockItemReportExcel').click(function () {
+
+    setTimeout(function () {
+        $('#stockItemFrm').attr('action', '{{ path('stock_list') }}');
+    }, 1000);
+
+    $.ajax({
+        form: 'stockItemFrm',
+        url: Routing.generate('stock_item_list_excel'),
+        dataType: 'form html'
+    });
+});
+
+
+
+{% endblock %}

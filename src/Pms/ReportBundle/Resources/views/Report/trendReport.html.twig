@@ -1,0 +1,181 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Trend Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_trend_report') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> Trend Report</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+            <form method="get" name="budget-report" id="budget-report">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tbody>
+                        <tr>
+                            <td class="numeric">
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.item, { 'attr': {'class': 'form-control fontColorBlack select2AutoComplete', 'placeholder': ' Select Item'} }) }}
+                                </div>
+                            </td>
+                            <td class="numeric">
+                                <div class="form-group input-medium">
+                                    {{ form_widget(form.project, { 'attr': {'class': 'col-md-3 form-control select2me fontColorBlack', 'placeholder': ' Select Project'} }) }}
+                                </div>
+                            </td>
+                            <td class="numeric">
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-minviewmode="years" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.year, { 'attr': {'class': 'form-control datepicker'} }) }}
+                                </div>
+                            </td>
+                            <td class="numeric">
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="numeric" style="margin-bottom: 20px;"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+            <!--BEGIN TABS-->
+        <div class="span12">
+            <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                <input type="button" value="Export in excel" name="budgetReportExcel" id="budgetReportExcel" class="btn blue">
+            </div>
+            <!-- BEGIN SAMPLE TABLE PORTLET-->
+            <div class="portlet box">
+                <div class="portlet-body flip-scroll">
+                    <table class="table-bordered table-striped table-condensed flip-content">
+                        <thead class="flip-content">
+                        <tr>
+                            <td class="numeric">Item : {{ trendRequisitionReport[0]['itemName'] | default('') }}</td>
+                            <td class="numeric">Unit : {{ trendRequisitionReport[0]['itemUnit'] | default('') }}</td>
+                            <td class="numeric">Project : {{ trendRequisitionReport[0]['projectName'] | default('') }}</td>
+                            <td class="numeric">Year : {{ form.vars['value']['year'] | date('d-M-Y') }}</td>
+                        </tr>
+                        <tr style="background: #4b8df8">
+                            <th class="numeric">Month</th>
+                            <th class="numeric">Requisition Quantity</th>
+                            <th class="numeric">Purchase Quantity</th>
+                            <th class="numeric">Usage Quantity</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in 0..11 %}
+                            <tr>
+                                <td class="numeric">{{ month[i] | default('') }}</td>
+                                <td class="numeric">{{ trendRequisitionReport[i]['itemQuantity'] | default('0') }}</td>
+                                <td class="numeric">{{ trendPurchaseMonthReport[i]['itemPoQuantity'] | default('0') }}</td>
+                                <td class="numeric">{{ trendUsageMonthReport[i]['itemUsageQuantity'] | default('0') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-01-01",
+    viewMode: "years",
+    minViewMode: "years"
+    });
+
+    var $url = Routing.generate('item_auto_complete');
+    var queryStringObject = {{ app.request.query.all|json_encode|raw }};
+    var selectedItemId = (queryStringObject && queryStringObject.search && queryStringObject.search.item) ? queryStringObject.search.item : '';
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+
+            return m;
+        },
+        formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+            $.ajax({
+                url: $url,
+                data: 'item=' + selectedItemId,
+                dataType: 'json'
+            }).done(function(data){
+                callback(data);
+            });
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+    $('#budgetReportExcel').click(function () {
+
+        setTimeout(function(){
+            $('#budget-report').attr('action', '{{ path('report_trend_report') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'budget-report',
+            url: Routing.generate('report_trend_report_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock %}

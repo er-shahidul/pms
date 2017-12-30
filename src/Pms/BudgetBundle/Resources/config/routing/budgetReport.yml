@@ -1,0 +1,21 @@
+report_budget:
+    pattern: /budget-report
+    defaults: { _controller: PmsBudgetBundle:BudgetReport:budgetReport }
+
+report_budget_excel:
+    pattern: /budget-report-excel
+    defaults: { _controller: PmsBudgetBundle:BudgetReport:budgetReportExcel }
+    options:
+            expose: true
+
+report_budget_yearly:
+    pattern: /budget-report-yearly
+    defaults: { _controller: PmsBudgetBundle:BudgetReport:budgetReportYearly }
+
+report_budget_yearly_excel:
+    pattern: /budget-report-yearly-excel
+    defaults: { _controller: PmsBudgetBundle:BudgetReport:budgetReportYearlyExcel }
+    options:
+            expose: true
+
+

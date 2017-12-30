@@ -1,0 +1,107 @@
+budget_edit:
+    pattern: /budget-edit/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:edit }
+    requirements:
+          id: \d+
+
+budget_attachment_view:
+    pattern: /budget/attachment-view/{id}/{index}
+    defaults: { _controller: PmsBudgetBundle:Budget:attachmentView }
+
+budget_add:
+    pattern: /budget-add/project/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:add }
+
+budget_project_list:
+    path:     /budget/project-list
+    defaults: { _controller: PmsBudgetBundle:Budget:projectList }
+
+budget_additional_list:
+    path:     /budget/additional-subcategory-list/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:additionalSubcategoryListForBudget }
+
+budget_details:
+    pattern: /budget-details/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:details }
+
+budget_details_mob:
+    pattern: /budget-details-for-mob/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:detailsForMob }
+
+budget_approve_one:
+    pattern: /budget/approve-one/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:approveOne }
+    requirements:
+          id: \d+
+
+budget_approve_two:
+    pattern: /budget/approve-two/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:approveTwo }
+    requirements:
+          id: \d+
+
+budget_approve_three:
+    pattern: /budget/approve-three/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:approveThree }
+    requirements:
+          id: \d+
+
+budget_approve_one_ajax:
+    pattern: /budget/approve-one
+    defaults: { _controller: PmsBudgetBundle:Budget:approveOneAjax }
+    options:
+          expose: true
+
+budget_approve_two_ajax:
+    pattern: /budget/approve-two
+    defaults: { _controller: PmsBudgetBundle:Budget:approveTwoAjax }
+    options:
+          expose: true
+
+budget_approve_three_ajax:
+    pattern: /budget/approve-three
+    defaults: { _controller: PmsBudgetBundle:Budget:approveThreeAjax }
+    options:
+          expose: true
+
+budget_hold:
+    pattern: /budget/hold/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:hold }
+    requirements:
+          id: \d+
+
+budget_open:
+    pattern: /budget/open/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:open }
+    requirements:
+          id: \d+
+
+budget_cancel:
+    pattern: /budget/cancel/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:cancel }
+    requirements:
+          id: \d+
+
+budget_comment:
+    pattern: /budget/comment
+    defaults: { _controller: PmsBudgetBundle:Budget:comment }
+    options:
+          expose: true
+
+budget_refresh:
+    pattern: /budget/refresh/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:refresh }
+    requirements:
+          id: \d+
+
+budget_print:
+    pattern: /budget/print/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:print }
+
+budget_pdf:
+    pattern: /budget/pdf/{id}
+    defaults: { _controller: PmsBudgetBundle:Budget:pdf }
+
+budget:
+    pattern: /budget/{status}
+    defaults: { _controller: PmsBudgetBundle:Budget:index, status:all }

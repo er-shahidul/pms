@@ -1,0 +1,621 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .highcharts-button{
+        display: none;
+    }
+</style>
+    <div style="margin-bottom: -20px;margin-top: -25px;background: #fff;padding: 0;">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                <h3 class="page-title">
+                    Activities Report
+                    <small></small>
+                </h3>
+                <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                    <li>
+                        <i class="fa fa-home"></i>
+                        <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                        <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="{{ path('report_activities_requisition') }}" style="color: #333 !important;">Report</a>
+                        <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="#" style="color: #333 !important;">Purchase Activities</a>
+                    </li>
+                    <li class="pull-right">
+                        <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                            <i class="fa fa-calendar"></i>
+                            {{ "now"|date("d-F-Y") }}
+                        </div>
+                    </li>
+                </ul>
+                <!-- END PAGE TITLE & BREADCRUMB-->
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <div class="row" style="min-height: 908px !important;">
+            <div class="col-md-12">
+                <form action="{{ url('report_activities_purchase') }}" method="get" name="search" style="margin-bottom: 20px;" id="requisition_report_activities_search_form">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-2">
+                                        <div class="input-icon">
+                                            <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                                                <span class="input-group-btn"></span>
+                                                {{ form_widget(form.month, { 'attr': {'class': 'form-control datepicker', 'style': 'width: 197px;'} }) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" name="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+
+            <div class="tabbable tabbable-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a class="tabForTable" rel="#tab_1_1" href="#tab_1_1" style="color: black !important;" data-toggle="tab">PO Activities</a></li>
+                <li><a class="tabForTable" rel="#tab_1_2" href="#tab_1_2" style="color: black !important;" data-toggle="tab">Item Activities</a></li>
+                {#<li><a class="tabForTable" rel="#tab_1_3" href="#tab_1_3" style="color: black !important;" data-toggle="tab">Resolved Activities</a></li>#}
+            </ul>
+            <div class="tab-content style-content">
+                <div class="tab-pane active" id="tab_1_1">
+                    <div class="" data-always-visible="1" data-rail-visible="0">
+
+                        <div class="fluid" id="project-list-div">
+                            <div class="form-group">
+                                <div class="col-md-12 margin-top-30">
+                                    <table class="table table-striped bold border-1-ghostwhit">
+                                        <thead class="backgroundTableHeader">
+                                            <th>
+                                                Activities
+                                            </th>
+                                            <th>
+                                                Total
+                                            </th>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                Total Purchase :
+                                            </td>
+                                            <td>
+
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order', {'status': 'all','month': requestParam['month']}) }}">
+                                                    {{ totalPurchase | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Open:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order', {'status': 'open','month': requestParam['month']}) }}">
+                                                    {{ totalPurchaseOpen | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Approved:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order', {'status': 'approve','month': requestParam['month']}) }}">
+                                                    {{ totalPurchaseApproved | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Resolved:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order', {'status': 'close','month': requestParam['month']}) }}">
+                                                    {{ totalPurchaseResolved | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Canceled:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order', {'status': 'cancel','month': requestParam['month']}) }}">
+                                                    {{ totalPurchaseCanceled | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Work in Progress:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order', {'status': 'in-progress','month': requestParam['month']}) }}">
+                                                    {{ totalPurchaseInProgress | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Hold:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order', {'status': 'hold','month': requestParam['month']}) }}">
+                                                    {{ totalPurchaseHold | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Amendment:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order', {'status': 'amendment','month': requestParam['month']}) }}">
+                                                    {{ totalPurchaseAmendment | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {#<tr>
+                                            <td>
+                                                Requisition Partial Claim:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;">
+                                                    {{ totalRequisitionPartialClaim | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Exception Requisition:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;">
+                                                    {{ (totalRequisition  -
+                                                    totalRequisitionHold - totalRequisitionInProgress - totalRequisitionCanceled -
+                                                    totalRequisitionResolved - totalRequisitionApproved - totalRequisitionOpen) | default('0') }}
+                                                </a>
+                                            </td>
+                                        </tr>#}
+                                        <tr>
+                                            <td>
+                                                Average Resolved Date:
+                                            </td>
+                                            <td>
+                                                {{ averageDate|number_format(2, '.', ',') }}
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="container" style="min-width: 367px; height: 400px; margin: 0 auto"></div>
+
+                        <table id="datatable">
+                            <thead>
+                                <tr>
+                                    <th style="color: black !important;">PR Activities  {{ form.vars.value.month }}</th>
+                                    <th style="color: black !important;">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition:</th>
+                                <td>{{ totalRequisition | default('0') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Resolved:</th>
+                                <td>{{ totalRequisitionResolved | default('0') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Canceled:</th>
+                                <td>{{ totalRequisitionCanceled | default('0') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition WIP:</th>
+                                <td>{{ totalRequisitionInProgress | default('0') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Open:</th>
+                                <td>{{ totalRequisitionOpen | default('0') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Approve:</th>
+                                <td>{{ totalRequisitionApproved | default('0') }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Hold:</th>
+                                <td>{{ totalRequisitionHold | default('0') }}</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_1_2">
+                    <div class="" style="" data-always-visible="1" data-rail-visible1="1">
+
+                        <div class="fluid" id="project-list-div">
+                            <div class="form-group">
+                                <div class="col-md-12 margin-top-30">
+                                    <table class="table table-striped bold border-1-ghostwhit">
+                                        <thead class="backgroundTableHeader">
+                                            <th>
+                                                Activities
+                                            </th>
+                                            <th>
+                                                Total
+                                            </th>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Item :
+                                            </td>
+                                            <td>
+                                            <a style="color: #000000!important;" href="{{ path('purchase_order_item_all', {status:'all','month': requestParam['month']}) }}">
+                                               {{ totalRequisitionItemTotal }}
+                                            </a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Item Open:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order_item_all', {'status': 'open','month': requestParam['month']}) }}">
+                                                    {{ totalRequisitionItemOpen | default(0) }}
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Item Approved:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order_item_all', {'status': 'approve','month': requestParam['month']}) }}">
+                                                    {{ totalRequisitionItemApproved | default(0) }}
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Item Resolved:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order_item_all', {'status': 'close','month': requestParam['month']}) }}">
+                                                    {{ totalRequisitionItemResolved | default(0) }}
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Item Canceled:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order_item_all', {'status': 'cancel','month': requestParam['month']}) }}">
+                                                    {{ totalRequisitionItemCanceled | default(0) }}
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+
+                                                Total Purchase Item in Progress:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order_item_all', {'status': 'in-progress','month': requestParam['month']}) }}">
+                                                    {{ totalRequisitionItemInProgress | default(0) }}
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+
+                                                Total Purchase Item Hold:
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order_item_all', {'status': 'hold','month': requestParam['month']}) }}">
+                                                    {{ totalRequisitionItemHold | default(0) }}
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Item Amendment :
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order_item_all',{'status': 'amendment','month': requestParam['month']}) }}">
+                                                    {{ totalRequisitionItemAmendment | default(0) }}
+                                                </a>
+
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total Purchase Item ClosedIndividual :
+                                            </td>
+                                            <td>
+                                                <a style="color: #000000!important;" href="{{ path('purchase_order_item_all',{'status': 'close-individual','month': requestParam['month']}) }}">
+                                                    {{ totalRequisitionItemCanceledIndividual | default(0) }}
+                                                </a>
+
+
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="container_item_activities" style="min-width: 367px; width:77%; height: 400px; margin: 0 0"></div>
+
+                        <table id="datatable-item-activities">
+                            <thead>
+                            <tr>
+                                <th style="color: black !important;">PR Item Activities  {{ form.vars.value.month }}</th>
+                                <th style="color: black !important;">Quantity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Item:</th>
+                                <td>{{ ((totalRequisitionItemResolved|default(0))+(totalRequisitionItemCanceled|default(0))+
+                                    (totalRequisitionItemCanceledIndividual|default(0))+(totalRequisitionItemOpen|default(0))+
+                                    (totalRequisitionItemInProgress|default(0))) | default(0) }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Item Resolved:</th>
+                                <td>{{ totalRequisitionItemResolved | default(0) }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Item Canceled:</th>
+                                <td>{{ totalRequisitionItemCanceled | default(0) }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Item Open:</th>
+                                <td>{{ totalRequisitionItemOpen | default(0) }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Item Canceled Individual:</th>
+                                <td>{{ totalRequisitionItemCanceledIndividual | default(0) }}</td>
+                            </tr>
+                            <tr>
+                                <th style="color: black !important;">Total Requisition Item WIP:</th>
+                                <td> {{ totalRequisitionItemInProgress | default(0) }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_1_3">
+                    <div class="" style="" data-always-visible="1" data-rail-visible1="1">
+                        <div id="container_pr_resolved_activities" style="min-width: 367px; width:77%; height: 400px; margin: 0 0"></div>
+
+                        <table id="datatable-pr-resolved-activities">
+                            <thead>
+                            <tr>
+                                <th style="color: black !important;">Count Of Date</th>
+                                <th style="color: black !important;">Count Of PR</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for i in 0..maxKeyValue %}
+
+                                {% if resolvedActivityForBarChart is defined %}
+                                {% for key, data in resolvedActivityForBarChart %}
+                                    {% if key == i %}
+                                        <tr>
+                                            <th style="color: black !important;"> {{ i }} </th>
+                                            <td>{% if data is defined %} {{ data }} {% else %} 0 {% endif %}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endif %}
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="fluid" id="project-list-div">
+                            <div class="form-group">
+                                <div class="col-md-12 margin-top-30">
+                                    <table class="table table-striped bold border-1-ghostwhit">
+                                        <thead class="backgroundTableHeader">
+                                        <tr>
+                                            <th style="width: 5%;">
+                                                Sl
+                                            </th>
+                                            <th style="width: 20%;">
+                                                PR No
+                                            </th>
+                                            <th style="width: 15%;">
+                                                Average Claim Days
+                                            </th>
+                                            <th style="width: 15%;">
+                                                Average PO Issued Days
+                                            </th>
+                                            <th style="width: 15%;">
+                                                Average PR Resolved Days
+                                            </th>
+                                            <th style="width: 15%;">
+                                                Category
+                                            </th>
+                                            <th style="width: 15%;">
+                                               Sub  Category
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for index, activities in activitiesResolvedDayCount %}
+
+                                                    <tr>
+                                                        <td>
+                                                            {{ index + 1 }}
+                                                        </td>
+                                                        <td>
+                                                            {{ activities['prId'] }}
+                                                        </td>
+                                                        <td>
+                                                            {{ activities['claimAverageDates'] | number_format(2, '.', ',') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ activities['resolveAverageDates'] | number_format(2, '.', ',') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ activities['prAverageDates'] | number_format(2, '.', ',') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ activities['category']|default() }}
+                                                        </td>
+                                                        <td>
+                                                            {{ activities['sub_category']|default()}}
+                                                        </td>
+                                                    </tr>
+
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!--END TABS-->
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    'assets/Highcharts-4.1.7/js/highcharts.js'
+    'assets/Highcharts-4.1.7/js/modules/data.js'
+    'assets/Highcharts-4.1.7/js/modules/exporting.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{#<script>#}
+{% block documentready %}
+
+    {{ parent() }}
+
+    $('#requisitionActivitiesExcel').click(function () {
+
+        $.ajax({
+            form: 'requisition_report_activities_search_form',
+            url: Routing.generate('report_activities_requisition_excel'),
+            dataType: 'form html',
+            success:function(data){
+                //Handle The response data
+            }
+        });
+    });
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $('#container').highcharts({
+        data: {
+            table: 'datatable'
+        },
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Purchase Requisition Activities Chart'
+        },
+        yAxis: {
+            allowDecimals: false,
+            title: {
+                text: 'Number'
+            }
+        }
+        {#tooltip: {#}
+            {#formatter: function () {#}
+                {#return '<b>' + this.series.name + '</b><br/>' +#}
+                        {#this.point.y + ' ' + this.point.name.toLowerCase();#}
+            {#}#}
+        {#}#}
+    });
+
+    $('#container_item_activities').highcharts({
+        data: {
+            table: 'datatable-item-activities'
+        },
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Purchase Requisition Item Activities Chart'
+        },
+        yAxis: {
+            allowDecimals: false,
+            title: {
+                text: 'Number'
+            }
+        }
+        {#tooltip: {#}
+            {#formatter: function () {#}
+                {#return '<b>' + this.series.name + '</b><br/>' +#}
+                        {#this.point.y + ' ' + this.point.name.toLowerCase();#}
+            {#}#}
+        {#}#}
+    });
+
+    $('#container_pr_resolved_activities').highcharts({
+        data: {
+            table: 'datatable-pr-resolved-activities'
+        },
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Purchase Requisition Resolving Activities'
+        },
+        yAxis: {
+            allowDecimals: false,
+            title: {
+                text: 'Number'
+            }
+        }
+        {#tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                        this.point.y + ' ' + this.point.name.toLowerCase();
+            }
+        }#}
+    });
+
+{% endblock %}

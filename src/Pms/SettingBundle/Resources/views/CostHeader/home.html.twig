@@ -1,0 +1,228 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Cost Header
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Cost Header</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="costHeaderMessege"></span>
+    {% if is_granted("ROLE_COST_HEADER_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+    <div class="modal-dialog" style="width: 1000px;padding-top: 15px !important;">
+        <div class="modal-content" style="background: white;">
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'cost-header-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            {{ form_label(form.title, 'Title :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.title, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.title) }}</span>
+                            </div>
+                            <span class="userMessege" style="margin-left: 185px;"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            {{ form_label(form.subCategory, 'Category :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.subCategory, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.subCategory) }}</span>
+                            </div>
+                            <input type="button" name="ajaxSaveCostHeader" value="Save" id="ajaxSaveCostHeader" class="btn button-width" style="width: 100px;background: #0353D6; color: white !important;margin-top:2px;margin-left:10px;height:32px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+    <ul class="nav nav-tabs">
+        <li class="{% if status == 'active' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('cost_header',{status:'active'} ) }}">All</a></li>
+        <li class="{% if status == 'delete' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('cost_header',{status:'delete'} ) }}">Deleted</a></li>
+    </ul>
+    <div class="tab-content" style="height: auto;background: #eee;">
+    <div class="tab-pane active">
+        <div class="" data-always-visible="1" data-rail-visible="0">
+
+            <div class="fluid" id="cost-header-list-div">
+                <div class="form-group">
+                    <div class="col-md-12" style="margin-top: 30px;">
+
+                        <table class="table bold" style="border: 1px solid ghostwhite;">
+                            <thead style="background: #4b8df8;color: #fff;">
+                            <tr>
+                                <th>Sl</th>
+                                <th class="col-md-3">Title</th>
+                                <th class="col-md-3"></th>
+                                <th class="col-md-4">SubCategory</th>
+                                <th class="col-md-2"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% set offset = costHeaders.getItemNumberPerPage * (costHeaders.currentPageNumber - 1) %}
+
+                            {% for costHeader in costHeaders %}
+
+                                <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                                    <td>{{ loop.index + offset }}.</td>
+                                    <td>{{ costHeader.title }}</td>
+                                    <td></td>
+                                    <td>{{ costHeader.subCategory.subCategoryName | default('') }}</td>
+                                    <td>
+                                        {% if costHeader.status == 1 %}
+                                            <a href="/cost-header/delete/{{ costHeader.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                        class="fa fa-trash-o"></i> Delete</a>
+
+                                            <a href="/cost-header/update/{{ costHeader.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                        class="fa fa-edit"></i> Update</a>
+                                        {% endif %}
+                                        {% if costHeader.status == 0 %}
+                                            <a href="#" style="width: 65px;" class="btn default btn-xs">Deleted</a>
+                                            <a href="/cost-header/active/{{ costHeader.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                                        class="fa fa-repeat"></i> Restore</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="navigation" style="text-align: right">
+                            {{ knp_pagination_render(costHeaders) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $("#ajaxSaveCostHeader").click(function () {
+        var sPageURL = window.location.pathname;
+        var sURLVariables = sPageURL.split('/');
+        var title = $("#costheader_title").val();
+        var subCategory = $("#costheader_subCategory").val();
+
+        var costHeaderArray = new Array(title, sURLVariables[3], subCategory);
+        $.ajax({
+            type: "post",
+            url: Routing.generate('cost_header_ajax_add'),
+            data: "costHeaderArray=" + costHeaderArray,
+            dataType: 'json',
+            success: function (msg) {
+                if(msg.responseCode == 200) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Cost Header Title already exist</span></div>');
+                    $('.costHeaderMessege').css('color', 'red').html(msg.cost_header_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#cost-header-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                } else if(msg.responseCode == 204) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Please Insert Cost Headers Field</span></div>');
+                    $('.costHeaderMessege').css('color', 'red').html(msg.cost_header_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#cost-header-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                } else if(msg.responseCode == 202) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Cost Header Title Update Successfully</span></div>');
+                    $('.costHeaderMessege').css('color', 'green').html(msg.cost_header_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#cost-header-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                    window.location.pathname = 'cost-header';
+                } else {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Cost Header Title Add Successfully</span></div>');
+                    $('.costHeaderMessege').css('color', 'green').html(msg.cost_header_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#cost-header-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                }
+
+                $('.userMessege').fadeOut();
+                $("#cost-header-list-div").load("/cost-header/refresh")
+            }
+        });
+    });
+
+    $("#costheader_title").keyup(function () {
+        var title = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('cost_header_check'),
+            data: "title=" + title,
+            dataType: 'json',
+            success: function (msg) {
+                if (msg.responseCode == 200) {
+                    $('.userMessege').css('color', 'red').html(msg.cost_header_name).fadeIn(1000);
+                }
+                else {
+                    $('.userMessege').css('color', 'green').html(msg.cost_header_name).fadeIn(1000);
+                }
+            }
+        });
+    });
+
+{% endblock %}

@@ -1,0 +1,9 @@
+report_pr_item_report_bundle:
+    pattern: /pr-item-report
+    defaults: { _controller: PmsReportBundle:PrItemReport:prItemReport }
+
+report_pr_item_report_bundle_excel:
+    pattern: /pr-item-report-excel
+    defaults: { _controller: PmsReportBundle:PrItemReport:prItemReportExcel }
+    options:
+          expose: true

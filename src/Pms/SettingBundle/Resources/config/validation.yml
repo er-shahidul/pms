@@ -1,0 +1,134 @@
+Pms\SettingBundle\Entity\Item:
+    properties:
+        itemType:
+            - NotBlank: { message: "Item Type should not be blank" }
+        itemName:
+            - NotBlank: { message: "Item Name should not be blank" }
+        price:
+            - NotBlank: { message: "Price should not be blank" }
+        itemUnit:
+            - NotBlank: { message: "Item Unit should not be blank" }
+
+Pms\SettingBundle\Entity\ItemType:
+    properties:
+        itemType:
+            - NotBlank: { message: "Item Type should not be blank" }
+
+Pms\SettingBundle\Entity\Project:
+    properties:
+        projectName:
+            - NotBlank: { message: "Project Name should not be blank" }
+        costCenterNumber:
+            - NotBlank: { message: "Cost Center Number should not be blank" }
+        address:
+            - NotBlank: { message: "Address should not be blank" }
+        projectArea:
+            - NotBlank: { message: "Project Area should not be blank" }
+        projectHead:
+            - NotBlank: { message: "Project Head should not be blank" }
+        projectContactPerson:
+            - NotBlank: { message: "Project Contact Person should not be blank" }
+        projectCategory:
+            - NotBlank: { message: "Project Category Area should not be blank" }
+
+Pms\SettingBundle\Entity\ProjectType:
+    properties:
+        projectCategoryName:
+            - NotBlank: { message: "Company Type should not be blank" }
+
+Pms\SettingBundle\Entity\ProjectType:
+    properties:
+        projectCategoryName:
+            - NotBlank: { message: "category Name should not be blank" }
+
+Pms\SettingBundle\Entity\SubCategory:
+    properties:
+        category:
+            - NotBlank: { message: "Category should not be blank" }
+
+Pms\SettingBundle\Entity\Category:
+    properties:
+        categoryName:
+            - NotBlank: { message: "Category should not be blank" }
+
+Pms\SettingBundle\Entity\Area:
+    properties:
+        areaName:
+            - NotBlank: { message: "Area Name should not be blank" }
+
+Pms\SettingBundle\Entity\Vendor:
+    properties:
+        vendorName:
+            - NotBlank: { message: "Vendor Name should not be blank" }
+        contractPerson:
+            - NotBlank: { message: "Contact Person should not be blank" }
+        contractNo:
+            - NotBlank: { message: "Contact no should not be blank" }
+        tradeLicenseNo:
+            - NotBlank: { message: "Trade license no should not be blank" }
+        email:
+            - NotBlank: { message: "Email should not be blank" }
+        tinCertificateNo:
+            - NotBlank: { message: "Tin certificate  should not be blank" }
+        vatCertificateNo:
+            - NotBlank: { message: "Certificate no should not be blank" }
+        bankAccountNo:
+            - NotBlank: { message: "Account no should not be blank" }
+        bankAccountName:
+            - NotBlank: { message: "Account name should not be blank" }
+        branchName:
+            - NotBlank: { message: "Bank name should not be blank" }
+        vendorAddress:
+            - NotBlank: { message: "Address should not be blank" }
+        area:
+            - NotBlank: { message: "area should not be blank" }
+
+Pms\SettingBundle\Entity\VendorAttach:
+    properties:
+        fileType:
+            - NotBlank: { message: "File Type should not be blank" }
+        fileName:
+            - NotBlank: { message: "File Name should not be blank" }
+        description:
+            - NotBlank: { message: "Description should not be blank" }
+        file:
+            - NotBlank: { message: "file should not be blank" }
+
+Pms\SettingBundle\Entity\CostHeader:
+    properties:
+        title:
+            - NotBlank: { message: "Title should not be blank" }
+        subCategory:
+            - NotBlank: { message: "SubCategory should not be blank" }
+
+Pms\SettingBundle\Entity\TermsAndConditions:
+    properties:
+        condition:
+            - NotBlank: { message: "Condition should not be blank" }
+        sector:
+            - NotBlank: { message: "Sector should not be blank" }
+
+Pms\SettingBundle\Entity\PurchaseType:
+    properties:
+        name:
+            - NotBlank: { message: "Name should not be blank" }
+        shortName:
+            - NotBlank: { message: "Short Name should not be blank" }
+
+Pms\SettingBundle\Entity\CompanySetting:
+    properties:
+        name:
+            - NotBlank: { message: "Name should not be blank" }
+        details:
+            - NotBlank: { message: "Details should not be blank" }
+        file:
+            - NotBlank: { message: "file should not be blank" }
+
+Pms\SettingBundle\Entity\RelatedBank:
+    properties:
+        name:
+            - NotBlank: { message: "Project Name should not be blank" }
+        branch:
+            - NotBlank: { message: "Branch should not be blank" }
+        address:
+            - NotBlank: { message: "address should not be blank" }

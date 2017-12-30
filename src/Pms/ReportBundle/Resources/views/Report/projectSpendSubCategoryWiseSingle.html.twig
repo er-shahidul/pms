@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .highcharts-button{
+            display: none;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Budget Vs Spend
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_budget_vs_spend') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> Budget Vs Spend</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+            <!--BEGIN TABS-->
+        <div class="span12">
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead style="background: #4b8df8;color: #fff;">
+                    <tr class="numeric">
+                        <th>Sl</th>
+                        <th>Project</th>
+                        <th>Budget</th>
+                        <th>Spend</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for index, project in projects %}
+                            <tr>
+                                <td class="numeric">{{ index + 1 }}.</td>
+                                <td class="numeric">
+                                    {{ project.projectName }}
+                                </td>
+                                <td class="numeric">
+
+                                        {% for index, budget in budgets %}
+                                            {% if project.id == budget['PID'] %}
+                                                {{ budget['budgetAmountForSubCategory']| number_format(2, '.', ',') }}
+                                            {% endif %}
+                                        {% endfor %}
+
+                                </td>
+                                <td class="numeric">
+
+                                        {% for index, spend in spends %}
+                                            {% if project.id == spend['pId'] %}
+                                    <a href="{{ path('project_wise_spend_report',{id:project.id,month:month,subcategory:subCategoryId}) }}" style="color: #000000!important;">
+                                                {{ spend['spendAmountForSubCategory']| number_format(2, '.', ',') }}
+                                            {% endif %}
+                                            </a>
+                                        {% endfor %}
+
+                                </td>
+                            </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <!--END TABS-->
+
+{% endblock %}

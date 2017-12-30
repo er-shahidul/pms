@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Receive Item
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('receive') }}" style="color: #333 !important;">Receive</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Item List</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <div class="row">
+        <div class="col-md-12">
+        <div class="modal-dialog" style="width: 100%; padding: 0;">
+            <div class="modal-content">
+                <div class="modal-header" style="background: lightgrey;">
+                    <h4 class="modal-title bold" style="text-align: center;">Receive Item List</h4>
+                </div>
+                <form method="post" action="">
+                    <div class="modal-body">
+                        <div class="row">
+
+                            <div class="col-md-12">
+
+                                <div id="sample_1_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                                <button type="submit" name="next" class="btn" style="font-family: 'Open Sans', sans-serif;width: 100px;background: #0353D6; color: white !important; float: right;margin-left:5px;">
+                                    Next <i class="fa icon-next"></i>
+                                </button>
+                                    {% if is_granted("ROLE_SUPER_ADMIN") or is_granted("ROLE_PURCHASE_ORDER_AMENDMENT") %}
+                                        <button type="submit" name="amendment" class="btn" style="float:right;font-family: 'Open Sans', sans-serif;width: 110px;background: #0353D6; color: white !important;">
+                                            Amendment <i class="fa icon-next"></i>
+                                        </button>&nbsp;&nbsp;&nbsp;
+                                    {% endif %}
+
+                                    <h3 class="page-title">
+                                        Project Name : {{ projectName }}
+                                        <small></small>
+                                    </h3>
+
+                                    <div class="form-group">
+
+                                        <div class="portlet-body flip-scroll">
+                                             <table class="table-bordered table-striped table-condensed flip-content responsiveDiv" id="listReceive">
+                                                <thead style="background: #4b8df8;">
+                                                <tr>
+                                                    <th>Sl</th>
+                                                    <th><i class="fa fa-check"></i></th>
+                                                    <th class="col-md-1">PO No</th>
+                                                    {#<th class="col-md-1">CreatedDate</th>#}
+                                                    <th class="col-md-1">Particulars</th>
+                                                    <th class="col-md-1">PO Qty</th>
+                                                    <th class="col-md-1">ReceiveQty</th>
+                                                    <th class="col-md-1">RemainQty</th>
+                                                    <th class="col-md-1">Vendor/Buyer</th>
+                                                    <th class="col-md-1"Action></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for orderItem in pri %}
+
+                                                    {% set remainingQty = orderItem.totalPoQty - orderItem.totalReceiveQty %}
+                                                        <tr class="po-tr-{{ orderItem.poId }}">
+                                                            <td>{{ loop.index }}.</td>
+                                                            <td>
+                                                                <input class="po-checkbox" type="checkbox" name="items[]" data-po="{{ orderItem.poId }}" value="{{ orderItem.priId }}/{{ orderItem.poiId }}/{{ orderItem.projectId }}/{{ orderItem.vId | default(0) }}/{{ orderItem.bId | default(0)}}/{{ orderItem.poId }}">
+                                                            </td>
+                                                            <td>
+                                                                {{ orderItem.poId }}
+                                                                {% if orderItem.amendment == 8 %}
+                                                                    <div style="background: #696969;color: white;font-size: 10px;">Amendment</div>
+                                                                {% endif %}
+                                                            </td>
+                                                          {#  <td>
+                                                                {{ orderItem.createdDate | date("Y-M-d") }}
+                                                            </td>#}
+                                                            <td>
+                                                                {{ orderItem.itemName }}
+                                                            </td>
+                                                            <td>
+                                                                {{ orderItem.totalPoQty|number_format(2, '.', ',') }}
+                                                            </td>
+                                                            <td>
+                                                                {{ orderItem.totalReceiveQty|number_format(2, '.', ',') }}
+                                                            </td>
+                                                            <td>
+                                                                {{ remainingQty|number_format(2, '.', ',') }}
+                                                            </td>
+                                                            <td>
+                                                                {% if orderItem.vendorName is not null %}
+                                                                    {{ orderItem.vendorName }}
+                                                                {% else %}
+                                                                    {{ orderItem.buyerName }}
+                                                                {% endif %}
+                                                            </td>
+
+                                                            <td>
+                                                                {% if is_granted("ROLE_RECEIVE_ITEM_CLOSE_HEAD_OFFICE") or
+                                                                is_granted("ROLE_RECEIVE_ITEM_CLOSE_HEAD_OFFICE") or
+                                                                is_granted("ROLE_SUPER_ADMIN") %}
+
+                                                                <a href="{{ path('receive_item_close_complete',{id:orderItem.poiId}) }}"
+                                                                   data-target="#ajax" data-toggle="modal"
+                                                                   class=" btn blue btn-xs mini modal-details displayForDesktop"
+                                                                   href="#"
+                                                                   style="margin-top:3px;width: 58px;color:#ffffff !important;">close</a>
+
+                                                                {% endif %}
+                                                            </td>
+
+                                                        </tr>
+
+                                                {% endfor %}
+
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="background: lightgrey;">
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+
+    {{ parent() }}
+    $('#listReceive').dataTable( {
+        iDisplayLength: -1,
+        bPaginate:false,
+        bLengthChange:false,
+        bInfo:false
+    });
+
+    var $table = $("#listReceive tbody");
+    $table.on("change", ".po-checkbox", function(){
+        var el = $(this);
+        var po = el.data("po");
+        var chosen = $table.find('tr.po-tr-'+po + " input:checked");
+
+        if(el.prop('checked')) {
+            $table.find('tr').hide();
+            $table.find('tr.po-tr-'+po).show();
+        }else if(chosen.length == 0){
+            $table.find('tr').show();
+        }
+    });
+
+{% endblock %}

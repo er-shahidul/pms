@@ -1,0 +1,213 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .parentTbl table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            border: 0;
+
+        }
+        .childTbl table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            border: 1px solid #d7d7d7;
+
+        }
+        .childTbl th,
+        .childTbl td {
+            border: 1px solid #d7d7d7;
+        }
+        .scrollData {
+
+            max-height: 450px;
+            overflow-x: auto;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Regular Payment
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_item_report_bundle') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Payment</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <form action="{{ path('regular_payment_report_bundle') }}" method="get" name="regular_payment_report_excel_form"
+                  id="regular_payment_report_excel">
+
+                <table id="table_project_cost">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class="col-md-1">
+                                    <div class="input-icon right">
+                                        <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class=" input-medium">
+                                {{ form_widget(form.project, { 'attr': {'class': 'col-md-4 form-control select2me fontColorBlack'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <input type="submit" value="Search" class="btn blue" style="margin-left:25px;">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+
+        <div class="col-md-12" style="float: left;">
+
+            <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                <input type="button" value="Export in excel" name="regularPaymentReportExcel"
+                       id="regularPaymentReportExcel" class="btn blue">
+            </div>
+            <div class="scrollData childTbl">
+                <table class="table" style="">
+                <thead style="background: #4b8df8;color: #fff;">
+                <tr>
+                    <th>Sl</th>
+                    <th class="col-md-4">Payment Date</th>
+                    <th class="col-md-2">GRN#NO</th>
+                    <th class="col-md-4">Project Name</th>
+                    {#<th class="col-md-2">Sub Category</th>#}
+                    <th class="col-md-2">Vendor/Buyer</th>
+                    <th class="col-md-2">Received By</th>
+                    <th class="col-md-2">PR No</th>
+                    <th class="col-md-2">PO No</th>
+                    <th class="col-md-2">PO Issued By</th>
+                    <th class="col-md-2">Payment Form</th>
+                    <th class="col-md-2">POAmount</th>
+                    <th class="col-md-2">Receive Amount</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for regularPayment in regularPayments %}
+
+                    <tr>
+                        <td class="numeric">{{ loop.index  }}.</td>
+                        <td class="numeric">{{ regularPayment.readyForPayment.requestDate | date('d-M-Y') }}</td>
+                        <td class="numeric">{{ regularPayment.id }}</td>
+                        <td class="numeric">
+                            {% set projectName = '' %}
+                            {% for pri in regularPayment.receiveItems %}
+                                {% set projectName = pri.project.projectName %}
+                            {% endfor %}
+                            {{ projectName }}
+                        </td>
+                        {#<td class="numeric">sub category</td>#}
+                        <td class="numeric">{{ regularPayment.vendor.vendorName |default() }} {{ regularPayment.buyer.fullname |default() }}</td>
+                        <td class="numeric">{{ regularPayment.receivedBy.fullname }}</td>
+                        <td class="numeric">
+                            {% for key, ri in regularPayment.receiveItems %}
+                                {% if key > 0 %},{% endif %}
+                                {{ ri.purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.id }}
+                            {% endfor %}
+                        </td>
+                        <td class="numeric">
+                            {% for key, ri in regularPayment.receiveItems %}
+                                {% if key > 0 %},{% endif %}
+                                {{ ri.purchaseOrderItem.purchaseOrder.id }}
+                            {% endfor %}
+                        </td>
+                        <td>{% for key, ri in regularPayment.receiveItems %}
+                                {% if key > 0 %},{% endif %}
+                                {{ ri.purchaseOrderItem.purchaseOrder.createdBy.Fullname }}
+                            {% endfor %}</td>
+                        <td>{{ regularPayment.isHeadOrLocal }}</td>
+                        <td>{% if(regularPayment.readyForPayment) %} {{ regularPayment.readyForPayment.poAmount }}{% endif %}</td>
+                        <td>{% if(regularPayment.readyForPayment) %} {{ regularPayment.readyForPayment.poReceiveAmount }}{% endif %}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td class="col-md-4">
+
+                    </td>
+                    <td class="col-md-2">
+
+                    </td>
+                    <td  class="col-md-4 bold" style="text-align: right;">
+                    </td>
+                    <td class="col-md-2 bold">
+
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    {#<script>#}
+    $('#regularPaymentReportExcel').click(function () {
+
+    setTimeout(function () {
+    $('#regular_payment_report_excel').attr('action', '{{ path('regular_payment_report_bundle') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'regular_payment_report_excel_form',
+    url: Routing.generate('regular_payment_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock documentready %}

@@ -1,0 +1,224 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                My Task
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">My Task</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="myTaskMessege"></span>
+
+    <!--BEGIN TABS-->
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="col-md-6 margin-top-30">
+                <table class="table table-striped bold border-1-ghostwhit">
+                    <thead class="backgroundTableHeader">
+                    <tr>
+                        <th style="">Sl</th>
+                        <th class="col-md-4">Item</th>
+                        <th class="col-md-1">Req.No</th>
+                        <th class="col-md-1"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set i = 0 %}
+                    {% for allClaim in allClaims %}
+                        {% if allClaim.purchaseRequisition.approvedByCategoryHeadTwo != null %}
+                            {% if is_granted("ROLE_PURCHASE_REQUISITION_CLAIM") or is_granted("ROLE_SUPER_ADMIN") %}
+                                {% set i = i + 1 %}
+
+                                <tr style="border-top: 1px solid #eee !important;">
+                                    <td>{{ i }}.</td>
+                                    <td>{{ allClaim.item.itemName }}</td>
+                                    <td>{{ allClaim.purchaseRequisition.id }}</td>
+                                    <td>
+                                        <div style="font-size:11px;text-align:center;background: darkred;width: 190px; color: #ffffff; height: 17px;">
+                                            This Req. is pending for Claim
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6 margin-top-30">
+                <table class="table table-striped bold border-1-ghostwhit">
+                    <thead class="backgroundTableHeader">
+                    <tr>
+                        <th>Sl</th>
+                        <th>Req.No</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% set i = 0 %}
+                    {% for purchaseRequisition in allPurchaseRequisitions %}
+
+                        {% if (purchaseRequisition.approvedByProjectHead == null and purchaseRequisition.project.projectHead == app.user.username and is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") ) or (purchaseRequisition.approvedByProjectHead == null and is_granted("ROLE_SUPER_ADMIN")) %}
+                        {% set i = i + 1 %}
+                        <tr style="border-top: 1px solid #eee !important;">
+                            <td>{{ i }}.</td>
+                            <td style="width: 50px;">{{ purchaseRequisition.id }}</td>
+                            <td>
+                                <div style="font-size:11px;text-align:center;background: darkred;width: 190px; color: #ffffff; height: 17px;">
+                                This Req. is pending for Verified
+                                </div>
+                            </td>
+                        </tr>
+                        {% elseif (purchaseRequisition.approvedByProjectHead != null and purchaseRequisition.approvedByCategoryHeadOne == null and app.user.username == purchaseRequisition.subCategory.subHead and is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") ) or (purchaseRequisition.approvedByProjectHead != null and purchaseRequisition.approvedByCategoryHeadOne == null and is_granted("ROLE_SUPER_ADMIN")) %}
+                            {% set i = i + 1 %}
+                            <tr style="border-top: 1px solid #eee !important;">
+                                <td>{{ i }}.</td>
+                                <td style="width: 50px;">{{ purchaseRequisition.id }}</td>
+                                <td>
+                                    <div style="font-size:11px;text-align:center;background: darkred;width: 190px; color: #ffffff; height: 17px;">
+                                        This Req. is pending for validated
+                                    </div>
+                                </td>
+                            </tr>
+                        {% elseif (purchaseRequisition.approvedByCategoryHeadOne != null and purchaseRequisition.approvedByCategoryHeadTwo == null and app.user.username == purchaseRequisition.subCategory.head and is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") ) or (purchaseRequisition.approvedByCategoryHeadOne != null and purchaseRequisition.approvedByCategoryHeadTwo == null and is_granted("ROLE_SUPER_ADMIN")) %}
+                        {% set i = i + 1 %}
+                            <tr style="border-top: 1px solid #eee !important;">
+                                <td>{{ i }}.</td>
+                                <td style="width: 50px;">{{ purchaseRequisition.id }}</td>
+                                <td>
+
+                                <div style="font-size:11px;text-align:center;background: darkred;width: 190px; color: #ffffff; height: 17px;">
+                                    This Req. is pending for Approval
+                                </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6 margin-top-30">
+                <table class="table table-striped bold border-1-ghostwhite">
+                    <thead class="backgroundTableHeader">
+                    <tr>
+                        <th>Sl</th>
+                        <th>PO No</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% set i = 0 %}
+                    {% for purchaseOrder in allPurchaseOrders %}
+
+                        {% if is_granted("ROLE_PURCHASE_ORDER_APPROVE_ONE") or is_granted("ROLE_SUPER_ADMIN") %}
+                        {% if purchaseOrder.approveStatus == 0 %}
+                        {% set i = i + 1 %}
+                        <tr style="border-top: 1px solid #eee !important;">
+                            <td>{{ i }}.</td>
+                            <td>{{ purchaseOrder.id }}</td>
+                            <td>
+                                <div style="font-size:11px;text-align:center;background: darkred;width: 185px; color: #ffffff; height: 17px;">
+                                    This PO is pending for Verified
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% elseif is_granted("ROLE_PURCHASE_ORDER_APPROVE_TWO") or is_granted("ROLE_SUPER_ADMIN") %}
+                        {% if purchaseOrder.approveStatus == 1 %}
+                        {% set i = i + 1 %}
+                        <tr style="border-top: 1px solid #eee !important;">
+                            <td>{{ i }}.</td>
+                            <td>{{ purchaseOrder.id }}</td>
+                            <td>
+                                <div style="font-size:11px;text-align:center;background: darkred;width: 185px; color: #ffffff; height: 17px;">
+                                    This PO is pending for validated
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% elseif is_granted("ROLE_PURCHASE_ORDER_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                        {% if purchaseOrder.approveStatus == 2 %}
+                        {% set i = i + 1 %}
+                        <tr style="border-top: 1px solid #eee !important;">
+                            <td>{{ i }}.</td>
+                            <td>{{ purchaseOrder.id }}</td>
+                            <td>
+                                <div style="font-size:11px;text-align:center;background: darkred;width: 185px; color: #ffffff; height: 17px;">
+                                    This PO is pending for Approval
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <table class="table table-striped bold border-1-ghostwhite">
+                    <thead class="backgroundTableHeader">
+                    <tr>
+                        <th>Sl</th>
+                        <th class="col-md-4">Item</th>
+                        <th class="col-md-2"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set i = 0 %}
+                    {% for allReceive in allReceives %}
+                        {% set i = i + 1 %}
+                        <tr>
+                            <td>{{ i }}</td>
+                            <td>
+                                {{ allReceive.item.itemName }}
+                            </td>
+                            <td>
+                                <div style="font-size:11px;text-align:center;background: darkred;width: 180px; color: #ffffff; height: 17px;">
+                                    This Item is pending for Receive
+                                </div>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}

@@ -1,0 +1,9 @@
+report_receive_report_bundle:
+    pattern: /receive-report
+    defaults: { _controller: PmsReportBundle:ReceiveReport:receiveReport }
+
+report_receive_report_bundle_excel:
+    pattern: /receive-report-excel
+    defaults: { _controller: PmsReportBundle:ReceiveReport:receiveReportExcel }
+    options:
+            expose: true

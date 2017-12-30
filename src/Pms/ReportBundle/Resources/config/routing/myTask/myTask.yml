@@ -1,0 +1,3 @@
+my_task:
+    pattern: /my-task
+    defaults: { _controller: PmsReportBundle:MyTask:myTask }

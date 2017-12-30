@@ -1,0 +1,9 @@
+report_user_activities:
+    pattern: /user-activities-report
+    defaults: { _controller: PmsReportBundle:UserActivities:userActivities }
+
+report_user_activities_excel:
+    pattern: /user-activities-report-excel
+    defaults: { _controller: PmsReportBundle:UserActivities:userActivitiesExcel }
+    options:
+            expose: true

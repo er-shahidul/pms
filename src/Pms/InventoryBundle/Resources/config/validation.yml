@@ -1,0 +1,15 @@
+Pms\InventoryBundle\Entity\TotalReceiveItem:
+    properties:
+        project:
+            - NotBlank: { message: "Project Name should not be blank" }
+        item:
+            - NotBlank: { message: "Item should not be blank" }
+
+Pms\InventoryBundle\Entity\Delivery:
+    properties:
+        category:
+            - NotBlank: { message: "Category should not be blank" }
+        subCategory:
+            - NotBlank: { message: "Sub category should not be blank" }
+        costHeader:
+            - NotBlank: { message: "Cost header should not be blank" }

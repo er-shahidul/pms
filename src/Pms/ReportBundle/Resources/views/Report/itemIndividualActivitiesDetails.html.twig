@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Requisition
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('purchase_requisition') }}" style="color: #333 !important;">Purchase Requisition</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <a href="{{ path('report_requisition_item_closed_excel',{month:app.request.get('month')}) }}"
+       target="_blank" id="excelReport"
+       style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;    margin-bottom: 5px;
+    margin-right: 16px;">
+        Pr Item Close Excel
+    </a><br/>
+    <div class="row-fluid">
+        <div class="col-md-12">
+
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-cogs"></i>Item {{ status }} Activities</div>
+                </div>
+                <div class="portlet-body flip-scroll">
+                    <table class="table-bordered table-striped table-condensed flip-content">
+                        <thead class="flip-content" style="background: #4b8df8">
+                        <tr>
+                            <th class="numeric">Item</th>
+                            <th class="numeric">PR No</th>
+                            <th class="numeric">Project</th>
+                            <th class="numeric">ItemType</th>
+                            <th class="numeric">PR Quantity</th>
+                            <th class="numeric">CancelQty</th>
+                            <th class="numeric">Unit</th>
+                            <th class="numeric">Claimed</th>
+                            <th class="numeric">Local/Head</th>
+                            <th class="numeric">status</th>
+                            <th class="numeric">Required By</th>
+                            <th class="numeric"></th>
+                            <th class="numeric">Closed By</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for requisitionItem in purchaseRequisitionItems %}
+                            <tr>
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisitionItem.item.itemName | default() }}
+                                </td>
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisitionItem.purchaseRequisition.id | default() }}
+                                </td>
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisitionItem.purchaseRequisition.project.projectName | default() }}
+                                </td>
+                                <td class="numeric" >
+                                    {{ requisitionItem.purchaseRequisitionItem.item.itemType.itemType | default() }}
+                                </td>
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisitionItem.quantity + requisitionItem.purchaseRequisitionItem.purchaseRequisitionItemCloseInfo.quantity }}
+                                </td>
+                                <td class="numeric">
+                                    {% if requisitionItem.purchaseRequisitionItem.purchaseRequisitionItemCloseInfo is defined %}
+                                        {{ requisitionItem.purchaseRequisitionItem.purchaseRequisitionItemCloseInfo.quantity }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisitionItem.item.itemUnit | default() }}
+                                </td>
+                                {% if status == 'individual-closed' %}
+                                <td class="numeric">
+                                    {% if requisitionItem.purchaseRequisitionItem != null %}
+                                        {{ requisitionItem.purchaseRequisitionItem.claimedBy.username|default() }}
+                                    {% endif %}
+                                    {% if requisitionItem.purchaseRequisitionItem.claimedBy == null %}
+                                        None
+                                    {% endif %}
+                                </td>
+                                    {% else %}
+                                        <td class="numeric">
+                                            {% if requisitionItem.claimedBy != null %}
+                                                {{ requisitionItem.claimedBy.username|default() }}
+                                            {% endif %}
+                                            {% if requisitionItem.claimedBy == null %}
+                                                None
+                                            {% endif %}
+                                        </td>
+                                        {% endif %}
+                                {% if status == 'individual-closed' %}
+                                <td class="numeric">{{ requisitionItem.purchaseRequisitionItem.isHeadOrLocal ~ 'office' |default('') }}</td>
+                                {% else %}
+                                    <td class="numeric">{{ requisitionItem.isHeadOrLocal ~ 'office' |default('') }}</td>
+                                    {% endif %}
+                                {% if status == 'individual-closed' %}
+                                <td class="numeric">
+                                    {% if requisitionItem.purchaseRequisitionItem.claimedBy != null %}
+                                        <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                                            Claimed
+                                        </div>
+                                    {% endif %}
+                                    {% if requisitionItem.purchaseRequisitionItem.claimedBy == null %}
+                                        <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                                            Open
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                {% else %}
+                                    <td class="numeric">
+                                        {% if requisitionItem.claimedBy != null %}
+                                            <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                                                Claimed
+                                            </div>
+                                        {% endif %}
+                                        {% if requisitionItem.claimedBy == null %}
+                                            <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                                                Open
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    {% endif %}
+                               {% if status == 'individual-closed' %}
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisitionItem.dateOfRequired | date('d M Y') }}
+                                </td>
+                                {% else %}
+                                <td class="numeric">
+                                    {{ requisitionItem.dateOfRequired | date('d M Y') }}
+                                </td>
+                                    {% endif %}
+                              {% if status == 'individual-closed' %}
+                                <td class="numeric">
+                                    {% if requisitionItem.purchaseRequisitionItem.purchaseRequisition.approvedByCategoryHeadTwo != null %}
+                                        {% if requisitionItem.purchaseRequisitionItem.claimedBy == null %}
+                                            {% if requisitionItem.status == 1 and (is_granted("ROLE_PURCHASE_REQUISITION_CLAIM") or is_granted("ROLE_SUPER_ADMIN")) %}
+                                                <a class="btn blue btn-xs claim" rel="{{ requisitionItem.id }}" style="width: 65px; color:#ffffff !important;">Claim</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                {% else %}
+
+                                <td class="numeric">
+                                    {% if requisitionItem.purchaseRequisition.approvedByCategoryHeadTwo != null %}
+                                        {% if requisitionItem.claimedBy == null %}
+                                            {% if requisitionItem.status == 1 and (is_granted("ROLE_PURCHASE_REQUISITION_CLAIM") or is_granted("ROLE_SUPER_ADMIN")) %}
+                                                <a class="btn blue btn-xs claim" rel="{{ requisitionItem.id }}" style="width: 65px; color:#ffffff !important;">Claim</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                    {% endif %}
+                            {% if status == 'individual-closed' %}
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisitionItem.purchaseRequisitionItemCloseInfo.closedBy }}
+
+                                </td>
+                                {% else %}
+
+                                <td class="numeric">
+
+                                    {{ requisitionItem.comment }}
+                                </td>
+                                    {% endif %}
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

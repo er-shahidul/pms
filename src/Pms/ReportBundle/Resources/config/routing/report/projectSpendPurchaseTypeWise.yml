@@ -1,0 +1,14 @@
+report_project_spend_purchase_type_wise:
+    pattern: /project-spend-purchase-type-wise-report
+    defaults: { _controller: PmsReportBundle:ProjectSpendPurchaseTypeWise:projectSpendPurchaseTypeWise }
+
+report_project_spend_purchase_type_wise_item_details:
+    pattern: /project-spend-purchase-type-wise-report-item-details
+    defaults: { _controller: PmsReportBundle:ProjectSpendPurchaseTypeWise:projectSpendPurchaseTypeWiseItemDetails }
+    methods: GET
+
+report_project_spend_purchase_type_wise_excel:
+    pattern: /project-spend-purchase-type-wise-report-excel
+    defaults: { _controller: PmsReportBundle:ProjectSpendPurchaseTypeWise:projectSpendPurchaseTypeWiseExcel }
+    options:
+            expose: true

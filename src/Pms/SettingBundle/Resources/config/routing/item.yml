@@ -1,0 +1,43 @@
+item_items_list_excel:
+    pattern: /items-list-excel
+    defaults: { _controller: PmsSettingBundle:Item:itemsListExcel }
+    options:
+            expose: true
+
+item_add:
+    pattern: /item-add
+    defaults: { _controller: PmsSettingBundle:Item:add }
+
+item_delete:
+    pattern: /item/delete/{id}
+    defaults: { _controller: PmsSettingBundle:Item:delete }
+    requirements:
+          id: \d+
+
+item_active:
+    pattern: /item/active/{id}
+    defaults: { _controller: PmsSettingBundle:Item:active }
+    requirements:
+          id: \d+
+
+item_update:
+    pattern: /item/update/{id}
+    defaults: { _controller: PmsSettingBundle:Item:update }
+    requirements:
+          id:  \d+
+
+item_check:
+    pattern: /item/check
+    defaults: { _controller: PmsSettingBundle:Item:check }
+    options:
+            expose: true
+
+item_auto_complete_for_pr:
+    pattern: /item/po-auto-complete-pr
+    defaults: { _controller: PmsSettingBundle:Item:itemAutoCompleteForPr }
+    options:
+          expose: true
+
+item:
+    pattern: /item/{status}
+    defaults: { _controller: PmsSettingBundle:Item:index, status:active }

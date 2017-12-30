@@ -1,0 +1,13 @@
+company:
+    pattern: /company
+    defaults: { _controller: PmsSettingBundle:CompanySetting:index }
+
+company_add:
+    pattern: /company/add
+    defaults: { _controller: PmsSettingBundle:CompanySetting:add }
+
+company_update:
+    pattern: /company/update/{id}
+    defaults: { _controller: PmsSettingBundle:CompanySetting:update }
+    requirements:
+          id:  \d+

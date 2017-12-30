@@ -1,0 +1,176 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                PR Item Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_item_report_bundle') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Item</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+
+            <form action="{{ path('report_pr_item_report_bundle') }}" method="get" name="item_report" id="item_report">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tbody>
+                        <tr class="numeric">
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.item, { 'attr': {'class': 'form-control fontColorBlack select2AutoComplete', 'placeholder': ' Select Item'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+
+        <div class="span12">
+
+            {#<div class="modal-footer fa-align-left">#}
+                {#<input type="button" value="Export in excel" name="itemReportExcel" id="itemReportExcel" class="btn blue">#}
+            {#</div>#}
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr class="numeric">
+                        <th>Sl</th>
+                        <th>PR NO</th>
+                        <th>Particulars</th>
+                        <th>Project</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for index, itemUse in itemUses %}
+                        <tr class="numeric">
+                            <td>{{ index + 1 }}.</td>
+                            <td>{{ itemUse.purchaseRequisition.id }}</td>
+                            <td>{{ itemUse.item.itemName }}</td>
+                            <td>{{ itemUse.purchaseRequisition.project.projectName }}</td>
+                            <td>{{ itemUse.quantity }}</td>
+                            <td>{{ itemUse.item.price |number_format(2, '.', ',') }}</td>
+                            <td>{{ itemUse.totalPrice |number_format(2, '.', ',') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    var $url = Routing.generate('item_auto_complete');
+    var queryStringObject = {{ app.request.query.all|json_encode|raw }};
+    var selectedItemId = (queryStringObject && queryStringObject.search && queryStringObject.search.item) ? queryStringObject.search.item : '';
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+
+            return m;
+        },
+        formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+            $.ajax({
+                url: $url,
+                data: 'item=' + selectedItemId,
+                dataType: 'json'
+            }).done(function(data){
+                callback(data);
+            });
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+    $('#itemReportExcel').click(function () {
+
+        setTimeout(function(){
+            $('#item_report').attr('action', '{{ path('report_pr_item_report_bundle_excel') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'item_report',
+            url: Routing.generate('report_pr_item_report_bundle_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock documentready %}

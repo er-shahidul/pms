@@ -1,0 +1,52 @@
+<div class="form-group">
+    <div class="col-md-12" style="margin-top: 30px;">
+
+        <table class="table bold" style="border: 1px solid ghostwhite;">
+            <thead style="background: #4b8df8;color: #fff;">
+            <tr>
+                <th>Sl</th>
+                <th class="col-md-3">Sub Category Name</th>
+                <th class="col-md-3">Category Name</th>
+                <th class="col-md-2">Head</th>
+                <th class="col-md-2">Sub Head</th>
+                <th class="col-md-2"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% set offset = subCategories.getItemNumberPerPage * (subCategories.currentPageNumber - 1) %}
+
+            {% for subCategory in subCategories %}
+
+                <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                    <td>{{ loop.index + offset }}.</td>
+                    <td>{{ subCategory.subCategoryname }}</td>
+                    <td>{{ subCategory.category.categoryName }}</td>
+                    <td>{{ subCategory.head }}</td>
+                    <td>{{ subCategory.subHead }}</td>
+                    <td>
+                        {% if subCategory.status == 1 %}
+                            <a href="/sub-category/delete/{{ subCategory.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-trash-o"></i> Delete</a>
+
+                            <a href="/sub-category/update/{{ subCategory.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-edit"></i> Update</a>
+                        {% endif %}
+                        {% if subCategory.status == 0 %}
+                            <a href="#" class="btn default btn-xs" style="width: 65px;"><i
+                                        class="fa fa-times"></i> Deleted</a>
+
+                            <a href="/sub-category/active/{{ subCategory.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-repeat"></i> Restore</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+        <div class="navigation" style="text-align: right">
+            {{ knp_pagination_render(subCategories) }}
+        </div>
+    </div>
+</div>

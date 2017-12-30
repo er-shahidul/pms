@@ -1,0 +1,330 @@
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('assets/css/pdfprint.css',null,true) }}">
+    <table class="table">
+    <tr valign="top">
+        <td valign="top" class="main-table">
+            <div class="table-head">
+                <table>
+                    <tr>
+                        <td colspan="2" class="title">Purchase Requisition Details</td>
+                    </tr>
+                    <tr>
+                        <td class="header-td">
+                            <table class="table-left">
+                                <tr>
+                                    <td class="label-td">
+                                        Project :
+                                    </td>
+                                    <td>
+                                        {{ pr.project.projectName | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Area :
+                                    </td>
+                                    <td>
+                                        {{ pr.project.projectArea.areaName | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Company Type :
+                                    </td>
+                                    <td>
+                                        {{ pr.project.projectCategory.projectCategoryName | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        CCN :
+                                    </td>
+                                    <td>
+                                        {{ pr.project.costCenterNumber | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Project Head :
+                                    </td>
+                                    <td>
+                                        {{ pr.project.projectHead.username | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Address :
+                                    </td>
+                                    <td>
+                                        {{ pr.project.address | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Cost Header :
+                                    </td>
+                                    <td>
+                                        {{ pr.costHeader.title | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Category :
+                                    </td>
+                                    <td>
+                                        {{ pr.category.categoryName | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Sub Category :
+                                    </td>
+                                    <td>
+                                        {{ pr.subCategory.subCategoryName | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Priority :
+                                    </td>
+                                    <td>
+                                        {{ pr.priority }}
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table class="table-left">
+                                <tr>
+                                    <td class="label-td">
+                                        Requisition No :
+                                    </td>
+                                    <td>
+                                       {{ pr.id | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Ref. No :
+                                    </td>
+                                    <td class="value-td">
+                                        {{ pr.refNo | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Issued by :
+                                    </td>
+                                    <td>
+                                        {{ pr.createdby.username | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Issue Date :
+                                    </td>
+                                    <td>
+                                        {{ pr.createdDate | date('d M Y') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        <span style="font-weight: bold;"><u>Approval Info</u></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Created :
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: bold;">{{ pr.createdBy.username | default() }}</span>
+                                        {% if  pr.createdDate != null %}
+                                            on <span style="font-weight: bold;">{{ pr.createdDate | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Verified :
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: bold;">{{ pr.approvedByProjectHead.username | default('not approved') }}</span>
+                                        {% if  pr.approvedDateProjectHead != null %}
+                                            on <span style="font-weight: bold;">{{ pr.approvedDateProjectHead | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Validated :
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: bold;">{{ pr.approvedByCategoryHeadTwo.username | default('not validated') }}</span>
+                                        {% if pr.approvedDateCategoryHeadTwo != null %}
+                                            on <span style="font-weight: bold;">{{ pr.approvedDateCategoryHeadTwo | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Approved :
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: bold;">{{ pr.approvedByCategoryHeadOne.username | default('not verified') }}</span>
+                                        {% if  pr.approvedDateCategoryHeadOne != null %}
+                                            on <span style="font-weight: bold;">{{ pr.approvedDateCategoryHeadOne | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {% if is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                <div>
+                    {{ lastItemHistory | raw }}
+                </div>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="table-body-first">
+            <table id="table_requisition" class="table_order col-md-12" >
+                <thead>
+                <tr>
+                    <th class="col-md-2" >Item</th>
+                    <th class="col-md-1" >ItemType</th>
+                    <th class="col-md-1" >Quantity</th>
+                    <th class="col-md-1" >CancelQty</th>
+                    <th class="col-md-1" >Unit</th>
+                    <th class="col-md-1" >Claimed</th>
+                    <th class="col-md-1" >Local/Head</th>
+                    <th class="col-md-1" >Status</th>
+                    <th class="col-md-2" >Required By</th>
+                    <th class="col-md-1" >Remarks/Specification/Brand</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set i = 1 %}
+                {% set count = pr.purchaseRequisitionItems|length %}
+                {% for requisitionItem in pr.purchaseRequisitionItems|slice(0,15) %}
+                    <tr>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.item.itemName }}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.item.itemType.itemType }}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.quantity }}
+                        </td>
+                        <td style="width: 100px;padding-left: 10px! important;">
+                            {% if requisitionItem.purchaseRequisitionItemCloseInfo.quantity is defined %}
+                                {{ requisitionItem.purchaseRequisitionItemCloseInfo.quantity }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.item.itemUnit }}
+                        </td>
+                        <td class="col-md-3" >
+                            {% if requisitionItem.claimedBy != null %}
+                                {{ requisitionItem.claimedBy.username }}
+                            {% endif %}
+                            {% if requisitionItem.claimedBy == null %}
+                                None
+                            {% endif %}
+                        </td>
+                        <td class="col-md-3" >
+                            {% if requisitionItem.claimedBy != null %}Claimed {% else %}Open{% endif %}
+                        </td>
+                        <td class="col-md-3">{{ requisitionItem.isHeadOrLocal ~ 'office' |default('') }}</td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.dateOfRequired | date('d M Y') }}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.comment }}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    {% if pr.purchaseRequisitionItems|length > 16 %}
+    <tr>
+        <td class="table-body">
+            <table id="table_requisition" class="table_order col-md-12" >
+                <thead>
+                <tr>
+                    <th class="col-md-1" >Item</th>
+                    <th class="col-md-1" >ItemType</th>
+                    <th class="col-md-1" >Quantity</th>
+                    <th class="col-md-1" >Unit</th>
+                    <th class="col-md-1" >Claimed</th>
+                    <th class="col-md-1" >Status</th>
+                    <th class="col-md-1" >Required By</th>
+                    <th class="col-md-1" >Remarks/Specification/Brand</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set i = 16 %}
+                {% set limit = pr.purchaseRequisitionItems|length %}
+                {% for requisitionItem in pr.purchaseRequisitionItems|slice(16,limit) %}
+                    <tr>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.item.itemName }}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.item.itemType.itemType }}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.quantity }}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.item.itemUnit }}
+                        </td>
+                        <td class="col-md-3" >
+                            {% if requisitionItem.claimedBy != null %}
+                                {{ requisitionItem.claimedBy.username }}
+                            {% endif %}
+                            {% if requisitionItem.claimedBy == null %}
+                                None
+                            {% endif %}
+                        </td>
+                        <td class="col-md-3" >
+
+                            {% if requisitionItem.claimedBy != null %}Claimed {% else %}Open{% endif %}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.dateOfRequired | date('d M Y') }}
+                        </td>
+                        <td class="col-md-3" >
+                            {{ requisitionItem.comment }}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    {% endif %}
+    </table>
+{% endblock %}

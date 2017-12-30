@@ -1,0 +1,482 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td{
+            background: none;
+        }
+    </style>
+
+    <div>
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                <h3 class="page-title">
+                    PR Report
+                    <small></small>
+                </h3>
+                <ul class="page-breadcrumb breadcrumb" style="margin-right: 3px;height: 36px;">
+                    <li>
+                        <i class="fa fa-home"></i>
+                        <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                        <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="{{ path('report_requisition') }}" style="color: #333 !important;">Report</a>
+                        <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="#" style="color: #333 !important;"> PR Report</a>
+                    </li>
+                    <li class="pull-right" style="margin-right: -5px;">
+                        <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                            <i class="fa fa-calendar"></i>
+                            {{ "now"|date("d-F-Y") }}
+                        </div>
+                    </li>
+                </ul>
+                <!-- END PAGE TITLE & BREADCRUMB-->
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <div class="row">
+            <div>
+
+                <form action="{{ url('report_requisition') }}" method="get" name="report_requisition" id="requisition_report_search_form">
+                    <table id="table_project_cost" style="margin-left: 15px;">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-1">
+                                        <div class="input-icon right">
+                                            <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-1">
+                                        <div class="input-icon right">
+                                            <span style="font-size: 15px;font-weight: bolder;line-height: 30px;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group input-medium">
+                                    {{ form_widget(form.project, { 'attr': {'class': 'col-md-3 form-control select2me fontColorBlack', 'placeholder': ' Select Project'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                        <input type="button" value="Export in excel" name="requisitionExcel" id="requisitionExcel" class="btn blue">
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="row" >
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-conten tableHeadColor" >
+                        <tr>
+                        <td></td>
+                        <th>Sl</th>
+                        <th>PRNo</th>
+                        <th>RefNo</th>
+                        <th>ProjectName</th>
+                        <th>CompanyName</th>
+                        <th>SubCategory</th>
+                        <th>CostHead</th>
+                        <th>IssuedBy</th>
+                        <th>Status</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                {% for index , budgetDaily in purchaseRequisitionItems %}
+
+                    <tr>
+                        <td ><span id="{{ index + 1 }}" class="toggle  row-details row-details-close" style="cursor:pointer;"><span>[+]</span></span></td>
+                        <td >{{ index + 1 }}</td>
+
+                        {% if budgetDaily.purchaseRequisition.totalRequisitionItem == 0 %}
+                            {% set totalRequisitionItem = 1 %}
+                        {% else %}
+                            {% set totalRequisitionItem = budgetDaily.purchaseRequisition.totalRequisitionItem %}
+                        {% endif %}
+
+                        {% if budgetDaily.purchaseRequisition.totalRequisitionItemQuantity == 0 %}
+                            {% set totalRequisitionItemQuantity = 1 %}
+                        {% else %}
+                            {% set totalRequisitionItemQuantity = budgetDaily.purchaseRequisition.totalRequisitionItemQuantity %}
+                        {% endif %}
+                        <td >{{ budgetDaily.purchaseRequisition.id }}</td>
+                        <td >{{ budgetDaily.purchaseRequisition.refNo }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseRequisition.project.projectName }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseRequisition.project.projectCategory.projectCategoryName }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseRequisition.subcategory.subCategoryName }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseRequisition.costHeader.title }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseRequisition.createdBy }}</td>
+                        <td class="numeric">
+                            {% if budgetDaily.purchaseRequisition.status == 1
+                            and budgetDaily.purchaseRequisition.approveStatus != 1
+                            and budgetDaily.purchaseRequisition.approveStatus != 2
+                            and budgetDaily.purchaseRequisition.approveStatus != 3 %}
+                                <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                    Created
+                                </div>
+                            {% endif %}
+                            {% if budgetDaily.purchaseRequisition.status == 1
+                            and budgetDaily.purchaseRequisition.approveStatus == 1
+                            and budgetDaily.purchaseRequisition.approveStatus != 2
+                            and budgetDaily.purchaseRequisition.approveStatus != 3 %}
+                                <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                    Verified
+                                </div>
+                            {% endif %}
+                            {% if budgetDaily.purchaseRequisition.status == 1
+                            and budgetDaily.purchaseRequisition.approveStatus != 1
+                            and budgetDaily.purchaseRequisition.approveStatus == 2
+                            and budgetDaily.purchaseRequisition.approveStatus != 3 %}
+                                <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                    Validated
+                                </div>
+                            {% endif %}
+                            {% if budgetDaily.purchaseRequisition.status == 1
+                            and budgetDaily.purchaseRequisition.approveStatus != 1
+                            and budgetDaily.purchaseRequisition.approveStatus != 2
+                            and budgetDaily.purchaseRequisition.approveStatus == 3
+                            and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed == null
+                            and budgetDaily.purchaseRequisition.totalOrderItemQuantity == 0 %}
+                                <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                    Approved
+                                </div>
+                            {% endif %}
+                            {% if budgetDaily.purchaseRequisition.status == 1
+                            and budgetDaily.purchaseRequisition.approveStatus == 3
+                            and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed != null
+                            and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed < budgetDaily.purchaseRequisition.totalRequisitionItem %}
+                                <div style="text-align:center;background: #4b8df8; color: #ffffff;height: 20px;">
+                                    PartialClaim
+                                </div>
+                            {% endif %}
+                            {% if budgetDaily.purchaseRequisition.status == 1
+                            and budgetDaily.purchaseRequisition.approveStatus == 3
+                            and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed != null
+                            and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed == budgetDaily.purchaseRequisition.totalRequisitionItem
+                            and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity > budgetDaily.purchaseRequisition.totalOrderItemQuantity %}
+                                <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                    InProgress
+                                </div>
+                            {% endif %}
+                            {% if budgetDaily.purchaseRequisition.status == 1
+                            and budgetDaily.purchaseRequisition.approveStatus == 3
+                            and budgetDaily.purchaseRequisition.totalOrderItemQuantity >= budgetDaily.purchaseRequisition.totalRequisitionItemQuantity %}
+                                <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                    PoIssued
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="showing-overview" id="show-{{ index + 1 }}" style="display: none;">
+                        <td colspan="10">
+                            <table class="inner-table" style="width: 100%">
+                                <tr class="inner-numeric"><td colspan="10" style="text-align: center"><strong>PR Detail</strong></td></tr>
+                                <tr class="inner-numeric"><td>Area</td><td>{{ item.project.projectArea.areaName | default('...') }}</td></tr>
+                                <tr class="inner-numeric"><td>Approved%</td>
+                                    <td>
+                                        {% if budgetDaily.purchaseRequisition.approveStatus == 0 %}
+                                            {% set approvePercentage = 0 %}
+                                        {% elseif budgetDaily.purchaseRequisition.approveStatus == 1 %}
+                                            {% set approvePercentage = 33 %}
+                                        {% elseif budgetDaily.purchaseRequisition.approveStatus == 2 %}
+                                            {% set approvePercentage = 66 %}
+                                        {% elseif budgetDaily.purchaseRequisition.approveStatus == 3 %}
+                                            {% set approvePercentage = 100 %}
+                                            {{ approvePercentage }}%
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr class="inner-numeric"><td>Claimed%</td>
+                                    <td>
+                                        {% if ((budgetDaily.purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) > 100 %}
+                                            {% set claimPercentage = 100 %}
+                                        {% else %}
+                                            {% set claimPercentage = ((budgetDaily.purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | length > 3 ? ((budgetDaily.purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | slice(0, 2) ~ '' : ((budgetDaily.purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) %}
+                                        {% endif %}
+                                        {{ claimPercentage }}%
+                                    </td>
+                                </tr>
+                                <tr class="inner-numeric"><td>Po Issued%</td>
+                                    <td>
+                                        {% if ((budgetDaily.purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) > 100 %}
+                                            {% set poIssuedPercentage = 100 %}
+                                        {% else %}
+                                            {% set poIssuedPercentage = ((budgetDaily.purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | length > 3 ? ((budgetDaily.purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | slice(0, 2) ~ '' : ((budgetDaily.purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) %}
+                                        {% endif %}
+                                        {{ poIssuedPercentage }}%
+                                    </td>
+                                </tr>
+                                <tr class="inner-numeric"><td>PR Comment</td>
+                                    <td>{% for prComment in budgetDaily.purchaseRequisition.purchaseRequisitionComment %}
+                                            {{ prComment.comment }},
+                                        {% endfor %}</td>
+                                </tr>
+                                <tr class="inner-numeric"><td>ItemName</td><td>{{ budgetDaily.item.itemName }}</td></tr>
+                                <tr class="inner-numeric"><td>PRQty</td><td>{{ item.project.projectArea.areaName | default('...') }}</td></tr>
+                                <tr class="inner-numeric"><td>IssueDate</td><td>{{ budgetDaily.purchaseRequisition.createdDate | date('d-M-Y') }}</td></tr>
+                                <tr class="inner-numeric"><td>VerifiedBy</td><td>{{ budgetDaily.purchaseRequisition.approvedByProjectHead }}</td></tr>
+                                <tr class="inner-numeric"><td>VerifiedDate</td><td>{{ budgetDaily.purchaseRequisition.approvedDateProjectHead | date('d-M-Y') }}</td></tr>
+                                <tr class="inner-numeric"><td>ValidatedBy</td><td>{{ budgetDaily.purchaseRequisition.approvedByCategoryHeadOne }}</td></tr>
+                                <tr class="inner-numeric"><td>ValidatedDate</td><td>{{ budgetDaily.purchaseRequisition.approvedDateCategoryHeadOne | date('d-M-Y') }}</td></tr>
+                                <tr class="inner-numeric"><td>ApproveBy</td><td>{{ budgetDaily.purchaseRequisition.approvedByCategoryHeadTwo }}</td></tr>
+                                <tr class="inner-numeric"><td>ApproveDate</td><td>{{ budgetDaily.purchaseRequisition.approvedDateCategoryHeadTwo | date('d-M-Y') }}</td></tr>
+                                <tr class="inner-numeric"><td>ClaimedBy</td><td>{{ budgetDaily.claimedBy |default('...') }}</td></tr>
+                                <tr class="inner-numeric"><td>ClaimedDate</td><td>{{ budgetDaily.claimedDate ? budgetDaily.claimedDate| date('d-M-Y') : '...' }}</td></tr>
+                                <tr class="inner-numeric"><td>PurchaseFrom</td><td>{{ budgetDaily.isHeadOrLocal ~ ' office' }}</td></tr>
+                                <tr class="inner-numeric"><td>PRAmount</td><td>{{ budgetDaily.totalPrice | default() }}</td></tr>
+
+                                <tr class="inner-numeric"><td colspan="10" style="text-align: center"><strong>PO Detail</strong></td></tr>
+                                <tr class="inner-numeric">
+                                    <td colspan="10" style="text-align: center">
+                                        <table class="table table-bordered table-striped table-condensed flip-content ">
+                                            <thead class="flip-content tableHeadColor">
+                                            <tr>
+                                                <td></td>
+                                                <th>Sl</th>
+                                                <th>PRNo</th>
+                                                <th>RefNo</th>
+                                                <th>ProjectName</th>
+                                                <th>CompanyName</th>
+                                                <th>SubCategory</th>
+                                                <th>CostHead</th>
+                                                <th>IssuedBy</th>
+                                                <th>Status</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td>Sl</td>
+                                                <td>PRNo</td>
+                                                <td>RefNo</td>
+                                                <td>ProjectName</td>
+                                                <td>CompanyName</td>
+                                                <td>SubCategory</td>
+                                                <td>CostHead</td>
+                                                <td>IssuedBy</td>
+                                                <td>Status</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Sl</td>
+                                                <td>PRNo</td>
+                                                <td>RefNo</td>
+                                                <td>ProjectName</td>
+                                                <td>CompanyName</td>
+                                                <td>SubCategory</td>
+                                                <td>CostHead</td>
+                                                <td>IssuedBy</td>
+                                                <td>Status</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Sl</td>
+                                                <td>PRNo</td>
+                                                <td>RefNo</td>
+                                                <td>ProjectName</td>
+                                                <td>CompanyName</td>
+                                                <td>SubCategory</td>
+                                                <td>CostHead</td>
+                                                <td>IssuedBy</td>
+                                                <td>Status</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Sl</td>
+                                                <td>PRNo</td>
+                                                <td>RefNo</td>
+                                                <td>ProjectName</td>
+                                                <td>CompanyName</td>
+                                                <td>SubCategory</td>
+                                                <td>CostHead</td>
+                                                <td>IssuedBy</td>
+                                                <td>Status</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Sl</td>
+                                                <td>PRNo</td>
+                                                <td>RefNo</td>
+                                                <td>ProjectName</td>
+                                                <td>CompanyName</td>
+                                                <td>SubCategory</td>
+                                                <td>CostHead</td>
+                                                <td>IssuedBy</td>
+                                                <td>Status</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Sl</td>
+                                                <td>PRNo</td>
+                                                <td>RefNo</td>
+                                                <td>ProjectName</td>
+                                                <td>CompanyName</td>
+                                                <td>SubCategory</td>
+                                                <td>CostHead</td>
+                                                <td>IssuedBy</td>
+                                                <td>Status</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Sl</td>
+                                                <td>PRNo</td>
+                                                <td>RefNo</td>
+                                                <td>ProjectName</td>
+                                                <td>CompanyName</td>
+                                                <td>SubCategory</td>
+                                                <td>CostHead</td>
+                                                <td>IssuedBy</td>
+                                                <td>Status</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>Sl</td>
+                                                <td>PRNo</td>
+                                                <td>RefNo</td>
+                                                <td>ProjectName</td>
+                                                <td>CompanyName</td>
+                                                <td>SubCategory</td>
+                                                <td>CostHead</td>
+                                                <td>IssuedBy</td>
+                                                <td>Status</td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                {% for po in budgetDaily.purchaseOrderItems %}
+
+                                <tr><td class="inner-numeric">PONo         </td><td>{{ po.purchaseOrder.id }}</td></tr>
+                                <tr><td class="inner-numeric">POIssueDate  </td><td>{{ po.purchaseOrder.createdDate | date('d-M-Y') }}</td></tr>
+                                <tr><td class="inner-numeric">PaymentType  </td><td>{{ po.purchaseOrder.paymentType | default('') }}</td></tr>
+                                <tr><td class="inner-numeric">PaymentMethod</td><td>{{ po.purchaseOrder.paymentMethod | default('') }}</td></tr>
+                                <tr><td class="inner-numeric">PaymentFrom  </td>
+                                    <td>
+                                        {% if po.purchaseOrder.paymentFrom == 1 %}
+                                            {% set paymentFrom = 'Local Office' %}
+                                        {% else %}
+                                            {% set paymentFrom = 'Head Office' %}
+                                        {% endif %}
+                                        {{ paymentFrom }}
+                                    </td>
+                                </tr>
+                                <tr><td class="inner-numeric">Computation  </td>
+                                    <td>
+                                        {% if po.purchaseOrder.computationStatus == 1 %}
+                                            {% set computationStatus = 'yes' %}
+                                        {% else %}
+                                            {% set computationStatus = 'no' %}
+                                        {% endif %}
+                                        {{ computationStatus }}
+                                    </td>
+                                </tr>
+                                <tr><td class="inner-numeric">ApproveDate  </td><td>{{ po.purchaseOrder.approvedThreeDate | date('d-M-Y') }}</td></tr>
+                                <tr><td class="inner-numeric">POComment    </td>
+                                    <td>
+                                        {% for poComment in po.purchaseOrder.purchaseOrderComment %}
+                                            {{ poComment.comment }},
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr><td class="inner-numeric">PurchaseType </td><td>{{ po.purchaseOrder.poNonpo.name | default() }}</td></tr>
+                                <tr><td class="inner-numeric">POQty        </td><td>{{ po.quantity }}</td></tr>
+                                <tr><td class="inner-numeric">UnitPrice    </td><td>{{ po.price }}</td></tr>
+                                <tr><td class="inner-numeric">IssuedBy     </td><td>{{ po.purchaseOrder.approvedOne.username | default() }}</td></tr>
+                                <tr><td class="inner-numeric">VerifiedBy   </td><td>{{ po.purchaseOrder.createdBy.username | default() }}</td></tr>
+                                <tr><td class="inner-numeric">VerifiedDate </td><td>{{ po.purchaseOrder.approvedOneDate | date('d-m-Y') }}</td></tr>
+                                <tr><td class="inner-numeric">ValidatedBy  </td><td>{{ po.purchaseOrder.approvedTwo.username | default() }}</td></tr>
+                                <tr><td class="inner-numeric">ValidatedDate</td><td>{{ po.purchaseOrder.approvedTwoDate | date('d-m-Y') }}</td></tr>
+                                <tr><td class="inner-numeric">ApprovedBy   </td><td>{{ po.purchaseOrder.approvedThree.username | default() }}</td></tr>
+                                <tr><td class="inner-numeric">Buyer        </td><td>{{ po.purchaseOrder.buyer.username | default() }}</td></tr>
+                                <tr><td class="inner-numeric">Vendor       </td><td>{{ po.purchaseOrder.vendor.vendorName | default() }}</td></tr>
+                                <tr><td class="inner-numeric">POAmount     </td><td>{{ po.purchaseOrder.netTotal|number_format(2, '.', ',') }}</td></tr>
+
+                                <tr class="inner-numeric"><td colspan="10" style="text-align: center"><strong>Receive Detail</strong></td></tr>
+
+                                    {% for ri in po.receivedItems %}
+                                        <tr><td class="inner-numeric">ReceiveDate </td><td>{{ ri.receive.receivedDate | date('d-M-Y') }}</td></tr>
+                                        <tr><td class="inner-numeric">GRNNo     </td><td>{{ ri.receive.id }}</td></tr>
+                                        <tr><td class="inner-numeric">ReceiveBy     </td><td> {{ ri.receive.receivedBy.username | default() }}</td></tr>
+                                     {% endfor %}
+                               {% endfor %}
+
+                            </table>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            <div class="modal-footer" style="text-align:left;margin-bottom:5px;width: 100%;background: lightgrey;">
+
+            </div>
+        </div>
+        <!--END TABS-->
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+
+    $('#requisitionExcel').click(function () {
+
+    $.ajax({
+    form: 'requisition_report_search_form',
+    url: Routing.generate('report_requisition_excel'),
+    dataType: 'form html',
+    success:function(data){
+    //Handle The response data
+    }
+    });
+    });
+
+    {{ parent() }}
+
+    $(".toggle").click(function(){
+    var id = $(this).attr('id');
+    //$('.showing-overview').hide();
+    $("#show-"+id).slideToggle(100);
+    }).toggle( function() {
+    $(this).children("span").text("[-]");
+    }, function() {
+    $(this).children("span").text("[+]");
+    });
+
+{% endblock %}

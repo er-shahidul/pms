@@ -1,0 +1,35 @@
+pms_user_manager:
+    pattern:  /{page}
+    defaults: { _controller: UserBundle:ManageUser:index, page: 1 }
+    requirements:
+            page:  \d+
+
+pms_user_manager_create:
+    pattern:  /new
+    defaults: { _controller: UserBundle:ManageUser:create }
+
+pms_user_manager_edit:
+    pattern:  /edit/{id}
+    defaults: { _controller: UserBundle:ManageUser:edit }
+
+pms_user_manager_change_password:
+    pattern:  /change-password/{id}
+    defaults: { _controller: UserBundle:ManageUser:changeUserPassword }
+    methods:  [POST]
+    options:
+            expose: true
+
+pms_user_manager_delete:
+    pattern:  /delete/{id}
+    defaults: { _controller: UserBundle:ManageUser:delete }
+
+pms_user_manager_duplicacy_check:
+    pattern:  /check/{type}
+    defaults: { _controller: UserBundle:ManageUser:checkDuplicate }
+    methods:  [POST]
+    options:
+            expose: true
+
+fos_user_group:
+    resource: "group.xml"
+    prefix: /group

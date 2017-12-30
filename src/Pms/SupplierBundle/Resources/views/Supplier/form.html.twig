@@ -1,0 +1,270 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .form-group ul li {
+            list-style: none;
+            margin-left: -96px;
+        }
+        table tr td ul li {
+            list-style: none;
+            margin-left: -41px;
+        }
+        .validation{
+            margin-left: 58px;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('vendor') }}" style="color: #333 !important;">Vendor</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="modal-dialog bodyWidth">
+        <div class="modal-content backgroundWhite">
+            <div class="modal-header backGroundLightGrey">
+                <h4 class="modal-title bold text-center"> Vendor Sourcing</h4>
+            </div>
+<br/>
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'vendor-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            {{ form_label(form.name, 'Supplier Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.name, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.name) }}</span>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.specification, 'Specification :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.specification, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.specification) }}</span>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.brand, 'Brand :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.brand, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.brand) }}</span>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.item, 'Item :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.item, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.item) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.itemType, 'Item Type:', {'label_attr': {'class': 'control-label col-md-3 ', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.itemType, { 'attr': {'class': 'form-control select2me'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.itemType) }}</span>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.category, 'Category:', {'label_attr': {'class': 'control-label col-md-3 ', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.category, { 'attr': {'class': 'form-control select2me'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.category) }}</span>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.subCategory, 'Sub Category:', {'label_attr': {'class': 'control-label col-md-3 ', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.subCategory, { 'attr': {'class': 'form-control select2me'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.subCategory) }}</span>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.contactPerson, 'Contact Person :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.contactPerson, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.contactPerson) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.contactNo, 'Contact No :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.contactNo, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.contactNo) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.email, 'Email :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.email, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.email) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.remark, 'Remark :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.remark, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                {#<span class="help-block validation" style="color:darkred;">{{ form_errors(form.remark) }}</span>#}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" style="margin-right:-50px;">Created Date :</label>
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    <input type="text" class="form-control" style="padding-left: 10px !important;" placeholder="{{ "now"|date("m/d/Y") }}" readonly/>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            {#{{ form_label(form.files, 'File', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-left: 66px;' } } ) }}#}
+                            <label class="col-md-3 control-label" style="margin-right:-50px;">File :</label>
+                            <div class="col-md-8">
+                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input"  style="margin-left:34px;">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.files, { 'attr': {'class': 'default'} }) }}
+													</span>
+                                        <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="help-block validation" style="color:darkred;">{{ form_errors(form.files) }}</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: lightgrey;">
+                <div class="btn-group">
+                    <a href="/vendor" class="btn" style="width: 100px;background: #0353D6; color: white !important;">
+                        <i class="fa fa-ban"> Cancel</i>
+                    </a>
+                </div>
+                {{ form_widget(form.save, { 'attr': {'class': 'btn button-width', 'style': 'width: 100px;background: #0353D6; color: white !important;'} }) }}
+            </div>
+            {{ form_end(form) }}
+
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    $('select').select2();
+
+    $("#vendor_vendorName").keyup(function () {
+        var vendorName = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('vendor_check'),
+            data: "vendorName=" + vendorName,
+            dataType: 'json',
+            success: function (msg) {
+                if (msg.responseCode == 200) {
+                    $('.userMessege').css('color', 'red').html(msg.vendor_name).fadeIn(1000);
+                }
+                else {
+                    $('.userMessege').css('color', 'green').html(msg.vendor_name).fadeIn(1000);
+                }
+            }
+        });
+    });
+
+{% endblock %}

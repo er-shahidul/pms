@@ -1,0 +1,22 @@
+document_upload_file:
+    pattern: /document/upload-file
+    defaults: { _controller: PmsDocumentBundle:Document:uploadFile }
+
+document_details:
+    pattern: /document/details/{id}
+    defaults: { _controller: PmsDocumentBundle:Document:details }
+
+document_attachment_view:
+    pattern: /document/attachment-view/{id}/{index}
+    defaults: { _controller: PmsDocumentBundle:Document:attachmentView }
+
+document_title_auto_complete:
+    pattern: /document/title-auto-complete
+    defaults: { _controller: PmsDocumentBundle:Document:documentTitleAutoComplete }
+    options:
+          expose: true
+
+document:
+    pattern: /document/{status}
+    defaults: { _controller: PmsDocumentBundle:Document:index, status:invoice }
+

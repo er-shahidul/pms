@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor Payment Overview Detail
+
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_vendor_status_two') }}" style="color: #333 !important;">vendor payment overview</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <div id="reload-all-receive">
+
+            <div class="modal-dialog" style="width: 1000px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background: lightgrey;">
+                        <button type="button" class="close close-modal-refresh closeBack" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title bold" style="text-align: center;">Detail</h4>
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="portlet box green">
+
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-cogs"></i>Vendor Payment Overview Detail</div>
+                            </div>
+                            <div class="portlet-body flip-scroll">
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="portlet_tab1">
+                                        {#<form name="poInfoReportExcelFrm" id="poInfoReportExcelFrm">
+                                            <input type="hidden" name="dateValue" value="{{ dateValue }}">
+                                            <input type="hidden" name="monthValue" value="{{ monthValue }}">
+                                            <input type="hidden" name="companyType" value="{{ companyType }}">
+                                        <input type="button" value="Export in excel" name="poInfoReportExcel" id="poInfoReportExcel" class="btn blue">
+                                        </form>#}
+                                        <table class="table-bordered table-striped table-condensed flip-content">
+                                        <thead style="background: #4b8df8">
+                                        <tr>
+                                            <th>PO Number</th>
+                                            <th>PO Issued  Date</th>
+                                            <th>PO Issued Month</th>
+                                            <th>PO Amount</th>
+                                            <th>GRN Amount</th>
+                                            <th>Advance Amount</th>
+                                            <th>Payment Amount</th>
+                                            <th>Bank Name</th>
+                                            <th>Cheque number</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for poList in poLists %}
+
+                                            <tr>
+
+                                                <td>{{  poList['PONumber']  }}</td>
+                                                <td>{{  poList['POIssueDate'] }}</td>
+                                                <td>{{  poList['POIssueMonth'] }}</td>
+                                                <td>{{  poList['POAmount']|number_format(2, '.', ',')  }}</td>
+                                                <td>{{  poList['GrnAmount']|number_format(2, '.', ',')   }}</td>
+                                                <td>{{  poList['AdvanceAmount']|number_format(2, '.', ',') }}</td>
+                                                <td>{{  poList['PaymentAmount']|number_format(2, '.', ',') }}</td>
+                                                <td>{{  poList['BankName'] }}</td>
+                                                <td>{{  poList['ChequeNumber'] }}</td>
+                                            </tr>
+
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                     <div class="modal-footer" style="width: 100%;background: lightgrey;"></div>
+
+                </div>
+            </div>
+
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+{#<script>#}
+    {{ parent() }}
+
+        $(".closeBack").click( function (){
+        window.history.back();
+        });
+
+    $('#receiveInfoReportExcelFrm').click(function () {
+
+        $.ajax({
+            form: 'receiveInfoReportExcelFrm',
+            url: Routing.generate('payment_monthly_report_receive_info_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock %}

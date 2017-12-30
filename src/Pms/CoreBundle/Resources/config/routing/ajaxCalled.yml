@@ -1,0 +1,59 @@
+find_terms_and_conditions:
+    pattern: /find-terms-and-conditions
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:findTermsAndCondition }
+    options:
+            expose: true
+
+purchase_order_total_quantity:
+    pattern: /purchase-total-quantity
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:purchaseOrderTotalQuantity }
+    options:
+            expose: true
+
+vendor_find_address:
+    pattern: /vendor-address
+    defaults: { _controller: PmsSettingBundle:Vendor:vendorAddress }
+    options:
+            expose: true
+
+find_budget:
+    pattern: /find-budget
+    defaults: { _controller: PmsBudgetBundle:Budget:findBudget }
+    options:
+            expose: true
+
+item_wise_category:
+    pattern: /item-wise-category
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:itemWiseCategory }
+    options:
+            expose: true
+
+category_wise_item:
+    pattern: /category-wise-item
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:categoryWiseItem }
+    options:
+            expose: true
+
+category_wise_subCategory:
+    pattern: /category-wise-subCategory
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:categoryWiseSubCategory }
+    options:
+            expose: true
+
+subCategory_wise_costHeader:
+    pattern: /subCategory-wise-costHeader
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:subCategoryWiseCostHeader }
+    options:
+            expose: true
+
+find_item_type:
+    pattern: /find-item-type
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:itemType }
+    options:
+            expose: true
+
+project_find_all:
+    pattern: /all-project-find
+    defaults: { _controller: PmsSettingBundle:Project:projectFindAll }
+    options:
+            expose: true

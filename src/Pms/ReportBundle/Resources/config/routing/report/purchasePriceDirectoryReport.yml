@@ -1,0 +1,12 @@
+report_purchase_price_directory:
+    pattern: /purchase-price-directory-report
+    defaults: { _controller: PmsReportBundle:PurchasePriceDirectoryReport:purchasePriceDirectory }
+
+report_purchase_price_directory_excel:
+    pattern: /purchase-price-directory-report-excel
+    defaults: { _controller: PmsReportBundle:PurchasePriceDirectoryReport:purchasePriceDirectoryExcel }
+    options:
+           expose: true
+
+
+

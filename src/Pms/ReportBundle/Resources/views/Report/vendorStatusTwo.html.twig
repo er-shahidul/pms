@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor Payment Overview
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_vendor_status_two') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> Vendor Payment Overview</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+<div class="row-fluid">
+    <div class="span12">
+
+        <form action="{{ path('report_vendor_status_two') }}" method="get" name="item_report" id="item_report">
+            <div class="portlet-body flip-scroll">
+            <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                <tr>
+                    {#<td class="numeric">
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                        </div>
+                    </td>
+                    <td class="numeric">
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                        </div>
+                    </td>#}
+                    <td class="numeric">
+                            {#{{ form_widget(form.vendor, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}#}
+                        <div class=" input-medium">
+                            <input type="hidden" value="{{ app.request.query.get('vendor') }}" class="form-control  fontColorBlack
+                     select2AutoVendorComplete" placeholder="Select Vendor" name="vendor">
+                        </div>
+                    </td>
+                    {#<td class="numeric">
+                            {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                    </td>#}
+                    <td class="numeric">
+                        <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                    </td>
+                </tr>
+            </table>
+            </div>
+        </form>
+        </div>
+    <div class="span12">
+
+        <div class="modal-footer fa-align-left">
+            <input type="button" value="Export in excel" name="itemReportExcel" id="itemReportExcel" class="btn blue">
+        </div>
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Vendor Name</th>
+                        <th class="numeric">No of Order</th>
+                        <th class="numeric">Total PO Amount</th>
+                        <th class="numeric">Total Grn Amount</th>
+                        <th class="numeric">Total Advance Amount</th>
+                        <th class="numeric">Total Adjustment Amount</th>
+                        <th class="numeric">Request Amount</th>
+                        <th class="numeric">Payment Amount</th>
+                        <th class="numeric">Dues Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="numeric">{{ vendorPaymentList['vendorName'] }}</td>
+                        <td><a class="btn" style="text-decoration:underline" target="_blank"
+                               href ="{{ path('report_vendor_status_two_detail',{'vendor':vendor['vendor'] }) }}" >
+                                {{ vendorPaymentList['noOfOrder'] }}</a>
+                        </td>
+
+                        <td class="numeric">{{ vendorPaymentList['totalPoAmount']|number_format(2, '.', ',') }}</td>
+                        <td class="numeric">{{ vendorPaymentList['grnTotal']|number_format(2, '.', ',') }}</td>
+                        <td class="numeric">{{ vendorPaymentList['advanceAmount']|number_format(2, '.', ',') }}</td>
+                        <td class="numeric">{{ vendorPaymentList['adjustmentAmount']|number_format(2, '.', ',') }}</td>
+                        <td class="numeric">{{ vendorPaymentList['requestedAmount']|number_format(2, '.', ',') }}</td>
+                        <td class="numeric">{{ vendorPaymentList['totalPaymentAmount']|number_format(2, '.', ',') }}</td>
+                        <td class="numeric">{{ vendorPaymentList['dueAmount']|number_format(2, '.', ',') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+                <div class="navigation text-right">
+                    {#{{ knp_pagination_render(budgetDailys) }}#}
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{#<script>#}
+{% block documentready %}
+{{ parent() }}
+
+$('#itemReportExcel').click(function () {
+
+    setTimeout(function () {
+        $('#item_report').attr('action', '{{ path('report_vendor_status_two') }}');
+    }, 1000);
+
+    $.ajax({
+        form: 'item_report',
+        url: Routing.generate('report_vendor_status_two_excel'),
+        dataType: 'form html'
+    });
+});
+
+var $url = Routing.generate('report_supplier_payment_auto_vendor');
+var selectedItemId = {{ app.request.query.get('vendor')}}
+
+        $(".select2AutoVendorComplete").select2({
+
+            ajax: {
+
+                url: $url,
+                dataType: 'json',
+                delay: 250,
+                data: function (params, page) {
+                    return {
+                        q: params,
+                        page_limit: 100
+                    };
+                },
+                results: function (data, page) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (m) {
+
+                return m;
+            },
+            formatResult: function(vendor){ return vendor.text}, // omitted for brevity, see the source of this page
+            formatSelection: function(vendor){return vendor.text}, // omitted for brevity, see the source of this page
+            initSelection: function(element, callback) {
+
+                $.ajax({
+                    url: $url,
+                    data: 'vendor=' + selectedItemId,
+                    dataType: 'json'
+                }).done(function(data){
+                    callback(data);
+                });
+            },
+            allowClear: true,
+            minimumInputLength:1
+        });
+
+{% endblock documentready %}

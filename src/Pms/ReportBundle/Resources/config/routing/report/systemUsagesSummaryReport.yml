@@ -1,0 +1,3 @@
+system_usages_summary:
+    pattern: /system-usages-summary-report
+    defaults: { _controller: PmsReportBundle:SystemUsagesSummaryReport:systemUsagesSummaryReport }

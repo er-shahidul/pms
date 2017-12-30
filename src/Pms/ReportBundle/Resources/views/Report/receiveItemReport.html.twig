@@ -1,0 +1,242 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Receive Item Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_item_report_bundle') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Item</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+<div class="row">
+    <div class="col-md-12">
+
+        <form action="{{ path('receive_item_report_bundle') }}" method="get" name="receive_item_report" id="receive_item_report">
+
+            <table id="table_project_cost">
+                <tbody>
+                <tr>
+                   {# <td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <div class="col-md-1">
+                                <div class="input-icon right">
+                                    <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                        </div>
+                    </td>#}
+                    <td>
+                        <div class=" input-small">
+                            {{ form_widget(form.po, { 'attr': {'class': 'form-control  select2AutoComplete', 'placeholder': ' Select PO No'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class=" input-medium">
+                            {{ form_widget(form.vendor, { 'attr': {'class': 'form-control select2me', 'placeholder': ' Select Item'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class=" input-medium">
+                            {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me', 'placeholder': ' Select Item'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <input type="submit" value="Search" class="btn blue" style="margin-left:25px;">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <div class="col-md-12" style="float: left;">
+
+        <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+            <input type="button" value="Export in excel" name="receiveItemReportExcel" id="receiveItemReportExcel" class="btn blue">
+        </div>
+        <table>
+            <tr>
+                <td><strong>Total no of PR Qty :</strong></td><td> {{ totalNoOfPrQty|number_format(2, '.', ',') }}</td><td> &nbsp;&nbsp;&nbsp;</td>
+
+
+                <td><strong>Total no of PO Qty :</strong></td><td> {{ totalPoApprovedItems|number_format(2, '.', ',') }}</td><td> &nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+
+                <td><strong>Total no of Received Qty :</strong></td><td>{{ totalPoReceivedItems|number_format(2, '.', ',') }}</td><td>&nbsp;&nbsp;&nbsp; </td>
+
+
+                <td><strong>Total remaining Qty :</strong></td><td><a href="{{ path('not_receive_item_list') }}" style="color: #000000!important;">{{ (totalPoApprovedItems - (totalPoReceivedItems) )|number_format(2, '.', ',') }}</a></td>
+
+            </tr>
+            {#<tr>#}
+                {#<td><strong>Total no of canceled Qty :</strong></td><td>{{ totalNoOfCancelPrQty|number_format(2, '.', ',') }}</td>#}
+            {#</tr>#}
+
+            <tr>
+                <td></td><td></td><td> &nbsp;&nbsp;&nbsp;</td>
+            </tr>
+
+        </table>
+        <table class="table" style="">
+            <thead style="background: #4b8df8;color: #fff;">
+            <tr>
+                <th>Sl</th>
+                <th class="col-md-4">Item Name</th>
+                <th class="col-md-2">PO No</th>
+                <th class="col-md-2">PO Date</th>
+                <th class="col-md-4">PO Qty</th>
+
+                {#<th class="col-md-4">status</th>#}
+
+                <th class="col-md-2">Receive Qty</th>
+                <th class="col-md-2">Project Name</th>
+                <th class="col-md-2">Vendor Name</th>
+                <th class="col-md-2">Grn No</th>
+                <th class="col-md-2">Grn Date</th>
+                <th class="col-md-2">Grn By</th>
+                <th class="col-md-2">Remarks</th>
+                <th class="col-md-2">CloseQty</th>
+                <th class="col-md-2">CloseRemarks</th>
+                <th class="col-md-2">ClosedBy</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for receiveItemUse in receiveItemUses %}
+                <tr>
+                    <td>{{ loop.index}}</td>
+                    <td>{{ receiveItemUse['itemName'] }}</td>
+                    <td>{{ receiveItemUse['poId'] }}</td>
+                    <td>{{ receiveItemUse['poCreatedDate'] |date('d-M-Y') }}</td>
+                    <td>{{ receiveItemUse['poiQuantity'] }}</td>
+
+                    {#<td>{{ receiveItemUse['status']== 2 ? 'Close':'Received' }}</td>#}
+
+                    <td>{{ receiveItemUse['riQuantity'] }}</td>
+                    <td>{{ receiveItemUse['projectName'] }}</td>
+                    <td>{{ receiveItemUse['vendorName'] }}</td>
+                    <td>{{ receiveItemUse['GrnNo'] }}</td>
+                    <td>{{ receiveItemUse['receivedDate'] |date('d-M-Y') }}</td>
+                    <td>{{ receiveItemUse['GrnBy'] }}</td>
+                    <td>{{ receiveItemUse['Remarks'] }}</td>
+                    <td>{{ receiveItemUse.closeQty | number_format(2, '.', ',') }}</td>
+                    <td>{{ receiveItemUse.closeRemark | default }}</td>
+                    <td>{{ receiveItemUse.closedBy | default }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td class="col-md-4">
+
+                    </td>
+                    <td class="col-md-2">
+
+                    </td>
+                    <td  class="col-md-4 bold" style="text-align: right;">
+                    </td>
+                    <td class="col-md-2 bold">
+
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block documentready %}
+{{ parent() }}
+{#<script>#}
+    $('#receiveItemReportExcel').click(function () {
+
+        setTimeout(function () {
+            $('#receive_item_report').attr('action', '{{ path('receive_item_report_bundle') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'receive_item_report',
+            url: Routing.generate('receive_item_report_bundle_excel'),
+            dataType: 'form html'
+        });
+    });
+
+    $(".select2AutoComplete").select2({
+        ajax: {
+
+            url: Routing.generate('purchase_order_no_auto_complete'),
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+            return m;
+        },
+        formatResult: function(item){ return item.id}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.id}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+            return callback({ id : element.val()});
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+{% endblock documentready %}

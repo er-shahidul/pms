@@ -1,0 +1,39 @@
+vendor_payment_status_one_report_bundle:
+    pattern: /vendor-payment-one-report
+    defaults: { _controller: PmsReportBundle:PaymentReport:vendorPaymentStatusOneReport }
+
+vendor_payment_status_two_report_bundle:
+    pattern: /vendor-payment-two-report
+    defaults: { _controller: PmsReportBundle:PaymentReport:vendorPaymentStatusTwoReport }
+
+vendor_payment_status_one_bundle_excel:
+    pattern: /vendor-payment-status-one-excel
+    defaults: { _controller: PmsReportBundle:PaymentReport:vendorPaymentStatusOneReportExcel }
+    options:
+            expose: true
+
+vendor_payment_status_two_bundle_excel:
+    pattern: /vendor-payment-status-two-excel
+    defaults: { _controller: PmsReportBundle:PaymentReport:vendorPaymentStatusTwoReportExcel }
+    options:
+            expose: true
+
+regular_payment_excel:
+    pattern: /regular-payment-excel
+    defaults: { _controller: PmsReportBundle:PaymentReport:regularPaymentExcel }
+    options:
+            expose: true
+
+regular_payment_report_bundle:
+    pattern: /regular-payment-report
+    defaults: { _controller: PmsReportBundle:PaymentReport:regularPaymentReport }
+
+payment_company_report_bundle:
+    pattern: /payment-company-report
+    defaults: { _controller: PmsReportBundle:PaymentReport:paymentCompanyReport }
+
+payment_company_report_excel:
+    pattern: /payment-company-report-excel
+    defaults: { _controller: PmsReportBundle:PaymentReport:paymentCompanyReportExcel }
+    options:
+            expose: true

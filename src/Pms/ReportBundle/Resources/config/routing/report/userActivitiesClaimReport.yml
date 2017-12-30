@@ -1,0 +1,9 @@
+report_user_activities_claim:
+    pattern: /user-activities-claim-report
+    defaults: { _controller: PmsReportBundle:UserActivitiesClaim:userActivitiesClaim }
+
+report_user_activities_claim_excel:
+    pattern: /user-activities-claim-report-excel
+    defaults: { _controller: PmsReportBundle:UserActivitiesClaim:userActivitiesClaimExcel }
+    options:
+            expose: true

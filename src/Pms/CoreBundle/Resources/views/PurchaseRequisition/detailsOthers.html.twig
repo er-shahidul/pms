@@ -1,0 +1,599 @@
+{% extends 'layout.html.twig' %}
+{% block body %}
+    <div id="reload-all">
+        <div class="modal-dialog " style="width:70%;" >
+            <div class="modal-content">
+                <div class="modal-header" style="background: lightgrey;">
+                    <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title bold" style="text-align: center;">Purchase Requisition Details</h4>
+                </div>
+
+                <div class="col-md-12">
+
+                    <div class="col-md-6" >
+                        <table class="table table-hover">
+                            <tr>
+                                <td class="label-td">
+                                    Project :
+                                </td>
+                                <td class="value-td">
+                                    {{ pr.project.projectName | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Area :
+                                </td>
+                                <td class="value-td" >
+                                    {{ pr.project.projectArea.areaName | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Company Type :
+                                </td>
+                                <td class="value-td" >
+                                    {{ pr.project.projectCategory.projectCategoryName | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    CCN :
+                                </td>
+                                <td class="value-td" >
+                                    {{ pr.project.costCenterNumber | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Project Head :
+                                </td>
+                                <td class="value-td" >
+                                    {{ pr.project.projectHead.username | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Address :
+                                </td>
+                                <td class="value-td" >
+                                    {{ pr.project.address | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Cost Header :
+                                </td>
+                                <td class="value-td">
+                                    {{ pr.costHeader.title | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Category :
+                                </td>
+                                <td>
+                                    {{ pr.category.categoryName | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Sub Category :
+                                </td>
+                                <td class="value-td">
+                                    {{ pr.subCategory.subCategoryName | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Priority :
+                                </td>
+                                <td class="value-td">
+                                    {{ pr.priority }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="value-td">
+                                    {% if pr.approvedDateCategoryHeadTwo != null and pr.closedDate != null and pr.status == 0 %}
+                                        Closed
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6" >
+                        <table class="table table-hover">
+                            <tr>
+                                <td class="label-td">
+                                    Requisition No :
+                                </td>
+                                <td class="value-td" >
+                                    <span style="font-weight: bold;">{{ pr.id | default() }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Ref. No :
+                                </td>
+                                <td class="value-td" >
+                                    <span style="font-weight: bold;">{{ pr.refNo | default() }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Issued by :
+                                </td>
+                                <td class="value-td" >
+                                    {{ pr.createdby.username | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Issue Date :
+                                </td>
+                                <td class="value-td" >
+                                    {{ pr.createdDate | date('d M Y') }}
+                                </td>
+                            </tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr>
+                                <td class="value-td" colspan="2" >
+                                    <span style="font-weight: bold;"><u>Approval Info</u></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Verified :
+                                </td>
+                                <td class="value-td">
+                                    <span style="font-weight: bold;">{{ pr.approvedByProjectHead.username | default('not verified') }}</span>
+                                    {% if  pr.approvedDateProjectHead != null %}
+                                        on <span style="font-weight: bold;">{{ pr.approvedDateProjectHead | date('d M Y') }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td" >
+                                    Validated :
+                                </td>
+                                <td class="value-td" >
+                                    <span style="font-weight: bold;">{{ pr.approvedByCategoryHeadOne.username | default('not validated') }}</span>
+                                    {% if  pr.approvedDateCategoryHeadOne != null %}
+                                        on <span style="font-weight: bold;">{{ pr.approvedDateCategoryHeadOne | date('d M Y') }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td" >
+                                    Approved :
+                                </td>
+                                <td class="value-td">
+                                    <span style="font-weight: bold;">{{ pr.approvedByCategoryHeadTwo.username | default('not approved') }}</span>
+                                    {% if  pr.approvedDateCategoryHeadTwo != null %}
+                                        on <span style="font-weight: bold;">{{ pr.approvedDateCategoryHeadTwo | date('d M Y') }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td" colspan="2">
+                                    {% if pr.path is not null %}
+                                        <a class="btn blue btn-xs" onclick="javascript: window.open('/purchase-requisition/attachment-view/{{ pr.id }}/1')" >
+                                            Attachment</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="portlet box green">
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-cogs"></i>Purchase Requisition Item</div>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table-bordered table-striped table-condensed flip-content">
+                                <thead class="flip-content" style="background: #4b8df8">
+                                <tr>
+                                    <th class="numeric">Item</th>
+                                    <th class="numeric">ItemType</th>
+                                    <th class="numeric">Quantity</th>
+                                    <th class="numeric">CancelQty</th>
+                                    <th class="numeric">Unit</th>
+                                    <th class="numeric">Claimed</th>
+                                    <th class="numeric">status</th>
+                                    <th class="numeric">Required By</th>
+                                    <th class="numeric"></th>
+                                    <th class="numeric">Remarks/Specification/Brand</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for requisitionItem in pr.purchaseRequisitionItems %}
+                                    <tr>
+                                        <td class="numeric">
+                                            {{ requisitionItem.item.itemName | default() }}
+                                        </td>
+                                        <td class="numeric" >
+                                            {{ requisitionItem.item.itemType.itemType | default() }}
+                                        </td>
+                                        <td class="numeric">
+                                            {{ requisitionItem.quantity }}
+                                        </td>
+                                        <td class="numeric">
+                                            {% if requisitionItem.purchaseRequisitionItemCloseInfo.quantity is defined %}
+                                                {{ requisitionItem.purchaseRequisitionItemCloseInfo.quantity }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric">
+                                            {{ requisitionItem.item.itemUnit | default() }}
+                                        </td>
+                                        <td class="numeric">
+                                            {% if requisitionItem.claimedBy != null %}
+                                                {{ requisitionItem.claimedBy.username }}
+                                            {% endif %}
+                                            {% if requisitionItem.claimedBy == null %}
+                                                None
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric">
+                                            {% if requisitionItem.claimedBy != null %}
+                                                <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                                                    Claimed
+                                                </div>
+                                            {% endif %}
+                                            {% if requisitionItem.claimedBy == null %}
+                                                <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                                                    Open
+                                                </div>
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="numeric">
+                                            {{ requisitionItem.dateOfRequired | date('d M Y') }}
+                                        </td>
+
+                                        <td class="numeric">
+                                            {% if requisitionItem.purchaseRequisition.approvedByCategoryHeadTwo != null %}
+                                                {% if requisitionItem.claimedBy == null %}
+                                                    {% if requisitionItem.status == 1 and (is_granted("ROLE_PURCHASE_REQUISITION_CLAIM") or is_granted("ROLE_SUPER_ADMIN")) %}
+                                                        <a class="btn blue btn-xs claim" rel="{{ requisitionItem.id }}" style="width: 65px; color:#ffffff !important;">Claim</a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td class="numeric">
+                                            {{ requisitionItem.comment }}
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% if is_granted("ROLE_COMMENTS_USERS") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                        <div class="portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-cogs"></i>Last Item History</div>
+                            </div>
+                            <div class="portlet-body flip-scroll">
+                                {{ lastItemHistory | raw }}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="form-group">
+                                <span id="amountCheck" class="" style="color: darkred;font-weight: bolder;margin-left: 98px;"></span><span style="color: darkred;font-weight: bolder;"> The amount is {{ pr.prCost |number_format(2, '.', ',') }} </span>
+                            </div>
+
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content">
+                                    <thead class="flip-content"  style="background: #4b8df8">
+                                    <tr>
+                                        <th class="numeric">Date</th>
+                                        <th class="numeric">Commented By</th>
+                                        <th class="numeric">Comments</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for prc in pr.purchaseRequisitionComment %}
+                                        <tr>
+                                            <td class="numeric" >{{ prc.createdDate | date('d M Y') }}</td>
+                                            <td class="numeric" >{{ prc.createdBy.username | default() }}</td>
+                                            <td class="numeric" >{{ prc.comment | default() }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td class="numeric" colspan="3"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div>
+                            <form method="get" id="pr-comment-form">
+                                <div class="col-md-12">
+                                    <div class="col-md-2" >Remarks: </div>
+                                    <div class="col-md-6"> <textarea class="post-comment"  name="comment" id="comment"></textarea></div>
+                                    <div class="col-md-2"><input type="button" name="commentAdd" id="commentAdd" value="Comment" class="btn blue" ></div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                    {% endif %}
+                    <div class="clearfix"></div>
+
+                    <div class="modal-footer col-md-12" style="width: 100%;background: lightgrey;">
+                        <div class="col-md-6">
+
+                            {% if pr.status < 5 %}
+                                {% if pr.approvedByProjectHead == null
+                                and ((pr.project.projectHead == app.user.username)
+                                or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE")
+                                or is_granted("ROLE_SUPER_ADMIN")) %}
+                                    <a class="btn blue btn-xs approveOne onVerified" rel="{{ pr.id }}"  >Verify</a>
+                                {% endif %}
+                                {% if pr.approvedByProjectHead != null
+                                and pr.approvedByCategoryHeadOne == null
+                                and ((app.user.username == pr.category.subHead|default())
+                                or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO")
+                                or is_granted("ROLE_SUPER_ADMIN")) %}
+                                    <a class="btn blue btn-xs approveTwo" rel="{{ pr.id }}"  >Validate</a>
+                                {% endif %}
+                                {% if pr.approvedByCategoryHeadOne != null
+                                and pr.approvedByCategoryHeadTwo == null
+                                and ((app.user.username == pr.category.head|default())
+                                or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE")
+                                or is_granted("ROLE_SUPER_ADMIN")) %}
+                                    <a class="btn blue btn-xs approveThree" rel="{{ pr.id }}"  >Approve</a>
+                                {% endif %}
+                                {% if pr.approvedByCategoryHeadTwo != null %}
+                                    <a class="btn btn-xs" style="background:#C0D08E;color: white !important;">Approved</a>
+                                {% endif %}
+                            {% endif %}
+                            {% if is_granted("ROLE_SUPER_ADMIN") %}
+                                {% if pr.status < 5 and pr.approveStatus < 3 %}
+                                    <a href="{{ path('purchase_requisition_hold', { 'id': pr.id }) }}"
+                                       onclick="return confirm('Do You Want To Hold It?')" class="btn red btn-xs">Inactive</a>
+                                {% endif %}
+                                {% if pr.status == 5 %}
+                                    <a href="{{ path('purchase_requisition_open', { 'id': pr.id }) }}"
+                                       onclick="return confirm('Do You Want To Open It?')" class="btn blue btn-xs" >Active</a>
+                                {% endif %}
+                                {% if pr.status < 6 and pr.approveStatus < 3 %}
+                                    <a href="{{ path('purchase_requisition_cancel', { 'id': pr.id }) }}"
+                                       onclick="return confirm('Do You Want To Cancel It?')" class="btn red btn-xs">Cancel</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <a class="btn blue btn-xs"
+                               onclick="javascript: window.open('{{ path('purchase_requisition_pdf', { 'id': pr.id }) }}')">Pdf <i
+                                        class="fa fa-file"></i></a>
+                            <a class="btn blue btn-xs"
+                               onclick="javascript: window.open('{{ path('purchase_requisition_print', { 'id': pr.id }) }}').print();">Print <i
+                                        class="fa fa-print"></i></a>
+                            <button type="button" class="btn close-modal-refresh blue btn-xs"
+                                    data-dismiss="modal">Close
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <input type="hidden" value="" class="verifiedStatus">
+        </div>
+        <script type="text/javascript">
+            jQuery(document).ready(function () {
+
+                $(".close-modal-refresh").click(function(){
+                    if($('.verifiedStatus').val()){
+                        location.reload();
+                    }
+                });
+
+                priceT();
+
+                function priceT(){
+
+                    var prCost = {{ pr.prCost|json_encode|raw }}
+                    var projectName = {{ pr.project.id|json_encode|raw }}
+                    var subCategory = {{ pr.subCategory.id|json_encode|raw }}
+                    var month1 = {{ pr.createdDate|json_encode|raw }}
+                    var month2 = month1.date;
+                    var x = new Date(month2);
+
+                    var dd = 1;
+                    var mm = x.getMonth()+1;
+                    var yyyy = x.getFullYear();
+                    var month = yyyy + '-' + mm + '-' + dd;
+
+                    var budgetArray = new Array(month, projectName, subCategory);
+                    $.ajax({
+                        type: "post",
+                        url: Routing.generate('find_budget'),
+                        data: "budgetArray=" + budgetArray,
+                        dataType: 'json',
+                        success: function (response, status) {
+                            if (response.responseCode == 200) {
+
+                                var amount = response.netTotal;
+                                var total = response.total;
+                                var itemCost = prCost;
+                                var totalCost = parseFloat(total) + parseFloat(itemCost);
+
+                                if(amount < totalCost){
+                                    $("span#amountCheck").html("Projects monthly budget cross that amount,");
+                                }
+                            }
+                        }
+                    });
+                }
+
+                $("#commentAdd").click(function () {
+                    var requisitionComment = $("#comment").val();
+                    var reqId = {{ pr.id|json_encode|raw }}
+
+                    var requisitionCommentArray = new Array(requisitionComment, reqId);
+                    var answer = confirm('Do You Want To Add comment');
+                    if(answer) {
+                        $.ajax({
+                            type: "post",
+                            url: Routing.generate('purchase_requisition_comment'),
+                            data: "requisitionCommentArray=" + requisitionCommentArray,
+                            dataType: 'json',
+                            success: function (msg) {
+                                if(msg.responseCode == 202) {
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Comment Add Successfully</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $(':input','#pr-comment-form')
+                                            .not(':button, :submit, :reset, :hidden')
+                                            .val('');
+                                    $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                                }else{
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Comment Not Add</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                                }
+                            }
+                        });
+                    }else{
+                        return false;
+                    }
+                });
+
+                $(".claim").click(function () {
+
+                    var reqItemId = $(this).attr('rel');
+                    var reqId = {{ pr.id|json_encode|raw }}
+
+                    var answer = confirm('Do You Want To Claim It');
+                    if(answer) {
+                        $.ajax({
+                            type: "post",
+                            url: Routing.generate('purchase_requisition_claim'),
+                            data: "reqItemId=" + reqItemId,
+                            dataType: 'json',
+                            success: function (msg) {
+                                if (msg.responseCode == 202) {
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Successfully</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $(':input', '#pr-comment-form')
+                                            .not(':button, :submit, :reset, :hidden')
+                                            .val('');
+                                    $("#reload-all").load("/purchase-requisition/refresh/" + reqId)
+                                } else {
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Not Add</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $("#reload-all").load("/purchase-requisition/refresh/" + reqId)
+                                }
+                            }
+                        });
+                    }else{
+                        return false;
+                    }
+                });
+
+                $(".approveOne").click(function () {
+                    var reqId = $(this).attr('rel');
+
+                    var answer = confirm('Do You Want To Approve It');
+                    if(answer) {
+                        $('.verifiedStatus').val(reqId);
+                        $.ajax({
+                            type: "post",
+                            url: Routing.generate('purchase_requisition_approve_project_head_ajax'),
+                            data: "reqId=" + reqId,
+                            dataType: 'json',
+                            success: function (msg) {
+                                if(msg.responseCode == 202) {
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Successfully</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $(':input','#pr-comment-form')
+                                            .not(':button, :submit, :reset, :hidden')
+                                            .val('');
+                                    $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                                }else{
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Not Add</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                                }
+                            }
+                        });
+                    }else{
+                        return false;
+                    }
+                });
+
+                $(".approveTwo").click(function () {
+                    var reqId = $(this).attr('rel');
+
+                    var answer = confirm('Do You Want To Approve It');
+                    if(answer) {
+                        $('.verifiedStatus').val(reqId);
+                        $.ajax({
+                            type: "post",
+                            url: Routing.generate('purchase_requisition_approve_category_head_one_ajax'),
+                            data: "reqId=" + reqId,
+                            dataType: 'json',
+                            success: function (msg) {
+                                if(msg.responseCode == 202) {
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Successfully</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $(':input','#pr-comment-form')
+                                            .not(':button, :submit, :reset, :hidden')
+                                            .val('');
+                                    $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                                }else{
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Not Add</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                                }
+                            }
+                        });
+                    }else{
+                        return false;
+                    }
+                });
+
+                $(".approveThree").click(function () {
+                    var reqId = $(this).attr('rel');
+
+                    var answer = confirm('Do You Want To Approve It');
+                    if(answer) {
+                        $('.verifiedStatus').val(reqId);
+                        $.ajax({
+                            type: "post",
+                            url: Routing.generate('purchase_requisition_approve_category_head_two_ajax'),
+                            data: "reqId=" + reqId,
+                            dataType: 'json',
+                            success: function (msg) {
+                                if(msg.responseCode == 202) {
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Successfully</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $(':input','#pr-comment-form')
+                                            .not(':button, :submit, :reset, :hidden')
+                                            .val('');
+                                    $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                                }else{
+                                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Not Add</span></div>');
+                                    $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                                    $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                                }
+                            }
+                        });
+                    }else{
+                        return false;
+                    }
+                });
+
+            });
+        </script>
+    </div>
+
+{% endblock %}

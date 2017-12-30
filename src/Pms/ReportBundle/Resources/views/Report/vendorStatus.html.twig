@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor Performance overview
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_vendor_status') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> Vendor Performance overview</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+
+            <form action="{{ path('report_vendor_status') }}" method="get" name="item_report" id="item_report">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tr>
+                            <td class="numeric">
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                                </div>
+                            </td>
+                            <td class="numeric">
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                                </div>
+                            </td>
+                            <td class="numeric">
+                                {{ form_widget(form.vendor, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                            </td>
+                            <td class="numeric">
+                                {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                            </td>
+                            <td class="numeric">
+                                <input type="submit" value="Search" class="btn blue">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <!--BEGIN TABS-->
+        <div class="span12">
+            <div class="modal-footer fa-align-left">
+                <input type="button" value="Export in excel" name="itemReportExcel" id="itemReportExcel" class="btn blue">
+            </div>
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Sl</th>
+                        <th class="numeric">Project</th>
+                        <th class="numeric">Type</th>
+                        <th class="numeric">Vendor</th>
+                        <th class="numeric">PO No</th>
+                        <th class="numeric">PO Date</th>
+                        <th class="numeric">Delivery Date</th>
+                        <th class="numeric">Bill Date</th>
+                        <th class="numeric">Payment Date</th>
+                        <th class="numeric">PO Issued By</th>
+                        <th class="numeric">ContactPerson</th>
+                        <th class="numeric">Phone</th>
+                        {#<th class="numeric">PO Remarks</th>
+                        <th class="numeric">Receive Remarks</th>#}
+                </tr>
+                    </thead>
+                <tbody>
+
+                {% for budgetDaily in budgetDailys %}
+
+                    <tr>
+                        <td class="numeric">{{ loop.index }}.</td>
+                        <td class="numeric">{{ budgetDaily.project.projectName }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseOrder.poNonpo.name }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseOrder.vendor.vendorName | default() }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseOrder.id }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseOrder.createdDate | date('d-m-Y') }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseOrder.dateOfDelivered | date('d-m-Y') }}</td>
+                        <td class="numeric">
+                        {% for rfp in budgetDaily.purchaseOrder.readyForPayments %}
+                            {{ rfp.billDate | date('d-m-Y') }},
+                        {% endfor %}
+                        </td>
+                        <td class="numeric">
+                        {% for rfp in budgetDaily.purchaseOrder.readyForPayments %}
+                            {{ rfp.payment ? rfp.payment.paymentDate| date('d-m-Y') : '' }},
+                        {% endfor %}
+                        </td>
+                        <td class="numeric">{{ budgetDaily.purchaseOrder.createdBy.username | default('') }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseOrder.vendor.contractPerson }}</td>
+                        <td class="numeric">{{ budgetDaily.purchaseOrder.vendor.contractNo }}</td>
+                        {#<td class="numeric">{{ budgetDaily.purchaseOrder.comment }}</td>
+                        <td class="numeric">
+                            {% for ri in budgetDaily.receivedItems %}
+                                    {{ ri.comment }},
+                            {% endfor %}
+                        </td>#}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+                <div class="navigation text-right">
+                    {{ knp_pagination_render(budgetDailys) }}
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block documentready %}
+{{ parent() }}
+
+    $('#itemReportExcel').click(function () {
+
+    setTimeout(function(){
+    $('#item_report').attr('action', '{{ path('report_vendor_status') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'item_report',
+    url: Routing.generate('report_vendor_status_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock documentready %}

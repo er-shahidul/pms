@@ -1,0 +1,49 @@
+{% block body %}
+    <div class="modal-dialog">
+    <div class="modal-content">
+        {{ form_start(form, {'attr': {'class': 'form-horizontal', 'id': 'purchase-form', 'novalidate': 'novalidate'} } ) }}
+    <div class="modal-header" style="background: lightgrey;">
+        <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title bold" style="text-align: center;">Select Your Project</h4>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.project, 'Project:', {'label_attr': {'class': 'control-label col-md-4', 'style': 'margin-left: -15px;margin-right:-12px;' } }
+                ) }}
+                <div class="col-md-6">
+                    <div class="input-icon">
+                        {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select PO No'} }) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both"></div>
+    </div>
+
+    <div class="modal-footer" style="background: lightgrey;">
+        {% if status == 'project-to-item' %}
+        <a href="#"
+           id="pms_inventorybundle_projecctList_next"
+           class="btn btn-primary button-width"
+           data-url="{{ path('delivery_add', {id:'PROJECT_ID'}) }}">
+            Next
+        </a>
+        {% else %}
+            <a href="#"
+               id="pms_inventorybundle_projecctList_next"
+               class="btn btn-primary button-width"
+               data-url="{{ path('delivery_add_project_to_project', {id:'PROJECT_ID'}) }}">
+                Next
+            </a>
+        {% endif %}
+        <button type="button" class="btn close-modal-refresh btn-primary" data-dismiss="modal">Close</button>
+
+    </div>
+        {{ form_end(form) }}
+    </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Verify
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('receive') }}" style="color: #333 !important;">Receive</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Verify</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="modal-dialog" style="width: 100%; padding: 0;">
+                <div class="modal-content">
+
+                    <div class="clearfix"></div>
+                    <form action="{{ path('receive_bill_add') }}" id="billSubmit" method="post">
+                        <div class="portlet-body flip-scroll">
+                            <table class="table-bordered table-striped table-condensed flip-content">
+                                <thead class="flip-content" style="background: #4b8df8">
+                                <tr>
+                                    <th class="numeric">Sl</th>
+                                    <th class="numeric">GRN</th>
+                                    <th class="numeric">Vendor Name</th>
+                                    <th class="numeric">PONo</th>
+                                    <th class="numeric">PRNo</th>
+                                    <th class="numeric">Invoice</th>
+                                    <th class="numeric">Challan</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set totalPoAmount = 0 %}
+                                {% set totalBillAmount = 0 %}
+                                {% for index, grn in grnList %}
+                                    <tr>
+                                        <td class="numeric">{{ index + 1 }}</td>
+                                        <td class="numeric">{{ grn.id }}</td>
+                                        <td class="numeric">{% if grn.vendor is not empty %}{{ grn.vendor.vendorName }}{% endif %}</td>
+                                        <td class="numeric">{{ grn.po.id }}</td>
+                                        <td class="numeric">
+                                            {% for key, ri in grn.receiveItems %}
+                                                {% if key > 0 %},{% endif %}
+                                                {{ ri.purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.id }}
+                                            {% endfor %}
+                                        </td>
+                                        <td class="numeric">
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <select class="medium m-wrap select2 input-small" tabindex="1" name="invoice[]" style="width: 145px;">
+                                                        {% for inv in grnFormListInvoice[index] %}
+                                                            <option {% if( inv.id == (grn.invoice.id | default(0)) ) %} selected {% endif %} value="{{ inv.id }}">{{ inv.formattedTitle }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="numeric">
+                                            <div class="control-group">
+                                                <div class="controls ">
+                                                    <select class="medium m-wrap select2 input-small" tabindex="1" name="challan[]" style="width: 145px;">
+                                                        {% for inv in grnFormListChallan[index] %}
+                                                            <option {% if( inv.id == (grn.calan.id| default(0))  ) %} selected {% endif %} value="{{ inv.id }}">{{ inv.formattedTitle }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div class="portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-cogs"></i></div>
+                            </div>
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content">
+
+                                    <tr>
+                                        <td class="numeric">
+                                            Bill Date :
+                                        </td>
+                                        <td class="numeric">
+                                            <div class="input-group input-small date date-picker datepicker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                                <span class="input-group-btn"></span>
+                                                {{ form_widget(form.billDate, { 'attr': {'class': 'form-control','value':grnList[0].billDate|date('Y-m-d')} }) }}
+                                            </div>
+                                            <span class="help-block" style="color:darkred;margin-left:-40px;">{{ form_errors(form.billDate) }}</span>
+                                        </td>
+                                        <td class="numeric">
+                                            Bill Number :
+                                        </td>
+                                        <td class="numeric">
+                                            {{ form_widget(form.billNumber, { 'attr': {'class': 'form-control', 'style': 'width: 120px;padding-left: 10px! important;', 'required': true,'value':grnList[0].billNumber|default} }) }}
+                                            <span class="help-block" style="color:darkred;margin-left:-40px;">{{ form_errors(form.billNumber) }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr><td class="numeric" colspan="4">
+                                            <h4>Send Back From Payment Request</h4>
+                                            <strong>Requested By:{{ grnList[0].sendBackBy }}</strong> {{ grnList[0].sendBackComments|raw }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="numeric" colspan="4">
+                                            {{ form_widget(form.replySendBackComments, { 'attr': {'class': 'form-control', 'style': 'width: 100%;padding-left: 10px! important;', 'required': true,'value':grnList[0].replySendBackComments|default} }) }}
+                                            <span class="help-block" style="color:darkred;margin-left:-40px;">{{ form_errors(form.replySendBackComments) }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="numeric">
+                                            <input type="hidden" value="{{ grnNumbers }}" name="grnNumbers" class="verifiedStatus">
+                                            {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width confirm'} }) }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $(".confirm").easyconfirm();
+
+    $('#receive_details_billNumber').inputmask('[9999]',{ showMaskOnFocus: true });
+    $('#receive_details_billDate').inputmask('[9999-99-99]',{ showMaskOnFocus: true });
+
+    $( ".datepicker" ).datepicker({
+    'format':'dd-mm-yyyy'
+    });
+
+{% endblock %}

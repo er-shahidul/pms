@@ -1,0 +1,15 @@
+report_item_report_bundle:
+    pattern: /item-report
+    defaults: { _controller: PmsReportBundle:ItemReport:itemReport }
+
+report_item_report_bundle_excel:
+    pattern: /item-report-excel
+    defaults: { _controller: PmsReportBundle:ItemReport:itemReportExcel }
+    options:
+            expose: true
+
+item_auto_complete:
+    pattern: /item/po-auto-complete
+    defaults: { _controller: PmsReportBundle:ItemReport:itemAutoComplete }
+    options:
+          expose: true

@@ -1,0 +1,107 @@
+{% block body %}
+
+    <div class="modal-dialog" style="width: 1000px;">
+    <div class="modal-content">
+    <div class="modal-header" style="background: lightgrey;">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title bold" style="text-align: center;">Last Item Details</h4>
+    </div>
+
+    <div class="col-md-12">
+    <table>
+    <tr>
+        <td>
+            <table class="col-md-6" style="margin-top: 10px;padding-top:20px;float: left;">
+                <tr>
+                    <td style="width: 115px;">
+                        {% if  po.vendor != null %}
+                            Vendor :
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if  po.vendor != null %}
+                            <span style="font-weight: bold;">{{ po.vendor.vendorName | default() }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        {% if  po.vendor != null %}
+                            Contact Person :
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if  po.vendor != null %}
+                            <span style="font-weight: bold;">{{ po.vendor.contractPerson | default() }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        {% if  po.vendor != null %}
+                            Mobile :
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if  po.vendor != null %}
+                            <span style="font-weight: bold;">{{ po.vendor.contractNo | default() }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        {% if  po.vendor != null %}
+                            Address :
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if  po.vendor != null %}
+                            <span style="font-weight: bold;">{{ po.vendor.vendorAddress | default() }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 1000px;">
+            <table id="table_order" class="table col-md-12" style="border: 1px solid ghostwhite;">
+                <thead style="background:#4b8df8;">
+                <tr>
+                    <th class="col-md-2" style="padding-left: 15px;">Particulars</th>
+                    <th class="col-md-2" style="">Quantity</th>
+                    <th class="col-md-2" style="">Price</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for poitem in poi %}
+                    <tr>
+                        <td style="padding-left: 15px;">
+                            {{ poitem.item.itemName }}
+                        </td>
+                        <td style="padding-left: 15px;">
+                            {{ poitem.quantity }}
+                        </td>
+                        <td style="width: 120px;padding-left: 10px! important;">
+                            {{ poitem.price|number_format(2, '.', ',') }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </table>
+    </div>
+
+    <div class="modal-footer" style="width: 100%;background: lightgrey;">
+        <button type="button" class="btn" style="width: 100px;background: #0353D6; color: white !important;"
+                data-dismiss="modal">Close
+        </button>
+    </div>
+
+    </div>
+    </div>
+
+{% endblock %}

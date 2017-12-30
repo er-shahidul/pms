@@ -1,0 +1,15 @@
+report_supplier_payment:
+    pattern: /supplier-payment-report
+    defaults: { _controller: PmsReportBundle:SupplierPaymentReport:supplierPaymentReport }
+
+report_supplier_payment_pdf:
+    pattern: /supplier-payment-report-pdf
+    defaults: { _controller: PmsReportBundle:SupplierPaymentReport:supplierPaymentReportPdf }
+    options:
+            expose: true
+
+report_supplier_payment_auto_vendor:
+    pattern: /supplier-payment-report-auto-vendor
+    defaults: { _controller: PmsReportBundle:SupplierPaymentReport:supplierPaymentReportAutoVendorName }
+    options:
+            expose: true

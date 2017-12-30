@@ -1,0 +1,49 @@
+<div class="form-group">
+    <div class="col-md-12" style="margin-top: 30px;">
+
+        <table class="table bold" style="border: 1px solid ghostwhite;">
+            <thead style="background: #4b8df8;color: #fff;">
+            <tr>
+                <th>Sl</th>
+                <th class="col-md-1">Sector</th>
+                <th class="sorted col-md-3">Condition</th>
+                <th class="col-md-6"></th>
+                <th class="col-md-2"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% set offset = termsAndConditions.getItemNumberPerPage * (termsAndConditions.currentPageNumber - 1) %}
+
+            {% for termsAndCondition in termsAndConditions %}
+
+                <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                    <td>{{ loop.index + offset }}.</td>
+                    <td>{{ termsAndCondition.sector.name }}</td>
+                    <td>{{ termsAndCondition.condition }}</td>
+                    <td></td>
+                    <td>
+                        {% if termsAndCondition.status == 1 %}
+                            <a href="/terms-and-conditions/delete/{{ termsAndCondition.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-trash-o"></i> Delete</a>
+
+                            <a href="/terms-and-conditions/update/{{ termsAndCondition.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-edit"></i> Update</a>
+                        {% endif %}
+                        {% if termsAndCondition.status == 0 %}
+                            <a href="#" style="width: 65px;" class="btn default btn-xs">Deleted</a>
+                            <a href="/terms-and-conditions/active/{{ termsAndCondition.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                        class="fa fa-repeat"></i> Restore</a>
+                        {% endif %}
+
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="navigation" style="text-align: right">
+            {{ knp_pagination_render(termsAndConditions) }}
+        </div>
+    </div>
+</div>

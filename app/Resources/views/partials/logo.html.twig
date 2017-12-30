@@ -1,0 +1,5 @@
+{% if valLogo == 0  %}
+    <img src='{{ asset('uploads/company/'~logo) }}' style="width: 120px;height: 42px;"/>
+{% else %}
+    <img src='{{ asset('assets/img/logo.png') }}' style="width: 90px;height: 42px;margin-top: 2px;margin-left: 4px;"/>
+{% endif %}

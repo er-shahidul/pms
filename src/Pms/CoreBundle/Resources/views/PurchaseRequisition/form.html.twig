@@ -1,0 +1,346 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        table td ul li {
+            list-style: none;
+            margin-left: -42px;
+        }
+    </style>
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Requisition
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('purchase_requisition') }}" style="color: #333 !important;">Purchase Requisition</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement=""
+                         style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <div class="modal-dialog bodyWidth">
+    <div class="modal-content backgroundWhite">
+    <div class="modal-header backGroundLightGrey">
+        <h4 class="modal-title bold text-center">Purchase Requisition</h4>
+    </div>
+
+    {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'purchase-form', 'novalidate': 'novalidate'} }) }}
+    <div class="modal-body">
+    <div class="row">
+    <div class="col-md-12">
+
+    <div class="col-md-12">
+        <div class="col-md-6 text-left left">
+            <div class="form-group">
+                {{ form_label(form.project, 'Project Name :', {'label_attr': {'class': 'control-label col-md-4 marginLeft-10'} }
+                ) }}
+                <div class="col-md-6">
+                    <div class="input-icon">
+                        {{ form_widget(form.project, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                    </div>
+                    <span class="help-block margin-left-39"
+                          style="color:darkred;">{{ form_errors(form.project) }}</span>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label marginLeft-10">Area :</label>
+
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <input type="text" id="area" class="form-control paddingLeft10" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label marginLeft-10">Company Type:</label>
+
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <input type="text" id="type" class="form-control paddingLeft10" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label marginLeft-10">CCN :</label>
+
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <input type="text" id="costCenterNumber" class="form-control paddingLeft10" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" hidden="">
+                    <label class="col-md-4 control-label marginLeft-10">Head :</label>
+
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <input type="text" id="head" class="form-control paddingLeft10" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label marginLeft-10">Head :</label>
+
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <input type="text" id="projectHeadFull" class="form-control paddingLeft10" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label marginLeft-10">Address :</label>
+
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <input type="text" id="address" class="form-control paddingLeft10" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.priority, 'Priority :', {'label_attr': {'class': 'control-label col-md-4 marginLeft-10' } }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.priority, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 right">
+            <div class="col-md-12 right">
+                <div class="form-group">
+                    {{ form_label(form.refNo, 'Ref. No :', {'label_attr': {'class': 'control-label col-md-4'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.refNo, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                        </div>
+                        <span class="help-block margin-left-39"
+                              style="color:darkred;">{{ form_errors(form.refNo) }}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Created :</label>
+
+                    <div class="col-md-6">
+                        <div class="input-icon right">
+                            <i class="fa fa-user"></i>
+                            <input type="text" class="form-control" placeholder="{{ app.user.username }}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Issue Date :</label>
+
+                    <div class="col-md-6">
+                        <div class="input-icon right">
+                            <i class="fa fa-calendar"></i>
+                            <input type="text" class="form-control" placeholder="{{ "now"|date("m/d/Y") }}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.category, 'Category :', {'label_attr': {'class': 'control-label col-md-4'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.category, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                        </div>
+                        <span class="help-block margin-left-39"
+                              style="color:darkred;">{{ form_errors(form.costHeader) }}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.subCategory, 'Sub Category :', {'label_attr': {'class': 'control-label col-md-4'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.subCategory, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                        </div>
+                        <span class="help-block margin-left-39"
+                              style="color:darkred;">{{ form_errors(form.costHeader) }}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.costHeader, 'Cost Header :', {'label_attr': {'class': 'control-label col-md-4'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.costHeader, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                        </div>
+                        <span class="help-block margin-left-39"
+                              style="color:darkred;">{{ form_errors(form.costHeader) }}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.prCost, 'Cost :', {'label_attr': {'class': 'control-label col-md-4'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.prCost, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <br/>
+
+    <div class="col-md-12" style="float: left;">
+
+        <div class="col-md-12" style="height:50px;float:right;">
+            <div class="form-group">
+                {{ form_label(form.file, 'File Attach :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-left: -10px;' } } ) }}
+                <div class="col-md-9">
+                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                        <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i
+                                                                class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.file, { 'attr': {'class': 'default'} }) }}
+													</span>
+                            <a href="form_component.html#" class="btn red fileupload-exists"
+                               data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <span id="amountCheck" class="" style="color: darkred;margin-left: -13px;"></span>
+            </div>
+        </div>
+
+        <table id="tableRowCount" class="table"
+               style="margin-left: -15px;margin-top: 80px; border: 1px solid ghostwhite;">
+            <thead style="background:#4b8df8;">
+            <tr>
+                <th class="col-md-2" style="padding-left: 12px;">Item</th>
+                <th class="col-md-2" style="padding-left: 12px;">ItemType</th>
+                <th class="col-md-1" style="padding-left: 12px;">Qty</th>
+                <th class="col-md-1" style="padding-left: 12px;">Unit</th>
+                <th class="col-md-3" style="padding-left: 12px;">Required By</th>
+                <th>Local/Head</th>
+                <th class="col-md-3" style="padding-left: 12px;" tooltip="Remarks/Specification/Brand">Remarks</th>
+                {% if purchaseRequisition is not empty and purchaseRequisition.approveStatus != 3 %} <th></th> {% endif %}
+            </tr>
+            </thead>
+            <tbody id="purchaseItems" class="tags" data-prototype="{% filter escape %}
+                                {{ include('PmsCoreBundle:PurchaseRequisition:purchaseRequisitionItemPrototype.html.twig', { 'form': form.purchaseRequisitionItems.vars.prototype }) }}
+                                {% endfilter %}}">
+
+
+            {% for requisitionItem in form.purchaseRequisitionItems %}
+                <tr data-url="{{ url('purchase_requisition_item_delete', {id : requisitionItem.id.vars.value }) }}">
+                    <td>
+                        {{ form_widget(requisitionItem.id) }}
+                        {{ form_widget(requisitionItem.item, { 'attr': {'class': 'form-control select2ItemAutoComplete', 'style': 'width: 200px;', 'placeholder': ' Select Item'} }) }}
+                        <span class="help-block" style="color:darkred;">{{ form_errors(requisitionItem.item) }}</span>
+                    </td>
+                    <td>
+                        {{ form_widget(requisitionItem.itemType, { 'attr': {'class': 'form-control', 'style': 'width: 100px;padding-left: 10px! important;'} }) }}
+                    </td>
+                    <td>
+                        {{ form_widget(requisitionItem.quantity, { 'attr': {'class': 'form-control', 'style': 'width: 70px;padding-left: 10px! important;'} }) }}
+                        <span class="help-block"
+                              style="color:darkred;">{{ form_errors(requisitionItem.quantity) }}</span>
+                    </td>
+                    <td>
+                        {{ form_widget(requisitionItem.UOM, { 'attr': {'class': 'form-control', 'style': 'width: 50px;padding-left: 10px! important;'} }) }}
+                        {{ form_widget(requisitionItem.totalPrice, { 'attr': {'class': 'form-control totalPriceAll', 'style': 'width: 50px;padding-left: 10px! important;'} }) }}
+                    </td>
+                    <td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy"
+                             data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(requisitionItem.dateOfRequiredText, { 'attr': {'class': 'form-control', 'style': 'width: 100px;padding-left: 10px! important;'} }) }}
+                        </div>
+                        <span class="help-block"
+                              style="color:darkred;">{{ form_errors(requisitionItem.dateOfRequiredText) }}</span>
+                    </td>
+                    <td>
+                        {{ form_widget(requisitionItem.isHeadOrLocal, { 'attr': {'class': 'form-control', 'style': 'width: 100px;padding-left: 10px! important;'} }) }}
+                    </td>
+                    <td>
+                        {{ form_widget(requisitionItem.comment, { 'attr': {'class': 'form-control', 'style': 'width: 220px;max-height: 54px;max-width: 200px;padding-left: 10px! important;'} }) }}
+                    </td>
+                    {% if  purchaseRequisition is not empty and purchaseRequisition.approveStatus != 3 %}
+                    <td><a href="javascript:;" class="btn red btn-xs closeTd"  style =  "margin-top:15px;height:23px;width: 20px;font-size:10px;margin-left:10px;color: white !important;">×</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="modal-footer" style="background: lightgrey;">
+        <div class="btn-group">
+            <a href="{{ path('purchase_requisition') }}" class="btn"
+               style="font-family: 'Open Sans', sans-serif;width: 100px;background: #0353D6; color: white !important;">
+                <i class="fa fa-ban"> Cancel</i>
+            </a>
+        </div>
+        {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width confirm', 'style': 'width: 100px;background: #0353D6; color: white !important;', 'title': 'Are you sure submit it?' } }) }}
+    </div>
+    {{ form_end(form) }}
+    </div>
+    </div>
+{% if  purchaseRequisition is not empty and purchaseRequisition.approveStatus == 3 %}
+{% set approveStatus = purchaseRequisition.approveStatus  %}
+{% else %}
+{% set approveStatus = 0 %}
+{% endif %}
+<script>
+    var approveStatus = {{ approveStatus }}
+</script>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+
+    {% javascripts
+    '@PmsCoreBundle/Resources/public/js/prForm.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascriptBlock %}
+

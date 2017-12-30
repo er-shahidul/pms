@@ -1,0 +1,61 @@
+report_activities_requisition:
+    pattern: /requisition-activities-report
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:requisitionActivities }
+
+purchase_requisition_item_cancel:
+    pattern: /purchase-requisition-item-cancel/{status}
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:itemCancelActivitiesDetail, status:cancel }
+
+purchase_requisition_item_resolved:
+    pattern: /purchase-requisition-item-total-po-issued/{status}
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:itemCancelActivitiesDetail,status:po-issued }
+
+purchase_requisition_item_total_cancel:
+    pattern: /purchase-requisition-item-total
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:totalRequisitionItemDetail }
+
+purchase_requisition_item_open:
+    pattern: /purchase-requisition-item-open/{status}
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:itemOpenActivitiesDetail, status:open }
+
+purchase_requisition_item_approve:
+    pattern: /purchase-requisition-item-approve/{status}
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:itemOpenActivitiesDetail, status:approve }
+
+report_requisition_item_excel:
+    pattern: /requisition-item-report-excel
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:prItemApprovedReportExcel, status:approve }
+    options:
+            expose: true
+
+report_requisition_item_in-progress_excel:
+    pattern: /requisition-item-inprogress-report-excel
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:prItemInProgressReportExcel, status:in-progress }
+    options:
+            expose: true
+
+report_requisition_item_cancel_excel:
+    pattern: /requisition-item-cancel-report-excel
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:prItemCancelReportExcel, status:cancel }
+    options:
+            expose: true
+
+report_requisition_item_closed_excel:
+    pattern: /requisition-item-closed-report-excel
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:prItemCloseReportExcel}
+    options:
+            expose: true
+
+purchase_requisition_activities_report_excel:
+    pattern: /purchase-requisition-activities-report-excel
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:prActivitiesReportExcel}
+    options:
+            expose: true
+
+purchase_requisition_item_inProgress:
+    pattern: /purchase-requisition-item-in-progress/{status}
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:itemActivitiesDetail, status:in-progress }
+
+purchase_requisition_item_individual_cancel:
+    pattern: /purchase-requisition-item-individual-cancel
+    defaults: { _controller: PmsReportBundle:RequisitionActivitiesReport:itemActivitiesDetailIndividualItem }

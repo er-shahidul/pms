@@ -1,0 +1,179 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .highcharts-button{
+            display: none;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Payment Summary
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_item_report_bundle') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Item</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+
+            <form action="{{ path('payment_company_report_bundle') }}" method="get" name="item_report" id="company_Payment_report">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tbody>
+                        <tr class="numeric">
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.companyType, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                                </div>
+                            </td>
+                            <td class="numeric">
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-minviewmode="years" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.year, { 'attr': {'class': 'form-control datepicker'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+
+        <div class="span12">
+
+            <div class="portlet-body flip-scroll" style="margin-top: 15px;">
+
+                {% set getYear = app.request.query.all %}
+
+                <table class="table-bordered table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+
+                    <tr>
+                        <th>Month</th>
+                        <th class="numeric">Request Amount</th>
+                        <th class="numeric">Po Amount</th>
+                        <th class="numeric">Payment Amount</th>
+                        <th class="numeric">VAT Amount</th>
+                        <th class="numeric">Dues Amount</th>
+                        {#<th class="numeric">Average Resolved Request</th>#}
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for index, paymentInfo in paymentInfos %}
+
+                            <tr>
+                                <td><a class="btn" style="text-decoration:underline" target="_blank"
+                                       href ="{{ path('payment_company_monthly_detail',
+                                       {companyType: app.request.get('search[companyType]', null, true), 'date': getYear['search']['year'],'monthValue': (paymentInfo['monthNumber']) }) }}" >
+
+                                        {{ month[paymentInfo['monthNumber']-1] }}
+                                    </a>
+                                </td>
+                                {#<td>{{ month[index] }}</td>#}
+                                <td class="numeric">{{ paymentInfo['totalRequest']|number_format(2, '.', ',') }}</td>
+                                <td class="numeric">{{ paymentInfo['poAmount']|number_format(2, '.', ',') }}</td>
+                                <td class="numeric">{{ paymentInfo['paymentAmount']|number_format(2, '.', ',') }}</td>
+                                <td class="numeric">{{ paymentInfo['vat'] }}</td>
+                                <td class="numeric">{{ paymentInfo['DuesAmount']|number_format(2, '.', ',') }}</td>
+                                {#<td class="numeric"></td>#}
+
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                    {#<tbody>
+
+                    {% for index, paymentInfo in paymentInfos %}
+
+                        <tr>
+                            <td><a class="btn" style="text-decoration:underline" target="_blank" href ="{{ path('payment_company_monthly_detail',{'date': getYear['search']['year'], 'monthValue': (index + 1) }) }}" >
+                                    {{ month[index] }}
+                                </a>
+                            </td>
+                            &#123;&#35;<td>{{ month[index] }}</td>&#35;&#125;
+                            <td class="numeric">{{ paymentInfo is not empty and  paymentInfo['totalRequest'] is not empty ? paymentInfo['totalRequest']|number_format(2, '.', ',') :'---' }}</td>
+                            <td class="numeric">{{ paymentInfo is not empty and  paymentInfo['totalPayment'] is not empty ? paymentInfo['totalPayment']|number_format(2, '.', ',') :'---' }}</td>
+                            <td class="numeric">{{ vat[index] ? vat[index]['tax']|number_format(2, '.', ',') :'---' }}</td>
+                            <td class="numeric">{{ paymentInfo is not empty and  paymentInfo['duesAmount'] is not empty ? paymentInfo['duesAmount']|number_format(2, '.', ',') :'---' }}</td>
+                            <td class="numeric">{{ paymentInfo is not empty and  paymentInfo['paymentResolvedAverage'] is not empty  ? paymentInfo['paymentResolvedAverage']|number_format(2, '.', ',') :'---' }}</td>
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>#}
+                </table>
+
+            </div>
+
+            <div class="modal-footer fa-align-left">
+                <input type="button" value="Export in excel" name="itemReportExcel" id="companyPaymentReportExcel" class="btn blue">
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    'assets/Highcharts-4.1.7/js/highcharts.js'
+    'assets/Highcharts-4.1.7/js/modules/exporting.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-01-01",
+    viewMode: "years",
+    minViewMode: "years"
+    });
+
+    $('#companyPaymentReportExcel').click(function () {
+
+        setTimeout(function(){
+            $('#company_Payment_report').attr('action', '{{ path('payment_company_report_bundle') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'company_Payment_report',
+            url: Routing.generate('payment_company_report_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock documentready %}

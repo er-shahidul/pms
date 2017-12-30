@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Project
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Project</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="projectMessege"></span>
+
+    <form method="get" style="margin-bottom: 20px;margin-left: -15px;margin-top: -20px;" id="project">
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="input-icon right">
+                    {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-1" style="text-align: center;">
+                <div class="input-icon">
+                    <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">Or</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="input-icon">
+                    {{ form_widget(form.projectType, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-1" style="text-align: center;">
+                <div class="input-icon">
+                    <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">Or</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="input-icon">
+                    {{ form_widget(form.area, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                </div>
+            </div>
+        </div>
+
+        <input type="submit" value="Search" class="btn blue">
+    </form>
+    <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+        <input type="button" value="Export in excel" name="itemReportExcel" id="itemReportExcel" class="btn blue">
+    </div>
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            <li class="{% if status == 'active' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('project',{status:'active'} ) }}">All</a></li>
+            <li class="{% if status == 'delete' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('project',{status:'delete'} ) }}">Deleted</a></li>
+            {% if is_granted("ROLE_PROJECT_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                <li style="float: right;margin-right: -1px;">
+                    <a href="{{ path('project_add') }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                        Add Project
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="tab-content" style="height: auto;background: #eee;">
+            <div class="tab-pane active">
+                <div data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="project-list-div">
+                        <div class="form-group">
+                            <div class="col-md-12" style="margin-top: 30px;">
+<span><strong>Head Project Name : {{ headProjectName }}</strong></span>
+                                <table class="table bold" style="border: 1px solid ghostwhite;">
+                                    <thead style="background: #4b8df8;color: #fff;">
+                                    <tr>
+                                        <th>Sl</th>
+                                        <th>Project Name</th>
+                                        <th>Project Head</th>
+                                        <th>Type</th>
+                                        <th>Area</th>
+                                        <th>Address</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% set offset = projects.getItemNumberPerPage * (projects.currentPageNumber - 1) %}
+
+                                    {% for project in projects %}
+
+                                        <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                                            <td>{{ loop.index + offset }}.</td>
+                                            <td>{{ project.projectName }}</td>
+                                            <td>{{ project.projectHead |default() }}</td>
+                                            <td>{{ project.projectCategory.projectCategoryName |default() }}</td>
+                                            <td>{{ project.projectArea.areaName |default() }}</td>
+                                            <td>{{ project.address |default() }}</td>
+                                            <td>
+                                                {% if project.status == 1 %}
+                                                    <a href="/project/delete/{{ project.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-trash-o"></i> Delete</a>
+                                                {% endif %}
+                                                {% if project.status == 0 %}
+                                                    <a href="#" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-times"></i> Deleted</a>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if project.status == 1 %}
+                                                    <a href="/project/update/{{ project.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-edit"></i> Update</a>
+                                                {% endif %}
+                                                {% if project.status == 0 %}
+                                                    <a href="/project/active/{{ project.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                                                class="fa fa-repeat"></i> Restore</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="navigation" style="text-align: right">
+                                    {{ knp_pagination_render(projects) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $('#itemReportExcel').click(function () {
+
+    setTimeout(function(){
+    $('#project').attr('action', '{{ path('project') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'project',
+    url: Routing.generate('project_excel_excelProjectsList'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock %}

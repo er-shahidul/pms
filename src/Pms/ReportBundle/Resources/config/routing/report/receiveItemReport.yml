@@ -1,0 +1,21 @@
+receive_item_report_bundle:
+    pattern: /receive-item-report
+    defaults: { _controller: PmsReportBundle:ReceiveItemReport:receiveItemReport }
+
+receive_item_report_bundle_excel:
+    pattern: /receive-item-report-excel
+    defaults: { _controller: PmsReportBundle:ReceiveItemReport:receiveItemReportExcel }
+    options:
+            expose: true
+
+purchase_order_approve:
+    pattern: /purchase-order/approve-list
+    defaults: { _controller: PmsReportBundle:ReceiveItemReport:purchaseOrderApproveList}
+
+receive_item_list:
+    pattern: /receive-item/list
+    defaults: { _controller: PmsReportBundle:ReceiveItemReport:receiveItemList}
+
+not_receive_item_list:
+    pattern: /not-receive-item/list
+    defaults: { _controller: PmsReportBundle:ReceiveItemReport:notReceiveItemList}

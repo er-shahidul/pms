@@ -1,0 +1,12 @@
+report_purchase_lowest_price:
+    pattern: /purchase-lowest-price-report
+    defaults: { _controller: PmsReportBundle:PurchaseLowestPriceReport:purchaseLowestPrice }
+
+report_purchase_lowest_price_excel:
+    pattern: /purchase-lowest-price-report-excel
+    defaults: { _controller: PmsReportBundle:PurchaseLowestPriceReport:purchaseLowestPriceExcel }
+    options:
+           expose: true
+
+
+

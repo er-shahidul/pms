@@ -1,0 +1,9 @@
+report_user_activities_gate_pass:
+    pattern: /user-activities-gate-pass-report
+    defaults: { _controller: PmsReportBundle:UserActivitiesGatePass:userActivitiesGatePass }
+
+report_user_activities_gate_pass_excel:
+    pattern: /user-activities-gate-pass-report-excel
+    defaults: { _controller: PmsReportBundle:UserActivitiesGatePass:userActivitiesGatePassExcel }
+    options:
+            expose: true

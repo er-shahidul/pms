@@ -1,0 +1,22 @@
+report_budget_vs_spend:
+    pattern: /budget-vs-spend-report
+    defaults: { _controller: PmsReportBundle:BudgetVsSpendReport:budgetVsSpendReport }
+
+report_budget_vs_spend_excel:
+    pattern: /budget-vs-spend-report-excel
+    defaults: { _controller: PmsReportBundle:BudgetVsSpendReport:budgetVsSpendReportExcel }
+    options:
+            expose: true
+
+subcategory_spend_details:
+    pattern: /subcategory-spend-details/{subCategoryID}/{month}
+    defaults: { _controller: PmsReportBundle:BudgetVsSpendReport:subcategorySpendDetails }
+
+project_wise_spend_report:
+    pattern: /project-wise-spend-report/{id}/{month}/{subcategory}
+    defaults: { _controller: PmsReportBundle:BudgetVsSpendReport:projectWiseSpendReport }
+
+project_wise_spend_report_excel:
+    pattern: /project-wise-spend-report-excel/{id}/{month}/{subcategory}
+    defaults: { _controller: PmsReportBundle:BudgetVsSpendReport:projectWiseSpendReportExcel }
+

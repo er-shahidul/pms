@@ -1,0 +1,638 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        table td ul li {
+            list-style: none;
+            margin-left: -42px;
+        }
+    </style>
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Order
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('purchase_order') }}" style="color: #333 !important;">Purchase Order</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('purchase_order_new') }}" style="color: #333 !important;">Item List</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="modal-dialog bodyWidth">
+    <div class="modal-content backgroundWhite">
+    <div class="modal-header backGroundLightGrey">
+        <h4 class="modal-title bold text-center"> Purchase Order</h4>
+    </div>
+
+    {{ form_start(form, {'action': path('purchase_order_save'), 'attr': {'class': 'form-horizontal', 'id': 'purchase-form', 'novalidate': 'novalidate'} } ) }}
+    <div class="modal-body">
+    <div class="row">
+
+    <div class="col-md-12" style="height: 250px;">
+        <div class="col-md-6 text-left left">
+            <div class="col-md-12 height50 left">
+                <div class="form-group">
+                    {{ form_label(form.poNonpo, 'Purchase Type :', {'label_attr': {'class': 'control-label col-md-4', 'style': 'margin-left: -15px;margin-right:-12px;' } }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.poNonpo, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;width: 188px;margin-left: -24px;' } }) }}
+                        </div>
+                        <span class="help-block" style="color:darkred;margin-left:-65px;">{{ form_errors(form.poNonpo) }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 left" style="height: 300px;">
+                <div class="form-group buyer-group">
+
+                    <table class="col-md-12 left" style="height: 30px;">
+                        <tr>
+                            <td class="col-md-2 left" style="padding-bottom: 15px;">
+                                {{ form_label(form.buyer, 'Buyer :', {'label_attr': {'class': '', 'style': 'margin-left: -12px;'} }
+                                ) }}
+                            </td>
+                            <td class="col-md-6 left" style="padding-bottom: 15px;">
+                                {{ form_widget(form.buyer, { 'attr': {'class': 'form-control buyer select2me', 'style': 'margin-left: -14px;width: 188px;', 'placeholder': ' Select Buyer' } }) }}
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="form-group vendor-group">
+                    <table class="col-md-12 left" style="font-family: 'Open Sans', sans-serif;font-size: 14px;">
+                        <tr>
+                            <td class="col-md-2 left">
+                                <label style="margin-bottom: 0;margin-left: -15px;">Vendor :</label>
+                            </td>
+                            <td class="col-md-6 left">
+                                {{ form_widget(form.vendor, { 'attr': {'class': 'form-control vendor select2me', 'style': 'margin-left: -14px;width: 188px;', 'placeholder': ' Select Vendor' } }) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="height: 50px;">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom: 20px;">Contact Person</td>
+                            <td style="padding-bottom: 20px;">: <span id="vendorContactPerson" class=""></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom: 20px;">Mobile</td>
+                            <td style="padding-bottom: 20px;">: <span id="vendorContactNo" class=""></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom: 20px;">Email</td>
+                            <td style="padding-bottom: 20px;">: <span id="vendorEmail" class=""></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom: 20px;">Address</td>
+                            <td style="padding-bottom: 20px;">: <span id="vendorAddress" class=""></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" style="height:150px;float: right;">
+            <div class="col-md-12" style="height:100px;float:left;">
+                <div class="form-group">
+                    <label class="col-md-4 control-label" style="margin-left:15px;">Issue Date :</label>
+                    <div class="col-md-6">
+                        <div class="input-icon right">
+                            <i class="fa fa-calendar"></i>
+                            <input type="text" class="form-control" placeholder="{{ "now"|date("m/d/Y") }}" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.refNo, 'Ref. No :', {'label_attr': {'class': 'control-label col-md-4 marginLeft15', 'style': 'margin-left:15px;' } }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.refNo, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                        </div>
+                        <span class="help-block margin-left-39" style="color:darkred;">{{ form_errors(form.refNo) }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="height:70px;float:left;">
+                <div class="form-group" style="margin-top:10px">
+                    {{ form_label(form.dateOfDelivered, '*Date Of Delivery:', {'label_attr': {'class': 'control-label col-md-4 marginLeft15'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.dateOfDelivered, { 'attr': {'class': 'form-control paddingLeft10', 'style': 'width: 188px;'} }) }}
+                            </div>
+                        </div>
+                        <span class="help-block margin-left-39" style="color:darkred;">{{ form_errors(form.dateOfDelivered) }}</span>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:10px">
+                    {{ form_label(form.paymentType, '*Payment Type:', {'label_attr': {'class': 'control-label col-md-4 marginLeft15'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.paymentType, { 'attr': {'class': 'form-control paddingLeft10', 'style': 'width: 188px;'} }) }}
+                        </div>
+                        <span class="help-block margin-left-39" style="color:darkred;">{{ form_errors(form.paymentType) }}</span>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:10px">
+                    {{ form_label(form.paymentFrom, '*Payment From:', {'label_attr': {'class': 'control-label col-md-4 marginLeft15'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.paymentFrom, { 'attr': {'class': 'form-control paddingLeft10', 'style': 'width: 188px;'} }) }}
+                        </div>
+                        <span class="help-block margin-left-39" style="color:darkred;">{{ form_errors(form.paymentFrom) }}</span>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:10px;">
+                    {{ form_label(form.computationStatus, '*Computation Status:', {'label_attr': {'class': 'control-label col-md-4 marginLeft15'} }
+                    ) }}
+                    <div class="col-md-6">
+                        <div class="input-icon">
+                            {{ form_widget(form.computationStatus, { 'attr': {'class': 'form-control paddingLeft10', 'style': 'width: 188px;'} }) }}
+                        </div>
+                        <span class="help-block margin-left-39" style="color:darkred;">{{ form_errors(form.computationStatus) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="height:200px;float:right;margin-bottom: 20px;">
+
+            <div class="form-group" style="margin-left: -30px;">
+                {{ form_label(form.vendorQuotationReferenceNumber, 'Vendor Quotation ref :', {'label_attr': {'class': 'control-label col-md-3 marginLeft15'} }
+                ) }}
+                <div class="col-md-6">
+                    <div class="input-icon">
+                        {{ form_widget(form.vendorQuotationReferenceNumber, { 'attr': {'class': 'form-control paddingLeft10', 'style': 'width: 188px;'} }) }}
+                    </div>
+                    <span class="help-block margin-left-39" style="color:darkred;">{{ form_errors(form.vendorQuotationReferenceNumber) }}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.file, 'Vendor Quotation Attach :', {'label_attr': {'class': 'control-label col-md-3', 'style': 'margin-left: 0;' } } ) }}
+                <div class="col-md-8">
+                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                        <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.file, { 'attr': {'class': 'default'} }) }}
+													</span>
+                            <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                        </div>
+                    </div>
+                    <span class="help-block margin-left-39" style="color:darkred;">{{ form_errors(form.file) }}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.fileTwo, 'Comparison Attach :', {'label_attr': {'class': 'control-label col-md-3', 'style': 'margin-left: 0;' } } ) }}
+                <div class="col-md-8">
+                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                        <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.fileTwo, { 'attr': {'class': 'default'} }) }}
+													</span>
+                            <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <table id="table_order" class="table col-md-12" style="border: 1px solid ghostwhite;">
+            <thead style="background:#4b8df8;">
+            <tr>
+                <th class="col-md-1" style="padding-left: 15px;">Sl</th>
+                <th class="col-md-1" style="padding-left: 15px;">PR ref.</th>
+                <th class="col-md-2" style="padding-left: 15px;">Particulars</th>
+                <th class="col-md-1" style="padding-left: 15px;">Project</th>
+                <th class="col-md-1" style="padding-left: 15px;">Qty</th>
+                <th class="col-md-1" style="padding-left: 12px;">Unit</th>
+                <th class="col-md-1" style="padding-left: 15px;">Brand</th>
+                <th class="col-md-1" style="padding-left: 15px;">UnitPrice</th>
+                <th class="col-md-1" style="padding-left: 15px;"></th>
+                <th class="col-md-1" style="padding-left: 15px;">TotalAmount</th>
+            </tr>
+            </thead>
+
+            <tbody id="orderItems" class="tags" data-prototype="{% filter escape %}
+                            {{ include('PmsCoreBundle:PurchaseOrder:purchaseOrderItemPrototype.html.twig', { 'form': form.purchaseOrderItems.vars.prototype }) }}
+                            {% endfilter %}}">
+            {% set i = 0 %}
+            {% set j = 1 %}
+            {% for orderItem in form.purchaseOrderItems %}
+                <tr>
+                    <td style="padding-left: 15px;">
+                        {{ j }}.
+                    </td>
+                    <td style="padding-left: 15px;">
+                        <span>{{ number[i] }}</span>
+                    </td>
+                    <td style="padding-left: 15px;">
+                        {{ form_widget(orderItem.purchaseRequisitionItem, { 'attr': {'class': 'form-control', 'style': 'margin-left: 20px;width: 200px;padding-left: 10px! important;'} }) }}
+                        <span>{{ item[i] }}</span>
+                    </td>
+                    <td style="padding-left: 15px;">
+                        <span>{{ project[i] }}</span>
+                    </td>
+                    <td style="padding-left: 15px;">
+                        {{ form_widget(orderItem.quantity, { 'attr': {'class': 'form-control quantity', 'style': 'width: 120px;padding-left: 10px! important;', 'placeholder': quantityArr[i] } }) }}
+                        <span class="help-block" style="color:darkred;">{{ form_errors(orderItem.quantity) }}</span>
+                    </td>
+                    <td>
+                        <span>{{ itemUnit[i] }}</span>
+                    </td>
+                    <td>
+                        {{ form_widget(orderItem.brand, { 'attr': {'class': 'form-control', 'style': 'width: 120px;padding-left: 10px! important;'} }) }}
+                    </td>
+                    <td style="padding-left: 15px;">
+                        {{ form_widget(orderItem.price, { 'attr': {'class': 'form-control price', 'style': 'width: 120px;padding-left: 10px! important;'} }) }}
+                        <span class="help-block" style="color:darkred;">{{ form_errors(orderItem.price) }}</span>
+                    </td>
+                    <td class="paddind-top-11 text-right">
+                        <a href="/purchase-order/last-details/{{ itemId[i] }}" data-target="#ajax" data-toggle="modal"
+                           class="btn btn-xs">
+                            <img src="{{ asset('assets/img/1.png') }}" style="width: 32px;height: 32px;" />
+                        </a>
+                    </td>
+                    <td style="">
+                        {{ form_widget(orderItem.amount, { 'attr': {'class': 'form-control amount', 'style': 'width: 120px;padding-left: 10px! important;'} }) }}
+                    </td>
+                </tr>
+                {% set i = i + 1 %}
+                {% set j = j + 1 %}
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr style="border-top: 5px solid #4b8df8;">
+                <td colspan ="7">
+                    <div style="width: 22%;float: left;text-align: left;font-size: 14px;">
+                        <div style="margin-top: 5px;">*Payment Method :</div>
+                    </div>
+                    <div style="width: 77%;float: right;text-align: right;">
+                        {{ form_widget(form.paymentMethod, { 'attr': {'class': 'form-control', 'style': 'width: 200px;padding-left: 10px! important;'} }) }}
+                    </div>
+                    <span class="help-block" style="color:darkred;margin-left: 140px;">{{ form_errors(form.paymentMethod) }}</span>
+                </td>
+                <td colspan ="2" style="text-align: right;border-top: 0 solid #ddd;font-size: 12px;">Sub Total :</td>
+                <td style="border-top: 0 solid #ddd;">
+                    {{ form_widget(form.subTotal, { 'attr': {'class': 'form-control subtotal', 'style': 'width: 120px;padding-left: 10px! important;'} }) }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan ="8" style="border-top: 0 solid #ddd;">
+                    
+                </td>
+
+                <td style="text-align: right;border-top: 0 solid #ddd;font-size: 14px;">
+
+                </td>
+                <td style="border-top: 0 solid #ddd;">
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan ="7" style="border-top: 0 solid #ddd;"></td>
+                <td colspan ="2" style="text-align: right;border-top: 0 solid #ddd;font-size: 13px;">VAT & Tax Amount:</td>
+                <td style="border-top: 0 solid #ddd;">
+                    {{ form_widget(form.tax, { 'attr': {'class': 'form-control', 'style': 'width: 120px;padding-left: 10px! important;'} }) }}
+                </td>
+            </tr>
+             <tr class="advancePayment">
+                <td colspan ="7" style="border-top: 0 solid #ddd;"></td>
+                <td colspan ="2" style="text-align: right;border-top: 0 solid #ddd;font-size: 12px;">Advanced Payment:</td>
+                <td style="border-top: 0 solid #ddd;">
+                    {{ form_widget(form.advancePaymentAmount, { 'attr': {'class': 'form-control advancePaymentAmount', 'style': 'width: 120px;padding-left: 10px! important;'} }) }}
+                </td>
+            </tr>
+            <tr style="border-bottom: 5px solid lightgrey;">
+                <td colspan ="7" style="border-top: 0 solid #ddd;"></td>
+                <td colspan ="2" style="text-align: right;border-top: 0 solid #ddd;font-size: 12px;">PO Amount :</td>
+                <td style="border-top: 0 solid #ddd;">
+                    {{ form_widget(form.netTotal, { 'attr': {'class': 'form-control netTotal', 'style': 'width: 120px;padding-left: 10px! important;'} }) }}
+
+                </td>
+            </tr>
+            <tr style="border-bottom: 5px solid lightgrey;">
+                <td colspan ="10" style="border-top: 0 solid #ddd;">
+                    Remarks :
+                    {{ form_widget(form.comment, { 'attr': {'class': 'form-control', 'style': 'width: 100%; max-width: 948px; max-height: 54px; padding-left: 10px! important;'} }) }}
+                </td>
+            </tr>
+            <tr style="border-bottom: 5px solid lightgrey;">
+                <td colspan ="10" style="border-top: 0 solid #ddd;">
+                    Terms & Conditions :
+                    <div class="tocD" style="width: 100%;height: auto;">
+
+                    </div>
+                </td>
+            </tr>
+
+            <tr style="border-bottom: 5px solid lightgrey;">
+                <td colspan ="10" style="border-top: 0 solid #ddd;">
+                    Custom Term & Conditions :
+                    {{ form_widget(form.customTermCondition, { 'attr': {'class': 'form-control ckeditor', 'rows':200, 'style': 'width: 100%; max-width: 920px; max-height: 120px; padding-left: 10px! important;'} }) }}
+                </td>
+            </tr>
+            <tr style="">
+                <td colspan="10">
+                    {% set i = 0 %}
+                    {% for orderItem in form.purchaseOrderItems %}
+
+                        <div style="width: 35%;height: 90px;border: 1px solid #ddd; background: #F5F5F5;margin-top: 5px;padding: 7px;">
+                            {{ i+1 }}. Project Name : <span style="font-weight: bold">{{ project[i] }}</span> <br/>
+                            Delivery Address : {{ address[i] }} <br/>
+                            Contact Person cell Phone : {{ projectHeadCell[i] }} <br/>
+                        </div>
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <input type="hidden" value="{{ orderItems }}" name="orderItems"/>
+    </div>
+    </div>
+    <div class="modal-footer" style="background: lightgrey;">
+        <div class="btn-group">
+            <a href="javascript:history.back()" class="btn" style="font-family: 'Open Sans', sans-serif;width: 100px;background: #0353D6; color: white !important;" onclick="window.history.back();">
+                << Previous
+            </a>
+        </div>
+        <div class="btn-group">
+            <a href="{{ path('purchase_order') }}" class="btn" style="font-family: 'Open Sans', sans-serif;width: 100px;background: #0353D6; color: white !important;">
+                <i class="fa fa-ban"> Cancel</i>
+            </a>
+        </div>
+        {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width confirm', 'style': 'width: 100px;background: #0353D6; color: white !important;', 'title': 'Are you sure submit it?' } }) }}
+    </div>
+    {{ form_end(form) }}
+    </div>
+    </div>
+
+    <script>
+        var quantityArr = {{ quantityArr|json_encode|raw }};
+    </script>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+
+    {% javascripts
+    '@PmsCoreBundle/Resources/public/js/po.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascriptBlock %}
+
+{#{% endblock %}#}
+{#<script>#}
+{#{% block documentready %}#}
+
+    {#{{ parent() }}#}
+
+    {#function advancedPaymentValidation() {
+
+        var advancePayment = document.forms["purchaseorder"]["purchaseorder[advancePaymentAmount]"].value;
+        if (advancePayment == null || advancePayment == "") {
+            alert("advance Payment Must Be fill Out");
+            return false;
+        } else {
+            $('#purchase-form').submit()
+        }
+    }
+
+    $('#purchaseorder_submit').click( function (){
+
+        if($("#purchaseorder_paymentType option:selected").text() == 'Advance payment'){
+            $("#table_order tfoot tr.advancePayment").show();
+            advancedPaymentValidation();
+            return false;
+        } else {
+            $("#table_order tfoot tr.advancePayment").hide();
+        }
+    })
+
+    if($("#purchaseorder_paymentType option:selected").text() == 'Advance payment'){
+        $("#table_order tfoot tr.advancePayment").show();
+
+    } else {
+        $("#table_order tfoot tr.advancePayment").hide();
+    }
+
+
+    $('#purchaseorder_poNonpo').change( function (){
+        var value = $("#purchaseorder_poNonpo option:selected").text();
+
+        if(value == 'Local Purchase' ||  value == 'Project Purchase'){
+            $("#purchaseorder_paymentFrom").val('local-office');
+        } else {
+            $("#purchaseorder_paymentFrom").val('head-office');
+        }
+    });
+    $('#purchaseorder_paymentType').change( function (){
+        var value = $("#purchaseorder_paymentType option:selected").text();
+
+        if(value == 'Advance payment'){
+        $("#table_order tfoot tr.advancePayment").show();
+        } else {
+        $("#table_order tfoot tr.advancePayment").hide();
+        }
+    });
+
+    $(".confirm").easyconfirm();
+
+    $('.textArea').wysihtml5();
+
+    $('#ajax').on('hidden.bs.modal',function(){
+    $(this).removeData('bs.modal');
+    });
+
+    var quantityArr = {{ quantityArr|json_encode|raw }};
+
+    for(var i = 0; i < quantityArr.length; i++) {
+        inputFieldValue(i);
+    }
+
+    function inputFieldValue(x) {
+    document.getElementById("purchaseorder_purchaseOrderItems_" + x + "_quantity").onkeyup = function () {
+    var input = parseInt(this.value);
+    if (input < 0 || input > quantityArr[x])
+    alert("Value should be between 0 - " + quantityArr[x]);
+    return false;
+    }
+    }
+
+    &#123;&#35; for not more than pr quantity &#35;&#125;
+    &#123;&#35;function inputFieldValue(x) &#123;&#35;#35;&#125;
+        &#123;&#35;document.getElementById("purchaseorder_purchaseOrderItems_" + x + "_quantity").onkeyup = function () &#123;&#35;#35;&#125;
+            &#123;&#35;var input = parseInt(this.value);&#35;&#125;
+            &#123;&#35;if (input < 0 || input > quantityArr[x]) &#123;&#35;#35;&#125;
+                &#123;&#35;this.value = "";&#35;&#125;
+                &#123;&#35;alert("Value should be between 0 - " + quantityArr[x]);&#35;&#125;
+                &#123;&#35;return false;&#35;&#125;
+            &#123;&#35;#35;&#125;&#35;&#125;
+        &#123;&#35;#35;&#125;&#35;&#125;
+    &#123;&#35;#35;&#125;&#35;&#125;
+
+    var subTotal= 0;
+
+    var poNonpo =$("#purchaseorder_poNonpo").val();
+
+    purchaseType(poNonpo);
+
+    function purchaseType(poNonpo){
+        if(poNonpo == 10){
+            $('.buyer-group').show();
+            $('.vendor-group').hide();
+            $('#purchaseorder_vendor').val('');
+
+            $( "span#vendorAddress" ).html('');
+            $( "span#vendorEmail" ).html('');
+            $( "span#vendorContactPerson" ).html('');
+            $( "span#vendorContactNo" ).html('');
+        }else if(poNonpo != 10){
+            $('.buyer-group').hide();
+            $('.vendor-group').show();
+            $('#purchaseorder_buyer').val('');
+        }else if(poNonpo == ''){
+            $('.buyer-group').hide();
+            $('.vendor-group').hide();
+            $('#purchaseorder_buyer').val('');
+            $('#purchaseorder_vendor').val('');
+
+            $( "span#vendorAddress" ).html('');
+            $( "span#vendorEmail" ).html('');
+            $( "span#vendorContactPerson" ).html('');
+            $( "span#vendorContactNo" ).html('');
+        }else{
+            $('.buyer-group').hide();
+            $('.vendor-group').hide();
+            $('#purchaseorder_buyer').val('');
+            $('#purchaseorder_vendor').val('');
+
+            $( "span#vendorAddress" ).html('');
+            $( "span#vendorEmail" ).html('');
+            $( "span#vendorContactPerson" ).html('');
+            $( "span#vendorContactNo" ).html('');
+        }
+    }
+
+    $("#purchaseorder_poNonpo").change(function () {
+        var poNonpo = $("#purchaseorder_poNonpo").val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('find_terms_and_conditions'),
+            data: "poNonpo=" + poNonpo,
+            success: function (response, status) {
+                $('.tocD').html( response );
+            }
+        });
+
+        purchaseType(poNonpo);
+    });
+
+    $("#purchaseorder_vendor").change(function () {
+
+    var vendorName = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('vendor_find_address'),
+            data: "vendorName=" + vendorName,
+            dataType: 'json',
+            success: function (response) {
+                if (response.responseCode == 200) {
+
+                    var address = response.vendorAddress;
+                    var email = response.email;
+                    var contactPerson = response.contractPerson;
+                    var contactNo = response.contractNo;
+
+                    $( "span#vendorAddress" ).html(address);
+                    $( "span#vendorEmail" ).html(email);
+                    $( "span#vendorContactPerson" ).html(contactPerson);
+                    $( "span#vendorContactNo" ).html(contactNo);
+
+                }
+            }
+        });
+    });
+
+    $('.price, .quantity').live("click keyup", (PurchaseOrderQuantityCalculation));
+
+    function PurchaseOrderQuantityCalculation() {
+
+        var subTotal = 0;
+        var price = parseFloat($(this).closest('td').parent('tr').find('.price').val());
+        var quantity = parseFloat($(this).closest('td').parent('tr').find('.quantity').val());
+
+        if (!price) {
+            price = 0;
+        }
+        if (!quantity) {
+            quantity = 0;
+        }
+
+        $(this).closest('td').parent('tr').find('.amount').val(price * quantity);
+        $('.amount').each(function(){
+            amount = parseFloat($(this).val());
+            if (amount){
+                subTotal += amount;
+            }
+        });
+
+        $('.subtotal').val(subTotal);
+        $('.netTotal').val(subTotal);
+    }#}
+
+{#{% endblock %}#}
+

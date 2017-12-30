@@ -1,0 +1,20 @@
+PmsCoreBundle_ajax_called:
+    resource: "@PmsCoreBundle/Resources/config/routing/ajaxCalled.yml"
+
+PmsCoreBundle_purchase_requisition:
+    resource: "@PmsCoreBundle/Resources/config/routing/purchaseRequisition.yml"
+
+PmsCoreBundle_purchase_order:
+    resource: "@PmsCoreBundle/Resources/config/routing/purchaseOrder.yml"
+
+PmsCoreBundle_receive:
+    resource: "@PmsCoreBundle/Resources/config/routing/receive.yml"
+
+PmsCoreBundle_payment_section:
+    resource: "@PmsCoreBundle/Resources/config/routing/payment.yml"
+
+PmsCoreBundle_payment_report:
+    resource: "@PmsCoreBundle/Resources/config/routing/report/paymentReport.yml"
+PmsCoreBundle_database_backup:
+    resource: "@PmsCoreBundle/Resources/config/routing/database.yml"
+## end report section ##

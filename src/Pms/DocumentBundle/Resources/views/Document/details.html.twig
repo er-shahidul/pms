@@ -1,0 +1,135 @@
+{% block body %}
+    <div class="modal-dialog " style="width:70%;" >
+    <div class="modal-content">
+    <div class="modal-header" style="background: lightgrey;">
+        <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title bold" style="text-align: center;">File Upload Details</h4>
+    </div>
+
+    <div class="col-md-12">
+
+        <div class="col-md-6" >
+            <table class="table table-hover">
+                <tr>
+                    <td class="label-td">
+
+                    </td>
+                    <td class="value-td">
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label-td">
+                        Upload By :
+                    </td>
+                    <td class="value-td" >
+                        {{ document.uploadedBy.username | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Upload Date :
+                    </td>
+                    <td class="value-td" >
+                        {{ document.uploadedDate | date('d M Y') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Description :
+                    </td>
+                    <td class="value-td" >
+                        {{ document.description | default() }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6" >
+            <table class="table table-hover">
+                <tr>
+                    <td class="label-td">
+
+                    </td>
+                    <td class="value-td">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Bill Number :
+                    </td>
+                    <td class="value-td" >
+                        {{ document.billNumber | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Date Of Bill :
+                    </td>
+                    <td class="value-td" >
+                        {{ document.dateOfBill | date('d M Y') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Bill Amount :
+                    </td>
+                    <td class="value-td" >
+                        {{ document.billAmount | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Purchase Order :
+                    </td>
+                    <td class="value-td" >
+                        {{ document.PurchaseOrder.id | default() }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="modal-footer col-md-12" style="width: 100%;background: lightgrey;">
+            <div class="col-md-6">
+
+                {% if document.path is not null %}
+                    <a class="btn blue" onclick="javascript: window.open('/document/attachment-view/{{ document.id }}/1')">Attachment
+                    </a>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn close-modal-refresh blue"
+                        data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+
+        </div>
+    </div>
+    <input type="hidden" value="" class="verifiedStatus">
+</div>
+    {#<div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+        <a href="#" data-trigger="hover" class="popover-link"
+           title="Order Numbers"
+           data-url="{{  }}">
+            InProgress</a>
+    </div>#}
+
+{% endblock %}
+
+{% block documentready %}
+    {#{{ parent() }}#}
+    {#<script>#}
+      {#  $('.popover-link').hover(function () {
+
+            var e = $(this);
+            e.off('hover');
+            $.get(e.data('url'), function (d) {
+                e.popover({content: d}).popover('show');
+
+            });
+        });#}
+
+{% endblock %}

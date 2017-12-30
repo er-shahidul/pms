@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Officer
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_purchase_officer') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> Purchase Officer</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet-body flip-scroll">
+            <form action="{{ url('report_purchase_officer') }}" method="get" name="project_spend_sub_category_wise" id="project_spend_sub_category_wise">
+                <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                    <tbody>
+                    <tr class="numeric">
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class="col-md-1">
+                                    <div class="input-icon right">
+                                        <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class="col-md-1">
+                                    <div class="input-icon right">
+                                        <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">Or</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class="col-md-3" style="margin-left: -15px;width: 220px;">
+                                    <div class="input-icon right">
+                                        {{ form_widget(form.user, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+            </div>
+            </div>
+            <!--BEGIN TABS-->
+        <div class="span12">
+            <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                <input type="button" value="Export in excel" name="projectSpendReportExcel" id="projectSpendReportExcel" class="btn blue">
+            </div>
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                   <tr class="numeric">
+                    <th>Sl</th>
+                    <th>Project</th>
+                    <th>Date</th>
+                    <th>PO No</th>
+                    <th>Buyer</th>
+                    <th>Designation</th>
+                    <th>Phone</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for index, budgetDaily in budgetDailies %}
+                    <tr style="background: #fff;" class="numeric">
+                        <td>{{ index + 1 }}.</td>
+                        <td>{{ budgetDaily.project.projectName }}</td>
+                        <td>{{ budgetDaily.purchaseOrder.createdDate | date('d-m-Y') }}</td>
+                        <td>{{ budgetDaily.purchaseOrder.id }}</td>
+                        <td>{{ budgetDaily.purchaseOrder.buyer.username | default() }}</td>
+                        <td>{{ budgetDaily.purchaseOrder.buyer.profile.designation | default()}}</td>
+                        <td>{{ budgetDaily.purchaseOrder.buyer.profile.cellphone | default()}}</td>
+                        <td>{{ budgetDaily.purchaseOrder.comment }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block documentready %}
+    {{ parent() }}
+
+    $('#projectSpendReportExcel').click(function () {
+
+    setTimeout(function(){
+    $('#project_spend_sub_category_wise').attr('action', '{{ path('report_purchase_officer') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'project_spend_sub_category_wise',
+    url: Routing.generate('report_purchase_officer_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock %}

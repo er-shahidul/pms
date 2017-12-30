@@ -1,0 +1,227 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Terms And Conditions
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('terms_and_conditions') }}" style="color: #333 !important;">Terms And Conditions</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="conditionMessege"></span>
+    {% if is_granted("ROLE_TERMS_AND_CONDITIONS_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+    <div class="modal-dialog" style="width: 1000px;padding-top: 15px !important;">
+        <div class="modal-content" style="background: white;">
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'condition-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            {{ form_label(form.sector, 'Sector :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.sector, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.sector) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.condition, 'Condition :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.condition, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.condition) }}</span>
+                            </div>
+                            <input type="button" name="ajaxSaveCondition" value="Save" id="ajaxSaveCondition" class="btn button-width" style="width: 100px;background: #0353D6; color: white !important;margin-top:2px;margin-left:10px;height:32px;">
+                            <span class="userMessege" style="margin-left: 176px;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+    <ul class="nav nav-tabs">
+        <li class="{% if status == 'active' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('terms_and_conditions',{status:'active'} ) }}">All</a></li>
+        <li class="{% if status == 'delete' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('terms_and_conditions',{status:'delete'} ) }}">Deleted</a></li>
+    </ul>
+    <div class="tab-content" style="height: auto;background: #eee;">
+    <div class="tab-pane active">
+        <div data-always-visible="1" data-rail-visible="0">
+
+            <div class="fluid" id="condition-list-div">
+                <div class="form-group">
+                    <div class="col-md-12" style="margin-top: 30px;">
+
+                        <table class="table bold" style="border: 1px solid ghostwhite;">
+                            <thead style="background: #4b8df8;color: #fff;">
+                            <tr>
+                                <th>Sl</th>
+                                <th class="col-md-1">Sector</th>
+                                <th class="sorted col-md-3">Condition</th>
+                                <th class="col-md-6"></th>
+                                <th class="col-md-2"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% set offset = termsAndConditions.getItemNumberPerPage * (termsAndConditions.currentPageNumber - 1) %}
+
+                            {% for termsAndCondition in termsAndConditions %}
+
+                                <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                                    <td>{{ loop.index + offset }}.</td>
+                                    <td>{{ termsAndCondition.sector.name }}</td>
+                                    <td>{{ termsAndCondition.condition }}</td>
+                                    <td></td>
+                                    <td>
+                                        {% if termsAndCondition.status == 1 %}
+                                            <a href="/terms-and-conditions/delete/{{ termsAndCondition.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                        class="fa fa-trash-o"></i> Delete</a>
+
+                                            <a href="/terms-and-conditions/update/{{ termsAndCondition.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                        class="fa fa-edit"></i> Update</a>
+                                        {% endif %}
+                                        {% if termsAndCondition.status == 0 %}
+                                            <a href="#" style="width: 65px;" class="btn default btn-xs">Deleted</a>
+                                            <a href="/terms-and-conditions/active/{{ termsAndCondition.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                                        class="fa fa-repeat"></i> Restore</a>
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="navigation" style="text-align: right">
+                            {{ knp_pagination_render(termsAndConditions) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+            $("#ajaxSaveCondition").click(function () {
+                var sPageURL = window.location.pathname;
+                var sURLVariables = sPageURL.split('/');
+                var condition = $("#termsandconditions_condition").val();
+                var sector = $("#termsandconditions_sector").val();
+
+                var conditionArray = new Array(condition, sURLVariables[3], sector);
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('terms_and_conditions_ajax_add'),
+                    data: "conditionArray=" + conditionArray,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if(msg.responseCode == 200) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Condition already exist</span></div>');
+                            $('.conditionMessege').css('color', 'red').html(msg.condition_ajax_add).fadeIn(1000).append($addLink);
+                            $(':input','#condition-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('')
+                                    .removeAttr('checked')
+                                    .removeAttr('selected');
+                        } else if(msg.responseCode == 204) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Please Insert Conditions Field</span></div>');
+                            $('.conditionMessege').css('color', 'red').html(msg.condition_ajax_add).fadeIn(1000).append($addLink);
+                            $(':input','#condition-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('')
+                                    .removeAttr('checked')
+                                    .removeAttr('selected');
+                        } else if(msg.responseCode == 202) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Condition Update Successfully</span></div>');
+                            $('.conditionMessege').css('color', 'green').html(msg.condition_ajax_add).fadeIn(1000).append($addLink);
+                            $(':input','#condition-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('')
+                                    .removeAttr('checked')
+                                    .removeAttr('selected');
+                            window.location.pathname = 'terms-and-conditions';
+                        } else {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Condition Add Successfully</span></div>');
+                            $('.conditionMessege').css('color', 'green').html(msg.condition_ajax_add).fadeIn(1000).append($addLink);
+                            $(':input','#condition-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('')
+                                    .removeAttr('checked')
+                                    .removeAttr('selected');
+                        }
+
+                        $('.userMessege').fadeOut();
+                        $("#condition-list-div").load("/terms-and-conditions/refresh")
+                    }
+                });
+            });
+
+            $("#termsandconditions_condition").keyup(function () {
+                var termsAndConditions = $(this).val();
+
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('terms_and_conditions_check'),
+                    data: "termsAndConditions=" + termsAndConditions,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if (msg.responseCode == 200) {
+                            $('.userMessege').css('color', 'red').html(msg.condition).fadeIn(1000);
+                        }
+                        else {
+                            $('.userMessege').css('color', 'green').html(msg.condition).fadeIn(1000);
+                        }
+                    }
+                });
+            });
+
+{% endblock %}

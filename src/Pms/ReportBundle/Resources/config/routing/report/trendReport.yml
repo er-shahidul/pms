@@ -1,0 +1,9 @@
+report_trend_report:
+    pattern: /trend-report
+    defaults: { _controller: PmsReportBundle:TrendReport:trendReport }
+
+report_trend_report_excel:
+    pattern: /trend-report-excel
+    defaults: { _controller: PmsReportBundle:TrendReport:trendReportExcel }
+    options:
+            expose: true

@@ -1,0 +1,623 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .popover-title {
+            color: #000000;
+        }
+        .popover-content{
+            color:#000000;
+        }
+        .modal-details{
+            background: #35aa47;padding: 1px 5px
+        }
+    </style>
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Requisition
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('purchase_requisition') }}" style="color: #333 !important;">Purchase Requisition</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <form method="get" style="margin-bottom: 20px;margin-left: -15px;margin-top: -20px;">
+
+                <input type="hidden" value="{{ app.request.get('month') }}" name="month">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <div class="input-icon right">
+                            {{ form_widget(formSearch.pr, { 'attr': {'class': 'form-control  fontColorBlack select2AutoComplete', 'placeholder': ' Select PR number'} }) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <div class="input-icon right">
+                            {{ form_widget(formSearch.prRef, { 'attr': {'class': 'form-control fontColorBlack select2RefAutoComplete', 'placeholder': ' Select PR Ref. No'} }) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <div class="input-icon right">
+                            {{ form_widget(formSearch.item, { 'attr': {'class': 'form-control select2ItemAutoComplete fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <input type="submit" value="Search" class="btn blue">
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="span12">
+            <!-- BEGIN SAMPLE TABLE PORTLET-->
+            <div class="portlet box">
+                <div class="portlet-title">
+                    <ul class="nav nav-tabs">
+                        <li class="{% if status == 'all' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('purchase_requisition',{status:'all', month:app.request.get('month')} ) }}">All</a></li>
+                        <li class="{% if status == 'open' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('purchase_requisition',{status:'open', month:app.request.get('month')} ) }}">Open</a></li>
+                        <li class="{% if status == 'approve' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('purchase_requisition',{status:'approve', month:app.request.get('month')} ) }}">Approved</a></li>
+                        <li class="{% if status == 'in-progress' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('purchase_requisition',{status:'in-progress', month:app.request.get('month')} ) }}">Wip</a></li>
+                        <li class="{% if status == 'po-issued' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('purchase_requisition',{status:'po-issued', month:app.request.get('month')} ) }}">Resolved</a></li>
+
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                            <li class="{% if status == 'hold' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('purchase_requisition',{status:'hold', month:app.request.get('month')} ) }}">Hold</a></li>
+                        {% endif %}
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                            <li class="{% if status == 'cancel' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('purchase_requisition',{status:'cancel', month:app.request.get('month')} ) }}">Cancel</a></li>
+                        {% endif %}
+                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+                            <li class="{% if status == 'close' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('purchase_requisition',{status:'close', month:app.request.get('month')} ) }}">Close</a></li>
+                        {% endif %}
+
+                        {#{% if status == 'in-progress' and app.request.get('month') %}
+                            <li style="float: right;margin-right: -1px;">
+                                <a href="{{ path('pr_in_progress_report_excel',{status:'in-progress',month:app.request.get('month')}) }}" id="inprogressExcelReport" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                                    PR Progress Excel
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if status == 'approve' and app.request.get('month') %}
+                            <li style="float: right;margin-right: -1px;">
+                                <a href="{{ path('pr_approved_report_excel',{status:'approve',month:app.request.get('month')}) }}" target="_blank" id="excelReport" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                                   Pr Approve Excel
+                                </a>
+                            </li>
+                        {% endif %}#}
+
+
+                        {% if is_granted("ROLE_PURCHASE_REQUISITION_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                            <li style="float: right;margin-right: -1px;">
+                                <a href="{{ path('purchase_requisition_new') }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                                    Create PR
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="portlet-body flip-scroll">
+                    <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                        <thead class="flip-content"  style="background: #4b8df8">
+                        <tr>
+                            <th class="numeric">Sl</th>
+                            <th class="numeric">PR Date</th>
+                            <th class="numeric">PR No</th>
+                            <th class="numeric">{{ knp_pagination_sortable( purchaseRequisitions , 'Project', 'p.projectName') }}</th>
+                            <th class="numeric">{{ knp_pagination_sortable( purchaseRequisitions , 'SubCategory', 'sc.subCategoryName') }}</th>
+                            <th class="numeric">Status</th>
+                            <th class="numeric">Approved%</th>
+                            <th class="numeric">%Claimed</th>
+                            <th class="numeric">PoIssued%</th>
+                            <th class="numeric">&nbsp;</th>
+                            <th class="numeric">&nbsp;</th>
+                            <th class="numeric">&nbsp;</th>
+                            <th class="numeric">&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set offset = purchaseRequisitions.getItemNumberPerPage * (purchaseRequisitions.currentPageNumber - 1) %}
+
+                        {% for purchaseRequisition in purchaseRequisitions %}
+
+                            {% if purchaseRequisition.totalRequisitionItem == 0 %}
+                                {% set totalRequisitionItem = 1 %}
+                            {% else %}
+                                {% set totalRequisitionItem = purchaseRequisition.totalRequisitionItem %}
+                            {% endif %}
+
+                            {% if purchaseRequisition.totalRequisitionItemQuantity == 0 %}
+                                {% set totalRequisitionItemQuantity = 1 %}
+                            {% else %}
+                                {% set totalRequisitionItemQuantity = purchaseRequisition.totalRequisitionItemQuantity %}
+                            {% endif %}
+
+                            <tr>
+                                <td class="numeric">{{ loop.index + offset }}.</td>
+                                <td class="numeric">{{ purchaseRequisition.dateOfRequisition|date('d M Y') }}</td>
+                                <td class="numeric">{{ purchaseRequisition.id }}</td>
+                                <td class="numeric" >{{ purchaseRequisition.project.projectName }}</td>
+                                <td class="numeric">{{ purchaseRequisition.subCategory.SubcategoryName }}</td>
+                                <td class="numeric">
+
+                                    {% if purchaseRequisition.status == 1 and purchaseRequisition.approveStatus == 0
+                                     %}
+                                        {#and purchaseRequisition.approveStatus != 1
+                                        and purchaseRequisition.approveStatus != 2
+                                        and purchaseRequisition.approveStatus != 3#}
+                                    {#and purchaseRequisition.totalRequisitionItemQuantity != 0 %}#}
+                                        <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                            Created
+                                        </div>
+                                    {% endif %}
+                                    {% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus == 1
+                                    and purchaseRequisition.approveStatus != 2
+                                    and purchaseRequisition.approveStatus != 3 %}
+                                    {#and purchaseRequisition.totalRequisitionItemQuantity != 0 %}#}
+                                        <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                            Verified
+                                        </div>
+                                    {% endif %}
+                                    {% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus != 1
+                                    and purchaseRequisition.approveStatus == 2
+                                    and purchaseRequisition.approveStatus != 3 %}
+                                    {#and purchaseRequisition.totalRequisitionItemQuantity != 0 %}#}
+                                        <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                            Validated
+                                        </div>
+                                    {% endif %}
+                                    {% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus == 3
+                                    and purchaseRequisition.totalRequisitionItemClaimed == 0
+                                    and purchaseRequisition.totalOrderItemQuantity == 0 %}
+                                    {#and purchaseRequisition.totalRequisitionItemQuantity != 0 %}#}
+                                        <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                            Approved
+                                        </div>
+                                    {% endif %}
+                                    {#{% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus == 3
+                                    and purchaseRequisition.totalRequisitionItemClaimed != null
+                                    and purchaseRequisition.totalRequisitionItemClaimed < purchaseRequisition.totalRequisitionItem %}
+                                        <div style="text-align:center;background: #4b8df8; color: #ffffff;height: 20px;">
+                                            PartialClaim
+                                        </div>
+                                    {% endif %}#}
+                                    {% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus == 3
+                                    and purchaseRequisition.totalRequisitionItemClaimed != 0
+                                    and purchaseRequisition.totalRequisitionItemQuantity > purchaseRequisition.totalOrderItemQuantity
+                                    and purchaseRequisition.totalRequisitionItemClaimed <= purchaseRequisition.totalRequisitionItem
+                                    %}
+                                    {#and purchaseRequisition.totalRequisitionItemClaimed == purchaseRequisition.totalRequisitionItem#}
+                                        <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                            <a href="#" data-trigger="hover" class="popover-link"
+                                               title="Order Numbers"
+                                               data-url="{{ path('purchase_requisition_check_po',{id:purchaseRequisition.id}) }}">
+                                                InProgress</a>
+                                        </div>
+                                    {% endif %}
+                                    {% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus == 3
+                                    and purchaseRequisition.totalOrderItemQuantity >= purchaseRequisition.totalRequisitionItemQuantity %}
+                                    {#and purchaseRequisition.totalRequisitionItemQuantity != 0 %}#}
+                                        <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                            <a href="#" data-trigger="hover" class="popover-link"
+                                               title="Order Numbers"
+                                               data-url="{{ path('purchase_requisition_check_po',{id:purchaseRequisition.id}) }}">
+                                                PoIssued</a>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if status == 'hold' or status == 'all' %}
+                                        {% if purchaseRequisition.status == 5 %}
+                                        {#and purchaseRequisition.totalRequisitionItemQuantity != 0 %}#}
+                                            <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                Hold
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if status == 'cancel' or status == 'all' %}
+                                        {% if purchaseRequisition.status == 6 %}
+                                        {#and purchaseRequisition.totalRequisitionItemQuantity != 0 %}#}
+                                            <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                               {% if purchaseRequisition.status == 6 and purchaseRequisition.closedBy is empty %} Close {% else %} Cancel {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {#{% if purchaseRequisition.totalRequisitionItemQuantity == 0 %}#}
+                                        {#<div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">#}
+                                            {#No Qty#}
+                                        {#</div>#}
+                                    {#{% endif %}#}
+                                </td>
+                                <td class="numeric">
+                                    {% if purchaseRequisition.approveStatus == 1 and purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        {% set approvePercentage = 33 %}
+                                    {% elseif purchaseRequisition.approveStatus == 2 and purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        {% set approvePercentage = 66 %}
+                                    {% elseif purchaseRequisition.approveStatus == 3 and purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        {% set approvePercentage = 100 %}
+                                    {% elseif purchaseRequisition.approveStatus == 3 and purchaseRequisition.status == 6 %}
+                                        {% set approvePercentage = 100 %}
+                                    {% else %}
+                                        {% set approvePercentage = 0 %}
+                                    {% endif %}
+                                    <div class="easy-pie-chart">
+                                        <div class="number bounce" data-percent="{{ approvePercentage }}"><span>{{ approvePercentage }}</span>%</div>
+                                    </div>
+                                </td>
+                                <td class="numeric">
+                                    {% if purchaseRequisition.totalRequisitionItemQuantity == 0 and purchaseRequisition.status == 6 %}
+                                        {% set claimPercentage = 100 %}
+                                    {% elseif purchaseRequisition.totalRequisitionItemQuantity == 0 %}
+                                        {% set claimPercentage = 0 %}
+                                    {% else %}
+                                        {% if ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) > 100 %}
+                                            {% set claimPercentage = 100 %}
+                                        {% else %}
+                                            {% set claimPercentage = ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | length > 3 ? ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | slice(0, 2) ~ '' : ((purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) %}
+                                        {% endif %}
+                                    {% endif %}
+                                    <div class="easy-pie-chart">
+                                        <div class="number visits" data-percent="{{ claimPercentage }}"><span>{{ claimPercentage }}</span>%</div>
+                                    </div>
+                                </td>
+                                <td class="numeric">
+                                    {% if ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) > 100 %}
+                                        {% set poIssuedPercentage = 100 %}
+                                    {% else %}
+                                        {% set poIssuedPercentage = ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | length > 3 ? ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | slice(0, 2) ~ '' : ((purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) %}
+                                    {% endif %}
+                                    <a href="#" data-trigger="hover" class="popover-link" title="Order Numbers"
+                                       data-url="{{ path('purchase_requisition_check_po',{'id':purchaseRequisition.id}) }}">
+                                        <div class="easy-pie-chart">
+                                            <div class="number transactions" data-percent="{{ (purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity }}"><span style="color: #000000!important;">{{ poIssuedPercentage }}%</span></div>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td class="numeric">
+                                    {% if purchaseRequisition.path is not null %}
+                                        <a class="btn btn-xs" href="#" onclick="javascript: window.open('/purchase-requisition/attachment-view/{{ purchaseRequisition.id }}/1')">
+                                            <i class="fa fa-cloud-upload"></i>
+                                        </a>
+                                    {% else %}
+                                        &ensp;
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+
+                                    {% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus == 0
+                                    and ((purchaseRequisition.approvedByProjectHead == null
+                                    and purchaseRequisition.project.projectHead == app.user.username
+                                    and is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") )
+                                    or (purchaseRequisition.approvedByProjectHead == null
+                                    and is_granted("ROLE_SUPER_ADMIN"))) %}
+                                        <a href="{{ path('purchase_requisition_approve_project_head', { 'id': purchaseRequisition.id } ) }}"
+                                           class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?"  >Approve</a>
+                                        <a href="{{ path('purchase_requisition_approve_project_head', { 'id': purchaseRequisition.id } ) }}"
+                                           class="btn blue btn-xs confirm displayForMob" style="display: none;" title="Do You Want To Approve It?"  >Approve</a>
+                                    {% endif %}
+                                    {% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus == 1
+                                    and ((purchaseRequisition.approvedByProjectHead != null
+                                    and purchaseRequisition.approvedByCategoryHeadOne == null
+                                    and app.user.username == purchaseRequisition.subCategory.subHead
+                                    and is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") )
+                                    or (purchaseRequisition.approvedByProjectHead != null
+                                    and purchaseRequisition.approvedByCategoryHeadOne == null
+                                    and is_granted("ROLE_SUPER_ADMIN"))) %}
+                                        <a href="{{ path('purchase_requisition_approve_category_head_one', { 'id': purchaseRequisition.id } ) }}"
+                                           class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?" >Approve</a>
+
+                                        <a href="{{ path('purchase_requisition_approve_category_head_one', { 'id': purchaseRequisition.id } ) }}"
+                                           class="btn blue btn-xs confirm displayForMob" style="display: none;" title="Do You Want To Approve It?" >Approve</a>
+                                    {% endif %}
+                                    {% if purchaseRequisition.status == 1
+                                    and purchaseRequisition.approveStatus == 2
+                                    and ((purchaseRequisition.approvedByCategoryHeadOne != null
+                                    and purchaseRequisition.approvedByCategoryHeadTwo == null
+                                    and app.user.username == purchaseRequisition.subCategory.head
+                                    and is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") )
+                                    or (purchaseRequisition.approvedByCategoryHeadOne != null
+                                    and purchaseRequisition.approvedByCategoryHeadTwo == null
+                                    and is_granted("ROLE_SUPER_ADMIN"))) %}
+                                        <a href="{{ path('purchase_requisition_approve_category_head_two', { 'id': purchaseRequisition.id } ) }}"
+                                           class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?"  >Approve</a>
+
+                                        <a href="{{ path('purchase_requisition_approve_category_head_two', { 'id': purchaseRequisition.id } ) }}"
+                                           class="btn blue btn-xs confirm displayForMob" style="display: none;" title="Do You Want To Approve It?">Approve</a>
+                                    {% endif %}
+
+                                    {% if purchaseRequisition.status == 5
+                                    or purchaseRequisition.status == 6
+                                    or purchaseRequisition.approveStatus == 3
+                                    or purchaseRequisition.approvedByCategoryHeadTwo != null %}
+                                        <a class="btn btn-xs displayForDesktop" style="background:#C0D0E9;color:#ffffff !important;">Approved</a>
+                                        <a class="btn btn-xs displayForMob" style="display:none;background:#C0D0E9;color:#ffffff !important;">Approved</a>
+                                    {% endif %}
+
+                                </td>
+                                <td class="numeric">
+
+                                    {% if (purchaseRequisition.status == 1)
+                                    and purchaseRequisition.approveStatus < 3
+                                    and (purchaseRequisition.approvedByProjectHead == null
+                                    or purchaseRequisition.approvedByCategoryHeadOne == null
+                                    or purchaseRequisition.approvedByCategoryHeadTwo == null) %}
+                                        {% if is_granted("ROLE_PURCHASE_REQUISITION_EDIT") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                                            <a href="/purchase-requisition/edit/{{ purchaseRequisition.id }}" style="color:#ffffff !important;" class="btn blue btn-xs displayForDesktop"><i
+                                                        class="fa fa-edit"></i> Edit</a>
+                                            <a href="/purchase-requisition/edit/{{ purchaseRequisition.id }}" style="display:none;color:#ffffff !important;" class="btn blue btn-xs displayForMob"><i
+                                                        class="fa fa-edit"></i> Edit</a>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if purchaseRequisition.status == 5
+                                    or purchaseRequisition.status == 6
+                                    or purchaseRequisition.approveStatus == 3
+                                    or purchaseRequisition.approvedByCategoryHeadTwo != null %}
+
+                                        {% if is_granted("ROLE_SUPER_ADMIN") %}
+
+                                            <a href="/purchase-requisition/edit/{{ purchaseRequisition.id }}" style="color:#ffffff !important;" class="btn blue btn-xs displayForDesktop"><i
+                                                        class="fa fa-edit"></i> Edit</a>
+                                            <a href="/purchase-requisition/edit/{{ purchaseRequisition.id }}" style="display:none;color:#ffffff !important;" class="btn blue btn-xs displayForMob"><i
+                                                        class="fa fa-edit"></i> Edit</a>
+
+                                            {% else %}
+
+                                                <a style="background: #DDDADA; color:#ffffff !important;" class="btn btn-xs displayForDesktop"><i
+                                                            class="fa fa-edit"></i> Edit</a>
+                                                <a style=" display:none;background: #DDDADA; color:#ffffff !important;" class="btn btn-xs displayForMob"><i
+                                                            class="fa fa-edit"></i> Edit</a>
+
+                                                {% endif %}
+
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+                                    <a href="/purchase-requisition/details/{{ purchaseRequisition.id }}" data-target="#ajax" data-toggle="modal"  class="mini modal-details displayForDesktop" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                    <a href="/purchase-requisition/details-for-mobile/{{ purchaseRequisition.id }}" class="mini modal-details displayForMob" href="#" style="display: none;"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="navigation text-right">
+                        {{ knp_pagination_render(purchaseRequisitions) }}
+                    </div>
+                </div>
+            </div>
+            <!-- END SAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    {#<script>#}
+
+
+        var $url = Routing.generate('item_auto_complete');
+        var queryStringObject = {{ app.request.query.all|json_encode|raw }};
+        var selectedItemId = (queryStringObject && queryStringObject.search && queryStringObject.search.item) ? queryStringObject.search.item : '';
+
+        $(".select2ItemAutoComplete").select2({
+
+            ajax: {
+
+                url: $url,
+                dataType: 'json',
+                delay: 250,
+                data: function (params, page) {
+                    return {
+                        q: params,
+                        page_limit: 100
+                    };
+                },
+                results: function (data, page) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (m) {
+
+                return m;
+            },
+            formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+            formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+            initSelection: function(element, callback) {
+                $.ajax({
+                    url: $url,
+                    data: 'item=' + selectedItemId,
+                    dataType: 'json'
+                }).done(function(data){
+                    callback(data);
+                });
+            },
+            allowClear: true,
+            minimumInputLength:1
+        });
+
+    $(".confirm").easyconfirm();
+
+
+    $('.popover-link').hover(function() {
+
+    var e=$(this);
+    e.off('hover');
+    $.get(e.data('url'),function(d) {
+    e.popover({content: d}).popover('show');
+
+    });
+    });
+
+
+
+
+    $(".select2AutoComplete").select2({
+
+    ajax: {
+
+    url: Routing.generate('purchase_requisition_auto_complete'),
+    dataType: 'json',
+    delay: 250,
+    data: function (params, page) {
+    return {
+    q: params,
+    page_limit: 100
+    };
+    },
+    results: function (data, page) {
+    return {
+    results: data
+    };
+    },
+    cache: true
+    },
+    escapeMarkup: function (m) {
+    return m;
+    },
+    formatResult: function(item){ return item.id}, // omitted for brevity, see the source of this page
+    formatSelection: function(item){return item.id}, // omitted for brevity, see the source of this page
+    initSelection: function(element, callback) {
+    return callback({ id : element.val()});
+    },
+    allowClear: true,
+    minimumInputLength:1
+    });
+    {#<script>#}
+{#
+    $(".select2RefAutoComplete").select2({
+
+        ajax: {
+            url: Routing.generate('purchase_requisition_ref_auto_complete'),
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+            return m;
+
+        },
+        formatResult: function (item) {
+            return item.id
+        }, // omitted for brevity, see the source of this page
+        formatSelection: function (item) {
+            return item.id
+        }, // omitted for brevity, see the source of this page
+        initSelection: function (element, callback) {
+            var id = $(element).val();
+
+            $.ajax(Routing.generate('purchase_requisition_data_ref_auto_complete', {id: id}), {
+                dataType: "json"
+            }).done(function (data) {
+                console.log(data);
+                return callback(data);
+
+            });
+        },
+        allowClear: true,
+        minimumInputLength: 1
+    });
+#}
+
+
+    $(".select2RefAutoComplete").select2({
+    ajax: {
+
+    url: Routing.generate('purchase_requisition_ref_auto_complete'),
+    dataType: 'json',
+    delay: 250,
+    data: function (params, page) {
+    return {
+    q: params,
+    page_limit: 100
+    };
+    },
+    results: function (data, page) {
+    return {
+    results: data
+    };
+    },
+    cache: true
+    },
+    escapeMarkup: function (m) {
+    return m;
+    },
+    formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+    formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+    initSelection: function(element, callback) {
+    // return callback({ id : element.val()});
+
+    var id = $(element).val();
+
+    $.ajax(Routing.generate('purchase_requisition_data_ref_auto_complete', {id : id}), {
+    dataType: "json"
+    }).done(function (data) {
+    console.log(data);
+    return  callback(data);
+
+    });
+
+    },
+    allowClear: true,
+    minimumInputLength:1
+    });
+
+
+
+{% endblock %}

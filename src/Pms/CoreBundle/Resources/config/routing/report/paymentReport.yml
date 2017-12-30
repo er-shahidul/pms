@@ -1,0 +1,9 @@
+report_payment:
+    pattern: /payment-report
+    defaults: { _controller: PmsCoreBundle:Report/PaymentReport:paymentReport }
+
+report_payment_excel:
+    pattern: /payment-report-excel
+    defaults: { _controller: PmsCoreBundle:Report/PaymentReport:paymentReportExcel }
+    options:
+           expose: true

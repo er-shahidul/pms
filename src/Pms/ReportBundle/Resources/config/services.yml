@@ -1,0 +1,47 @@
+services:
+
+    pms_core.sms_gateWay:
+        class: Pms\ReportBundle\Service\SmsGateWay
+        arguments: [%sms_username%, %sms_password%, @guzzle.client.api_crm]
+
+    pms_core.listener.sms:
+        class: Pms\ReportBundle\EventListener\SmsPlanRequestListener
+        arguments: [@pms_core.sms_gateWay]
+        tags:
+          - { name: kernel.event_listener, event: pms_core.post.plan_request_added, method: sendSms }
+
+    pms_core.listener.smsPlanForApprover:
+        class: Pms\ReportBundle\EventListener\SmsPlanForApproverRequestListener
+        arguments: [@pms_core.sms_gateWay]
+        tags:
+          - { name: kernel.event_listener, event: pms_core.post.approved_request_added, method: sendSms }
+
+    pms_core.listener.smspendingItemClaimedForBuyerGroup:
+        class: Pms\ReportBundle\EventListener\SmsPendingItemClaimedForBuyerGroupRequestListener
+        arguments: [@pms_core.sms_gateWay]
+        tags:
+          - { name: kernel.event_listener, event: pms_core.post.item_claimed_For_buyer_request_added, method: sendSms }
+
+    pms_core.listener.smspendingCreatePoGroupToBuyerGroup:
+        class: Pms\ReportBundle\EventListener\SmsPendingCreatePoToBuyerGroupRequestListener
+        arguments: [@pms_core.sms_gateWay]
+        tags:
+          - { name: kernel.event_listener, event: pms_core.post.pending_create_po_to_buyer_group_added, method: sendSms }
+
+    pms_core.listener.smspendingForReceivingToStoreOfficer:
+        class: Pms\ReportBundle\EventListener\SmsPendingForReceivingToStoreOfficerRequestListener
+        arguments: [@pms_core.sms_gateWay]
+        tags:
+          - { name: kernel.event_listener, event: pms_core.post.pending_for_receiving_to_store_officer_added, method: sendSms }
+
+    pms_reportbundle.service.email:
+            class: Pms\ReportBundle\Service\EasyMailer
+            arguments: [@mailer]
+
+    pms_reportbundle.service.smssender:
+        class: Pms\ReportBundle\Service\SmsSender
+        arguments: [ @doctrine, @pms_core.sms_gateWay ]
+
+    pms_reportbundle.service.emailsender:
+        class: Pms\ReportBundle\Service\EmailSender
+        arguments: [ @doctrine, @service_container,@pms_reportbundle.service.email]

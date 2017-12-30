@@ -1,0 +1,135 @@
+purchase_requisition_claim:
+    pattern: /purchase-requisition/claim
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:claim }
+    options:
+          expose: true
+
+purchase_requisition_comment:
+    pattern: /purchase-requisition/comment
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:comment }
+    options:
+          expose: true
+
+purchase_requisition_refresh:
+    pattern: /purchase-requisition/refresh/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:refresh }
+    requirements:
+          id: \d+
+
+purchase_requisition_hold:
+    pattern: /purchase-requisition/hold/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:hold }
+    requirements:
+          id: \d+
+
+purchase_requisition_open:
+    pattern: /purchase-requisition/open/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:open }
+    requirements:
+          id: \d+
+
+purchase_requisition_cancel:
+    pattern: /purchase-requisition/cancel/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:cancel }
+    requirements:
+          id: \d+
+
+purchase_requisition_details:
+    pattern: /purchase-requisition/details/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:details }
+
+purchase_requisition_details_others:
+    pattern: /purchase-requisition/details-others/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:detailsOthers }
+
+purchase_requisition_details_for_mobile:
+    pattern: /purchase-requisition/details-for-mobile/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:detailsForMobile }
+
+purchase_requisition_approve_project_head_ajax:
+    pattern: /purchase-requisition/approve/project-head
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:approveByProjectHeadAjax }
+    options:
+          expose: true
+
+purchase_requisition_approve_category_head_one_ajax:
+    pattern: /purchase-requisition/approve/category-head-one
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:approveByCategoryHeadOneAjax }
+    options:
+          expose: true
+
+purchase_requisition_approve_category_head_two_ajax:
+    pattern: /purchase-requisition/approve/category-head-two
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:approveByCategoryHeadTwoAjax }
+    options:
+          expose: true
+
+purchase_requisition_approve_project_head:
+    pattern: /purchase-requisition/approve/project-head/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:approveByProjectHead }
+    requirements:
+          id: \d+
+
+purchase_requisition_approve_category_head_one:
+    pattern: /purchase-requisition/approve/category-head-one/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:approveByCategoryHeadOne }
+    requirements:
+          id: \d+
+
+purchase_requisition_approve_category_head_two:
+    pattern: /purchase-requisition/approve/category-head-two/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:approveByCategoryHeadTwo }
+    requirements:
+          id: \d+
+          
+purchase_requisition_new:
+    pattern: /purchase-requisition/new
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:new }
+
+purchase_requisition_edit:
+    pattern: /purchase-requisition/edit/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:edit }
+    requirements:
+          id: \d+
+
+purchase_requisition_check_po:
+    pattern: /purchase-requisition/check-po/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:checkPo }
+
+purchase_requisition_print:
+    pattern: /purchase-requisition/print/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:print }
+
+purchase_requisition_pdf:
+    pattern: /purchase-requisition/pdf/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:pdf }
+
+purchase_requisition_item_delete:
+    pattern: /purchase-requisition_item/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:deletePrItem }
+
+purchase_requisition_attachment_view:
+    pattern: /purchase-requisition/attachment-view/{id}/{index}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:attachmentView }
+
+purchase_requisition_auto_complete:
+    pattern: /purchase-requisition/auto-complete
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:purchaseRequisitionAutoComplete }
+    options:
+          expose: true
+purchase_requisition_ref_auto_complete:
+    pattern: /purchase-requisition/ref-no-auto-complete
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:purchaseRequisitionRefAutoComplete }
+    options:
+          expose: true
+purchase_requisition_data_ref_auto_complete:
+    pattern: /purchase-requisition/ref-data/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:purchaseRequisitionRefDataAutoComplete }
+    options:
+          expose: true
+
+purchase_requisition:
+    pattern: /purchase-requisition/{status}
+    defaults: { _controller: PmsCoreBundle:PurchaseRequisition:index, status:all }
+
+

@@ -1,0 +1,9 @@
+report_user_activities_receive:
+    pattern: /user-activities-receive-report
+    defaults: { _controller: PmsReportBundle:UserActivitiesReceive:userActivitiesReceive }
+
+report_user_activities_receive_excel:
+    pattern: /user-activities-receive-report-excel
+    defaults: { _controller: PmsReportBundle:UserActivitiesReceive:userActivitiesReceiveExcel }
+    options:
+            expose: true

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+
+<head>
+    <meta charset="utf-8"/>
+    <title>PMS | Admin Panel</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <meta name="MobileOptimized" content="320">
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+    {% stylesheets filter='cssrewrite'
+    'assets/plugins/font-awesome/css/font-awesome.min.css'
+    'assets/plugins/bootstrap/css/bootstrap.min.css'
+    'assets/plugins/uniform/css/uniform.default.css'
+
+    'assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css'
+    'assets/plugins/fancybox/source/jquery.fancybox.css'
+
+    'assets/plugins/jquery-file-upload/css/jquery.fileupload-ui.css'
+
+    'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css'
+    'assets/plugins/gritter/css/jquery.gritter.css'
+    'assets/plugins/select2/select2_metro.css'
+    'assets/plugins/clockface/css/clockface.css'
+    'assets/plugins/bootstrap-datepicker/css/datepicker.css'
+    'assets/plugins/jquery-multi-select/css/multi-select.css'
+    'assets/plugins/bootstrap-switch/static/stylesheets/bootstrap-switch-metro.css'
+    'assets/plugins/jquery-tags-input/jquery.tagsinput.css'
+    'assets/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css'
+    'assets/css/plugins.css'
+    'assets/plugins/jquery-easy-pie-chart/jquery.easy-pie-chart.css'
+
+    'assets/css/style-metronic.css'
+    'assets/css/style.css'
+    'assets/css/style-responsive.css'
+    'assets/css/themes/default.css'
+    'assets/css/pages/inbox.css'
+    'assets/css/custom.css' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    <link rel="shortcut icon" href="favicon.ico"/>
+
+</head>
+<body class="page-header-fixed">
+
+        <div class="row" style="background: white;">
+            <div class="col-md-12">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+
+{% javascripts
+'assets/plugins/respond.min.js'
+'assets/plugins/excanvas.min.js'
+'assets/plugins/jquery-1.10.2.min.js'
+'assets/plugins/jquery-migrate-1.2.1.min.js'
+'assets/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js'
+'assets/plugins/bootstrap/js/bootstrap.min.js'
+'assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js'
+'assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js'
+'assets/plugins/jquery.blockui.min.js'
+'assets/plugins/jquery.cookie.min.js'
+'assets/plugins/uniform/jquery.uniform.min.js'
+
+'assets/plugins/flot/jquery.flot.js'
+'assets/plugins/flot/jquery.flot.resize.js'
+'assets/plugins/jquery.pulsate.min.js'
+'assets/plugins/bootstrap-daterangepicker/moment.min.js'
+'assets/plugins/bootstrap-daterangepicker/daterangepicker.js'
+'assets/plugins/gritter/js/jquery.gritter.js'
+'assets/plugins/fullcalendar/fullcalendar/fullcalendar.min.js'
+'assets/plugins/jquery-easy-pie-chart/jquery.easy-pie-chart.js'
+'assets/plugins/jquery.sparkline.min.js'
+'assets/scripts/app.js'
+'assets/scripts/index.js'
+'assets/scripts/tasks.js'
+'assets/plugins/jquery-validation/dist/jquery.validate.min.js'
+'assets/plugins/data-tables/jquery.dataTables.js'
+'assets/plugins/select2/select2.min.js'
+
+'assets/plugins/jquery-validation/dist/additional-methods.min.js'
+'assets/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js'
+'assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js'
+'assets/plugins/ckeditor/ckeditor.js'
+'assets/plugins/bootstrap-markdown/js/bootstrap-markdown.js'
+'assets/plugins/bootstrap-markdown/lib/markdown.js'
+'assets/plugins/data-tables/jquery.dataTables.js'
+'assets/plugins/data-tables/DT_bootstrap.js'
+
+'assets/scripts/form-validation.js'
+'assets/scripts/table-managed.js'
+
+'assets/plugins/bootstrap/js/bootstrap2-typeahead.min.js'
+'assets/plugins/fuelux/js/spinner.min.js'
+'assets/plugins/ckeditor/ckeditor.js'
+'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js'
+'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'
+'assets/plugins/bootstrap-daterangepicker/moment.min.js'
+'assets/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js'
+'assets/plugins/jquery.input-ip-address-control-1.0.min.js'
+'assets/plugins/jquery-multi-select/js/jquery.multi-select.js'
+'assets/plugins/jquery-multi-select/js/jquery.quicksearch.js'
+'assets/plugins/jquery.pwstrength.bootstrap/src/pwstrength.js'
+'assets/plugins/bootstrap-switch/static/js/bootstrap-switch.min.js'
+'assets/plugins/jquery-tags-input/jquery.tagsinput.min.js'
+'assets/plugins/bootstrap-markdown/js/bootstrap-markdown.js'
+'assets/plugins/bootstrap-markdown/lib/markdown.js'
+'assets/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js'
+'assets/plugins/bootstrap-touchspin/bootstrap.touchspin.js'
+'assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js'
+'assets/plugins/flot/jquery.flot.pie.js'
+'assets/scripts/charts.js'
+'assets/scripts/index.js'
+'assets/scripts/tasks.js'
+
+'assets/scripts/form-components.js' %}
+<script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+</body>
+
+</html>

@@ -1,0 +1,283 @@
+{% block body %}
+
+<div id="reload-all-purchaseOrder">
+    <form method="post">
+    <div class="modal-dialog" style="width: 1000px;">
+    <div class="modal-content">
+    <div class="modal-header" style="background: lightgrey;">
+        <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title bold" style="text-align: center;">Advance Payment</h4>
+    </div>
+
+    <div class="col-md-12">
+        <table>
+            <tr>
+                <td style="width: 1000px;">
+                    <table class="col-md-6" style="margin-top: 20px;margin-bottom: 50px;padding-top:20px;float: left;">
+        
+                        <tr>
+                            <td>
+                                PO Issued by:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                {{ purchaseOrder.createdBy }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Created By:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                {{ purchaseOrder.createdBy.fullName |default('') }}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="col-md-6" style="margin-top: 20px;padding-top:20px;float: right;">
+                        <tr>
+                            <td>
+                                Vendor Name:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ purchaseOrder.vendor.vendorName | default(' ') }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% if purchaseOrder.vendor.vendorAttach is defined %}
+                        {% for attach in purchaseOrder.vendor.vendorAttach %}
+                        <tr>
+                            <td>
+                                {{ attach.fileName }}:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    <a href="#" onclick="javascript: window.open('/vendor/attachment-view/{{ attach.path }}')">
+                                        <img src="{{ asset('assets/img/file-ico.png') }}" style="color:white;width: 30px;height: 24px;" />
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+
+                        <tr>
+                            <td>
+                                Name, Account No, Bank name :
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{  purchaseOrder.vendor.bankAccountName |default ('tt') }},
+                                    {{ purchaseOrder.vendor.bankAccountNo |default ('xx')}},
+                                    {{ purchaseOrder.vendor.branchName |default ('')}},
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Payment Type:
+                            </td>
+                            <td>
+                                <span style="font-weight: bold;">
+                                    {{ purchaseOrder.paymentType }}
+                                </span>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Payment Mode:
+                            </td>
+                                <td>
+                                <span style="font-weight: bold;">
+                                    {{ purchaseOrder.paymentMethod }}
+                                </span>
+                                </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 1000px;">
+                    <table id="RequestedTable" class="table col-md-12" style="border: 1px solid ghostwhite;">
+                        <thead style="background-color:#4b8df8;">
+                        <tr style="height: 30px;">
+                            <th colspan="3">Payment </th>
+                            <th colspan="1">Advance Payment: </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="height: 30px;background: #fff;border-top: 1px solid #eee !important;">
+                                <td class="col-md-2">PO No</td>
+                                <td>{{ purchaseOrder.id }}</td>
+                                <td class="col-md-2">Total Amount</td>
+                                <td class =totalAmount>{{ purchaseOrder.netTotal }} BDT</td>
+                            </tr>
+                            <tr style="height: 30px;background: #fff;border-top: 1px solid #eee !important;">
+                                <td class="col-md-2">Advance Amount</td>
+                                <td>{{ purchaseOrder.advancePaymentAmount }} BDT</td>
+                                <td class="col-md-2">Payment Amount</td>
+                                <td><input type="text" id="paymentAmountx" name="paymentAmountx" value="{{ advancePayment.poPaymentAmount | default('') }}"> BDT</td>
+
+                            </tr>
+                            <tr style="height: 30px;background: #fff;border-top: 1px solid #eee !important;">
+                                <td class="col-md-2">Bill Number</td>
+                                {#<td><input type="text" class = "billNumber" name="billNumber" placeholder="Bill Number" value="{{ advancePayment.billNumber | default('') }} "></td>#}
+                                <td><input type="text" id="billDate"
+                                           name="billDate" class="datepicker"
+                                           value=" {% if advancePayment %}{{ advancePayment.billDate|date('Y-m-d') }}{% endif %}">
+                                    <input style="width:70px;" type="text" id="billNumber" name="billNumber" placeholder="0000"
+                                           value="{% if advancePayment %}{{ advancePayment.billNumber |default(0) }}{% endif %}"></td>
+                                <td>
+                                    <select class="span6 m-wrap" id="bank" tabindex="1">
+                                        <option value="">Select Bank Name</option>
+                                    {% for bank in banks %}
+                                            <option value="{{ bank.id }}" {% if(advancePayment.relatedBank|default('')) %}{{ advancePayment.relatedBank.id == bank.id  ? 'selected= "selected" ' : '' }} {% endif %} >{{ bank.name }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </td>
+                                <td><input type="text" class="chequeNo" placeholder="Cheque no" name="chequeNo" value="{{ advancePayment.cheque | default('') }}"></td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="modal-footer" style="width: 100%;background: lightgrey;">
+        <input type="hidden" name="poAmount" class ='poAmount' value="{{ purchaseOrder.netTotal }}">
+        <input type="hidden" name="purchaseOrderId" class="purchaseOrderId" value="{{ purchaseOrder.id }}">
+        <input type="hidden" name="paymentId" class = 'paymentId' value="{{ advancePayment.id | default('') }}">
+        <input type="hidden" class="vendorId" value=" {{ purchaseOrder.vendor.id | default('') }}">
+        {% if purchaseOrder.path is not null %}
+            <a class="btn" style="float:left;width: 130px;background: #0353D6; color: white !important;" href="/purchase-order/attachment-view/{{ purchaseOrder.id }}/1" target="_blank">
+                PO Attach <i class="fa fa-file"></i>
+            </a>
+        {% endif %}
+        {% if status != 'advance-archive-payment' %}
+            <button type="button" id="advancePaymentSubmit" class="btn btn-primary" style="width: 100px;background: #0353D6; color: white !important;">Paid
+            </button>
+        {% elseif is_granted("ROLE_SUPER_ADMIN") %}
+            <button type="button" id="advancePaymentSubmit" class="btn btn-primary" style="width: 100px;background: #0353D6; color: white !important;">Paid
+            </button>
+        {% else %}
+
+        {% endif %}
+        <button type="button" class="btn close-modal-refresh" style="width: 100px;background: #0353D6; color: white !important;"
+                data-dismiss="modal">Close
+        </button>
+
+    </div>
+
+    </div>
+    </div>
+</form>
+    {% block stylesheets %}
+
+        {% stylesheets filter='cssrewrite'
+
+            'assets/plugins/select2/select2_metro.css'
+            'assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css'
+            'assets/plugins/bootstrap-datepicker/css/datepicker.css'
+            'assets/plugins/bootstrap-timepicker/compiled/timepicker.css'
+            'assets/plugins/bootstrap-datetimepicker/css/datetimepicker.css'
+            'assets/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css'
+            'assets/plugins/bootstrap-editable/inputs-ext/address/address.css'
+
+        %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+
+    {% endblock %}
+
+    {% block javascriptBlock %}
+        {% javascripts
+
+        'assets/plugins/jquery-1.10.2.min.js'
+        %}
+        {% endjavascripts %}
+    {% endblock %}
+
+    <script type="text/javascript">
+
+        $( ".datepicker" ).datepicker({
+            'format':'dd-mm-yyyy'
+        });
+        $(".close-modal-refresh").click(function(){
+            location.reload();
+        });
+
+        jQuery(document).ready(function () {
+
+            function checkMaxAmount(paymentAmount,requestAmount){
+
+                if(paymentAmount > requestAmount ){
+                    return false;
+                } else{
+                    return true;
+                }
+            }
+            $('#billNumber').inputmask('[9999]',{ showMaskOnFocus: true });
+
+            $('#advancePaymentSubmit').click( function (){
+
+                var paymentAmount = parseFloat($('#paymentAmountx').val());
+                var totalAmount = parseFloat($('.totalAmount').text());
+                var bank = $('#bank').val();
+                var chequeNo = $('.chequeNo').val();
+                var billNumber = $('#billDate').val()+'-'+$('#billNumber').val();
+                var purchaseOrderId = $('.purchaseOrderId').val();
+                var paymentId = $('.paymentId').val();
+                var vendorId  = $('.vendorId').val();
+
+                if(paymentAmount && chequeNo) {
+
+                    if(checkMaxAmount(paymentAmount,totalAmount)){
+
+                    $.ajax({
+                      type: "post",
+                      url: Routing.generate('payment_advance_receive'),
+                      data: {
+                              paymentAmount: paymentAmount,
+                              billNumber: billNumber ,
+                              purchaseOrderId:purchaseOrderId,
+                              bank:bank,
+                              chequeNo:chequeNo,
+                              paymentId:paymentId,
+                              vendorId:vendorId
+                            }
+                    }).done(function(msg) {
+                        if(msg){
+                            alert(msg);
+                        }else{
+                            location.reload();
+                        }
+
+
+                    });
+                    } else {
+                        alert('payment amount should be less then total amount');
+                        return false;
+                    }
+                } else{
+                    alert('please fill bill number and payment amount');
+                    return false;
+                }
+            });
+
+        });
+    </script>
+</div>
+
+{% endblock %}
+
+
+

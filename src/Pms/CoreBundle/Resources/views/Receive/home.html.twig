@@ -1,0 +1,331 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .popover-title {
+        color: #000000;
+    }
+    .popover-content{
+        color:#000000;
+    }
+    .modal-details{
+        background: #35aa47;padding: 1px 5px
+    }
+    .verified{
+        position: relative;
+    }
+
+</style>
+
+<!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Receive Item
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('receive') }}" style="color: #333 !important;">Receive</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <!--BEGIN TABS-->
+<div class="row-fluid">
+    <div class="span12">
+        <form method="get" style="margin-bottom: 20px;margin-left: -15px;margin-top: -20px;">
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    <div class="input-icon right">
+                        {{ form_widget(formSearch.po, { 'attr': {'class': 'form-control  fontColorBlack select2AutoComplete', 'placeholder': ' Select PO No'} }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3">
+                    <div class="input-icon right">
+                        {{ form_widget(formSearch.grn, { 'attr': {'class': 'form-control  fontColorBlack select2AutoRefNoComplete', 'placeholder': ' Select GRN. No'} }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-1">
+                    <input type="submit" value="Search" class="btn blue">
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="span12" style="">
+        <!-- BEGIN SAMPLE TABLE PORTLET-->
+        <div class="portlet box">
+            <div class="portlet-title">
+                <ul class="nav nav-tabs">
+                    <li class="{% if status == 'received' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('receive',{status:'received'} ) }}">Received Item</a></li>
+                    {#<li class="{% if status == 'verified' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('receive',{status:'verified'} ) }}">Verified</a></li>#}
+                    <li class="{% if status == 'completed' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('receive',{status:'completed'} ) }}">Archive</a></li>
+                    <li class="{% if status == 'send-back' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('receive',{status:'send-back'} ) }}">SendBack</a></li>
+                    {% if is_granted("ROLE_RECEIVE_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                        <li style="float: right;margin-right: -1px;">
+                            <a href="{{ path('receive_project_list') }}" data-target="#ajax" data-toggle="modal"
+                               class="btn btn-xs" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                                Receive
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="portlet-body flip-scroll">
+                <form method="post" class="verified" action="{{ path('receive_verify') }}">
+                    {% if status != 'verified' and status != 'completed' %}
+                        <button type="submit" class="btn blue verifiedButton" style="">
+                            verify <i class="fa icon-next"></i>
+                        </button>
+                    {% endif %}
+                <table class="table-bordered table-striped table-condensed flip-content responsiveDiv dataTable" id="listPo">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        {% if status != 'verified' and status != 'completed' %}
+                            <th class="numeric"></th>
+                        {% endif %}
+                        <th class="numeric">Sl</th>
+                        <th class="numeric">{{ knp_pagination_sortable( receives , 'ReceiveDate', 'r.receivedDate') }}</th>
+                        <th class="numeric">{{ knp_pagination_sortable( receives , 'GRN#NO', 'r.id') }}</th>
+                        <th class="numeric">{{ knp_pagination_sortable( receives , 'ProjectName', 'p.projectName') }}</th>
+                        <th class="numeric">paymentStatus</th>
+                        <th class="numeric">Vendor/Buyer</th>
+                        <th class="numeric">{{ knp_pagination_sortable( receives , 'ReceivedBy', 'u.username') }}</th>
+                        <th class="numeric">PRNo</th>
+                        <th class="numeric"> {{ knp_pagination_sortable( receives , 'PONo', 'po.id') }}</th>
+                        <th class="numeric"> {{ knp_pagination_sortable( receives , 'Local/Head', 'po.paymentFrom') }}</th>
+                        <th class="numeric">&nbsp;</th>
+                        <th class="numeric">
+                            {% if status == 'completed' %}
+                                {{ knp_pagination_sortable( receives , 'VerifiedDate', 'r.approvedOneDate') }}
+                            {% else %}
+                               &nbsp;
+                            {% endif %}
+                        </th>
+                        <th class="numeric">&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% set offset = receives.getItemNumberPerPage * (receives.currentPageNumber - 1) %}
+
+                        {% for receivedItem in receives %}
+
+                            <tr class="po-tr-{{ receivedItem.po.id }}">
+                                {% if status != 'verified' and status != 'completed' %}
+                                    <td class="numeric">
+                                        <input class="po-checkbox" data-po="{{ receivedItem.po.id }}" type="checkbox" name="list[]" value="{{ receivedItem.id }}">
+                                    </td>
+                                {% endif %}
+                                <td class="numeric">{{ loop.index + offset }}.</td>
+                                <td class="numeric">{{ receivedItem.receivedDate | date('d-M-Y') }}</td>
+                                <td class="numeric">{{ receivedItem.id }}</td>
+                                <td class="numeric">
+                                    {% set projectName = '' %}
+                                    {% for ri in receivedItem.receiveItems %}
+                                        {% set projectName = ri.purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.project.projectName %}
+                                    {% endfor %}
+                                    {{ projectName }}
+                                </td>
+                                <td class="numeric">
+                                    {% if receivedItem.approveStatus != 1 %}
+                                        <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                            Created
+                                        </div>
+                                    {% endif %}
+                                    {% if receivedItem.approveStatus == 1 %}
+                                        <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                            Approved
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">{{ receivedItem.vendor.vendorName |default() }} {{ receivedItem.buyer.fullname |default() }}</td>
+                                <td class="numeric">{{ receivedItem.receivedBy.fullname }}</td>
+                                <td class="numeric">
+                                    {% for key, ri in receivedItem.receiveItems %}
+                                        {% if key > 0 %},{% endif %}
+                                        {{ ri.purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.id }}
+                                    {% endfor %}
+                                </td>
+                                <td class="numeric">
+                                    {{ receivedItem.po.id }}
+                                </td>
+                                <td class="numeric">
+
+                                    {% if receivedItem.po.paymentFrom == 1 %}
+                                        {% set localOrHead = 'Local Office' %}
+                                    {% elseif receivedItem.po.paymentFrom == 2 %}
+                                        {% set localOrHead = 'Head Office' %}
+                                    {% else %}
+                                        {% set localOrHead = '' %}
+                                    {% endif %}
+
+                                    {{ localOrHead }}
+                                </td>
+                                <td class="numeric">
+                                    {% if receivedItem.path is not null %}
+                                        <a class="btn btn-xs" href="#" onclick="javascript: window.open('/receive/attachment-view/{{ receivedItem.id }}/1')">
+                                            <i class="fa fa-cloud-upload"></i>
+                                        </a>
+                                    {% else %}
+                                        &ensp;
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+
+                                    {% if (status == 'received' or status == 'verified') and (receivedItem.invoice is null or receivedItem.calan is null) and (receivedItem.approveStatus != 1 or receivedItem.approvedOne == null) and receivedItem.status != 3 %}
+                                        <a href="{{ path('invoice_bill_add',{id:receivedItem.id}) }}"
+                                           class="btn green btn-xs" data-target="#add-invoice" data-toggle="modal">
+                                            Add Invoice or Challan</a>
+                                    {% elseif status == 'received' and receivedItem.status != 3 and receivedItem.invoice is not null and receivedItem.calan is not null %}
+                                        <a class="btn btn-xs" style="background:#C0D0E9;color:#ffffff !important;">Ready for Verified</a>
+                                    {% endif %}
+
+                                    {% if status == 'completed' %}
+                                        {{ receivedItem.approvedOneDate | date('d-m-Y') }}
+                                    {% endif %}
+
+                                </td>
+                                <td class="numeric">
+                                        <a href="/receive/details/{{ receivedItem.id }}" data-target="#ajax" data-toggle="modal"  class="mini modal-details displayForDesktop" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                        <a href="/receive/details-for-mobile/{{ receivedItem.id }}"   class="mini modal-details displayForMob" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="navigation text-right">
+                        {{ knp_pagination_render(receives) }}
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--END TABS-->
+
+    <div class="modal fade" id="add-invoice" role="basic" aria-hidden="true">
+        {% image 'assets/img/ajax-modal-loading.gif'
+        filter='' output='/img/ajax-modal-loading.gif' %}
+        <img src="{{ asset_url }}" alt="" class="loading"/>
+        {% endimage %}
+    </div>
+
+{% endblock %}
+
+
+{#<script>#}
+{% block documentready %}
+    {{ parent() }}
+
+
+    $(".confirm").easyconfirm();
+
+$(".select2AutoComplete").select2({
+    ajax: {
+
+        url: Routing.generate('purchase_order_no_auto_complete'),
+        dataType: 'json',
+        delay: 250,
+        data: function (params, page) {
+            return {
+                q: params,
+                page_limit: 100
+            };
+        },
+        results: function (data, page) {
+            return {
+                results: data
+            };
+        },
+        cache: true
+    },
+    escapeMarkup: function (m) {
+        return m;
+    },
+    formatResult: function(item){ return item.id}, // omitted for brevity, see the source of this page
+    formatSelection: function(item){return item.id}, // omitted for brevity, see the source of this page
+    initSelection: function(element, callback) {
+        return callback({ id : element.val()});
+    },
+    allowClear: true,
+    minimumInputLength:1
+});
+
+$(".select2AutoRefNoComplete").select2({
+    ajax: {
+
+        url: Routing.generate('receive_grn_no_auto_complete'),
+        dataType: 'json',
+        delay: 250,
+        data: function (params, page) {
+            return {
+                q: params,
+                page_limit: 100
+            };
+        },
+        results: function (data, page) {
+            return {
+                results: data
+            };
+        },
+        cache: true
+    },
+    escapeMarkup: function (m) {
+        return m;
+    },
+    formatResult: function(item){ return item.id}, // omitted for brevity, see the source of this page
+    formatSelection: function(item){return item.id}, // omitted for brevity, see the source of this page
+    initSelection: function(element, callback) {
+        return callback({ id : element.val()});
+    },
+    allowClear: true,
+    minimumInputLength:1
+});
+
+    {#$('#listPo').dataTable( {#}
+    {#iDisplayLength: -1,#}
+    {#bPaginate:false,#}
+    {#bLengthChange:false,#}
+    {#bInfo:false#}
+    {#} );#}
+
+    var $table = $("#listPo tbody");
+    $table.on("change", ".po-checkbox", function(){
+    var el = $(this);
+    var po = el.data("po");
+    var chosen = $table.find('tr.po-tr-'+ po + " input:checked");
+
+    if(el.prop('checked')) {
+    $table.find('tr').hide();
+    $table.find('tr.po-tr-'+po).show();
+    }else if(chosen.length == 0){
+    $table.find('tr').show();
+    }
+    });
+
+{% endblock %}
+

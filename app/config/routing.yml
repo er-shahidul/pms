@@ -1,0 +1,37 @@
+pms_supplier:
+    resource: "@PmsSupplierBundle/Resources/config/routing.yml"
+    prefix:   /
+
+pms_document:
+    resource: "@PmsDocumentBundle/Resources/config/routing.yml"
+    prefix:   /
+
+pms_report:
+    resource: "@PmsReportBundle/Resources/config/routing.yml"
+    prefix:   /
+
+pms_budget:
+    resource: "@PmsBudgetBundle/Resources/config/routing.yml"
+    prefix:   /
+
+pms_setting:
+    resource: "@PmsSettingBundle/Resources/config/routing.yml"
+    prefix:   /
+
+pms_inventory:
+    resource: "@PmsInventoryBundle/Resources/config/routing.yml"
+    prefix:   /
+
+pms_petty_cash:
+    resource: "@PmsPettyCashBundle/Resources/config/routing.yml"
+    prefix:   /
+
+core_bundle:
+    resource: "@PmsCoreBundle/Resources/config/routing.yml"
+    prefix:   /
+
+Pms_user_bundle:
+    resource: "@UserBundle/Resources/config/routing.yml"
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"

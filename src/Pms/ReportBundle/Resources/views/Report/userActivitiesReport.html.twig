@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                User Activities
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_user_activities') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">User Activities</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+        <form action="{{ path('report_user_activities') }}" method="get" name="report_user_activities" id="report_user_activities" style="margin-bottom: 20px;">
+            <table id="table_project_cost">
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <div class="input-icon">
+                                    <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                                        <span class="input-group-btn"></span>
+                                        {{ form_widget(form.month, { 'attr': {'class': 'form-control datepicker', 'style': 'width: 197px;'} }) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="submit" value="Search" class="btn blue" style="margin-left: 40px;">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <div class="span12">
+
+        <div class="modal-footer fa-align-left">
+            <input type="button" value="Export in excel" name="userActivitiesExcel" id="userActivitiesExcel" class="btn blue">
+        </div>
+
+        <div class="portlet-body flip-scroll">
+            <table class="table-bordered table-striped table-condensed flip-content">
+                <thead class="flip-content"  style="background: #4b8df8">
+            <tr>
+                <th>Sl</th>
+                <th class="numeric">Username</th>
+                <th class="numeric">TotalPr</th>
+                <th class="numeric">TotalPrCreate</th>
+                <th class="numeric">TotalClaim</th>
+                <th class="numeric">ClaimAvg</th>
+                <th class="numeric">TotalPoCreate</th>
+                <th class="numeric">POCreateDelayAvg</th>
+                <th class="numeric">ReceiveItem</th>
+                <th class="numeric">ReceiveDelayAyg</th>
+            </tr>
+            </thead>
+            <tbody>
+                {{ data|raw }}
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $('#userActivitiesExcel').click(function () {
+
+    setTimeout(function(){
+    $('#report_user_activities').attr('action', '{{ path('report_user_activities') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'report_user_activities',
+    url: Routing.generate('report_user_activities_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock %}

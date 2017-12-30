@@ -1,0 +1,288 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .parentTbl table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            border: 0;
+
+        }
+        .childTbl table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            border: 1px solid #d7d7d7;
+
+        }
+        .childTbl th,
+        .childTbl td {
+            border: 1px solid #d7d7d7;
+        }
+        .scrollData {
+
+            max-height: 450px;
+            overflow-x: auto;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Daily basis PO
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_daily_purchase_order') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Daily basis PO</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+
+            <form action="{{ url('report_daily_purchase_order') }}" method="get" name="requisition_daily_report_search_form"
+                  id="requisition_daily_report_search_form" style="margin-left: 0;">
+                <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <tr class="numeric">
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group input-medium ">
+                                {{ form_widget(form.project, { 'attr': {'class': 'col-md-3 form-control select2me fontColorBlack', 'placeholder': ' Select Project'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group input-small">
+                                {{ form_widget(form.po, { 'attr': {'class': 'col-md-3 form-control  fontColorBlack select2AutoComplete', 'placeholder': ' Select PO'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group input-medium">
+                                {{ form_widget(form.vendor, { 'attr': {'class': 'col-md-3 form-control select2me  fontColorBlack ', 'placeholder': ' Select Vendor'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <input type="submit" name="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                        </td>
+                    </tr>
+                </table>
+                </div>
+            </form>
+        </div>
+        <!--BEGIN TABS-->
+        <div class="span12">
+            <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                <input type="button" value="Export in excel" name="dailyPoReportExcel" id="dailyPoReportExcel" class="btn blue">
+            </div>
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                    <td></td>
+                    <th class="numeric">PO</th>
+                    <th class="numeric">PR</th>
+                    <th class="numeric">Project Name</th>
+                    <th class="numeric">PO Date</th>
+                    <th class="numeric">Payment Form</th>
+                    <th class="numeric">Advance</th>
+                    <th class="numeric">Status</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                {% set i = 0 %}
+                {% for budgetDaily in dailyPoReport %}
+                    {% set i = i + 1 %}
+                    <tr>
+                        <td><span id="{{ budgetDaily['poId'] }}" class="toggle  row-details row-details-close" style="cursor:pointer;"><span>[+]</span></span></td>
+                        <td>
+                            <a style="color:#000000!important;line-height:5px;text-decoration: underline; cursor:pointer;font-weight:bolder;font-size:11px;" onclick="javascript: window.open('/purchase-order/details-others/{{ budgetDaily['poId'] }}')">
+                                {{ budgetDaily['poId'] }}
+                            </a>
+                        </td>
+                        <td>{{ budgetDaily['prId'] }}</td>
+                        <td>{{ budgetDaily['projectName'] }}</td>
+                        <td>{{ budgetDaily['poDate'] | date('d-m-Y') }}</td>
+                        <td>{% if budgetDaily['poFrom'] == 1 %} {% set poFrom = 'Local office' %} {% else %}{% set poFrom = 'Head office' %}{% endif %} {{ poFrom }}</td>
+                        <td>{% if budgetDaily['advancePaymentAmount'] is not null %} {% set advancePaymentAmount = 'Yes' %} {% else %}{% set advancePaymentAmount = 'No' %}{% endif %} {{ advancePaymentAmount }}</td>
+                        <td>
+
+                            {% if budgetDaily['status'] == 1
+                            and budgetDaily['status'] != 5
+                            and budgetDaily['status'] != 6
+                            and budgetDaily['approveStatus'] != 1
+                            and budgetDaily['approveStatus'] != 2
+                            and budgetDaily['approveStatus'] != 3 %}
+                                    Created
+                            {% endif %}
+
+                            {% if budgetDaily['status'] == 1
+                            and budgetDaily['approveStatus'] == 1
+                            and budgetDaily['approveStatus'] != 2
+                            and budgetDaily['approveStatus'] != 3 %}
+                                    Verified
+                            {% endif %}
+
+                            {% if budgetDaily['status'] == 1
+                            and budgetDaily['approveStatus'] != 1
+                            and budgetDaily['approveStatus'] == 2
+                            and budgetDaily['approveStatus'] != 3 %}
+                                    Validated
+                            {% endif %}
+
+                            {% if budgetDaily['status'] == 1
+                            and budgetDaily['approveStatus'] != 1
+                            and budgetDaily['approveStatus'] != 2
+                            and budgetDaily['approveStatus'] == 3
+                            and budgetDaily['totalOrderReceiveQuantity'] is null %}
+                                    Approved
+                            {% endif %}
+
+                            {% if budgetDaily['status'] == 1
+                            and budgetDaily['approveStatus'] == 3
+                            and budgetDaily['totalOrderReceiveQuantity'] is not null
+                            and budgetDaily['totalOrderItemQuantity'] > budgetDaily['totalOrderReceiveQuantity'] %}
+                                    InProgress
+                            {% endif %}
+
+                            {% if budgetDaily['status'] == 1
+                            and budgetDaily['approveStatus'] == 3
+                            and budgetDaily['totalOrderReceiveQuantity'] is not null
+                            and budgetDaily['totalOrderReceiveQuantity'] >= budgetDaily['totalOrderItemQuantity'] %}
+                                    Received
+                            {% endif %}
+
+                        </td>
+                    </tr>
+
+                    <tr class="showing-overview" id="show-{{ budgetDaily['poId'] }}" style="display: none;">
+                        <td colspan="9">
+                            <table class="inner-table" style="width: 100%">
+
+                                <tr class="inner-numeric"><td>Vendor</td><td>{{ budgetDaily['vendorName'] }}</td></tr>
+                                <tr class="inner-numeric"><td>Purchase Type</td><td>{{ budgetDaily['ptName'] }}</td></tr>
+                                <tr class="inner-numeric"><td>Payment Type</td><td>{{ budgetDaily['paymentType'] }}</td></tr>
+                                <tr class="inner-numeric"><td>Payment From</td><td>{% if budgetDaily['paymentFrom'] == 1 %}Local office {% else %} Head office {% endif %}</td></tr>
+                                <tr class="inner-numeric"><td>Payment Mode</td><td>{{ budgetDaily['paymentMethod'] }}</td></tr>
+                                <tr class="inner-numeric"><td>PO Amount</td><td>{{ budgetDaily['netTotal'] }}</td></tr>
+                                <tr class="inner-numeric"><td>CreatedBy</td><td>{{ budgetDaily['createdBy'] }}</td></tr>
+                                <tr class="inner-numeric"><td>VerifiedBY</td><td>{{ budgetDaily['verifiedBy'] }}</td></tr>
+                                <tr class="inner-numeric"><td>ValidateBy</td><td>{{ budgetDaily['validateBy'] }}</td></tr>
+                                <tr class="inner-numeric"><td>ApprovedBy</td><td>{{ budgetDaily['approvedBy'] }}</td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+    {% block documentready %}
+    {{ parent() }}
+    {#<script>#}
+        $(".toggle").click(function(){
+        var id = $(this).attr('id');
+        //$('.showing-overview').hide();
+        $("#show-"+id).slideToggle(100);
+        }).toggle( function() {
+        $(this).children("span").text("[-]");
+        }, function() {
+        $(this).children("span").text("[+]");
+        });
+
+    $('.popover-link').hover(function() {
+
+        var e=$(this);
+        e.off('hover');
+        $.get(e.data('url'),function(d) {
+            e.popover({content: d}).popover('show');
+
+        });
+    });
+
+    var $url = Routing.generate('purchase_order_no_auto_complete');
+
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+            return m;
+        },
+        formatResult: function(item){ return item.id}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.id}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+                return callback({ id : element.val()});
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+    $('#dailyPoReportExcel').click(function () {
+
+        setTimeout(function(){
+        $('#purchase_order_excel_search').attr('action', '{{ path('report_daily_purchase_order') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'requisition_daily_report_search_form',
+            url: Routing.generate('report_daily_purchase_order_excel'),
+            dataType: 'form html',
+            success:function(data){
+                //Handle The response data
+            }
+        });
+    });
+
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .form-group ul li {
+            list-style: none;
+            margin-left: -96px;
+        }
+        table tr td ul li {
+            list-style: none;
+            margin-left: -41px;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Project
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Project</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="modal-dialog bodyWidth">
+        <div class="modal-content backgroundWhite">
+            <div class="modal-header backGroundLightGrey">
+                <h4 class="modal-title bold text-center"> Project</h4>
+            </div>
+<br/>
+
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'project-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            {{ form_label(form.projectName, 'Project :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.projectName, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.projectName) }}</span>
+                            </div>
+                            <span class="userMessege" style="margin-left: 185px;"></span>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.costCenterNumber, 'CCN :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.costCenterNumber, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.costCenterNumber) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.projectHead, 'Head :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.projectHead, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.projectHead) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.projectContactPerson, 'Contact Person:', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.projectContactPerson, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.projectContactPerson) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.projectCategory, 'Type :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.projectCategory, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.projectCategory) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.projectArea, 'Area :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.projectArea, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.projectArea) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.address, 'Address :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.address, { 'attr': {'class': 'form-control col-md-4', 'style': 'height:72px;width: 615px;max-height: 72px;max-width: 615px;'} }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.address) }}</span>
+                            </div>
+                        </div>
+                        {% if isHeadOffice is empty  %}
+                        <div class="form-group">
+                            {{ form_label(form.isHeadOffice, 'isHeadOffice :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8" style="margin-left: -12px;margin-top:7px">
+                                <div class="input-icon">
+                                    {{ form_widget(form.isHeadOffice, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                            </div>
+                        </div>
+                            {% else %}
+
+                            {% endif %}
+                        {% set Route1 = app.request.uri %}
+                        {% set Url = Route1|split('?') %}
+                        {% set Url1 = Route1|split('/') %}
+                        <input type="hidden" value="{{ url('homepage') }}{{ Url1[3] | default() }}?{{ Url[1] | default() }}" name="urlRef">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="background: lightgrey;">
+                <div class="btn-group">
+                    <a href="/project" class="btn" style="width: 100px;background: #0353D6; color: white !important;">
+                        <i class="fa fa-ban"> Cancel</i>
+                    </a>
+                </div>
+                {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width', 'style': 'width: 100px;background: #0353D6; color: white !important;'} }) }}
+            </div>
+            {{ form_end(form) }}
+
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $("#project_projectName").keyup(function () {
+        var projectName = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('project_check'),
+            data: "projectName=" + projectName,
+            dataType: 'json',
+            success: function (msg) {
+                if (msg.responseCode == 200) {
+                    $('.userMessege').css('color', 'red').html(msg.project_name).fadeIn(1000);
+                }
+                else {
+                    $('.userMessege').css('color', 'green').html(msg.project_name).fadeIn(1000);
+                }
+            }
+        });
+    });
+
+{% endblock %}

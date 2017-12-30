@@ -1,0 +1,486 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td{
+            background: none;
+        }
+    </style>
+
+    <div style="margin-bottom: -20px;margin-top: -25px;width: 6180px;background: #fff;min-height: 808px !important;padding: 0;">
+        <!-- BEGIN PAGE HEADER-->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                <h3 class="page-title">
+                    PR Report
+                    <small></small>
+                </h3>
+                <ul class="page-breadcrumb breadcrumb" style="margin-right: 3px;height: 36px;">
+                    <li>
+                        <i class="fa fa-home"></i>
+                        <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                        <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="{{ path('report_requisition') }}" style="color: #333 !important;">Report</a>
+                        <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li>
+                        <a href="#" style="color: #333 !important;"> PR Report</a>
+                    </li>
+                    <li class="pull-right" style="margin-right: -5px;">
+                        <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                            <i class="fa fa-calendar"></i>
+                            {{ "now"|date("d-F-Y") }}
+                        </div>
+                    </li>
+                </ul>
+                <!-- END PAGE TITLE & BREADCRUMB-->
+            </div>
+        </div>
+        <!-- END PAGE HEADER-->
+        <div class="row">
+            <div style="width: 6180px;background: #fff;">
+
+                <form action="{{ url('report_requisition') }}" method="get" name="report_requisition" id="requisition_report_search_form">
+                    <table id="table_project_cost" style="margin-left: 15px;">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-1">
+                                        <div class="input-icon right">
+                                            <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-md-1">
+                                        <div class="input-icon right">
+                                            <span style="font-size: 15px;font-weight: bolder;line-height: 30px;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group input-medium">
+                                    {{ form_widget(form.project, { 'attr': {'class': 'col-md-3 form-control select2me fontColorBlack', 'placeholder': ' Select Project'} }) }}
+                                </div>
+                            </td>
+                           {# <td>
+                                <div class="form-group input-medium">
+                                    {{ form_widget(form.status, { 'attr': {'class': 'col-md-3 form-control select2me fontColorBlack', 'placeholder': ' Select Project'} }) }}
+                                </div>
+                            </td>#}
+                            <td>
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                        <input type="button" value="Export in excel" name="requisitionExcel" id="requisitionExcel" class="btn blue">
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="row" style="min-height: 820px !important;">
+            <div style="margin-bottom: 20px;width: 6180px;background: #fff;min-height: 746px !important;padding: 0;">
+                <!--BEGIN TABS-->
+                <div style="float: left;">
+
+                    <table class="table table-striped" style="width: auto;">
+                        <tbody>
+                        <tr>
+                            <th colspan="26" style="color:#000000!important;background:#dff0d8;text-align: center;">
+                                PR
+                            </th>
+                            <th colspan="20" style="color:#000000!important;background:#ebcccc;text-align: center;">
+                                PO
+                            </th>
+                            <th colspan="3" style="color:#000000!important;background:#c4b9e4;text-align: center;">
+                                Receive
+                            </th>
+                        </tr>
+
+                        <tr style="background-color: #4d90fe;">
+                            <th style="width: 10px;color:#000000!important">Sl</th>
+                            <th style="width: 100px;color:#000000!important">PRNo</th>
+                            <th style="width: 100px;color:#000000!important">RefNo</th>
+                            <th style="width: 160px;color:#000000!important">ProjectName</th>
+                            <th style="width: 160px;color:#000000!important">CompanyName</th>
+                            <th style="width: 160px;color:#000000!important">SubCategory</th>
+                            <th style="width: 160px;color:#000000!important">CostHead</th>
+                            <th style="width: 100px;color:#000000!important">IssuedBy</th>
+                            <th style="width: 100px;color:#000000!important">Status</th>
+                            <th style="width: 100px;color:#000000!important">Approved%</th>
+                            <th style="width: 100px;color:#000000!important">Claimed%</th>
+                            <th style="width: 100px;color:#000000!important">PoIssued%</th>
+                            <th style="width: 200px;color:#000000!important">PRComment</th>
+                            <th style="width: 150px;color:#000000!important">ItemName</th>
+                            <th style="width: 100px;color:#000000!important">PRQty</th>
+                            <th style="width: 150px;color:#000000!important">IssueDate</th>
+                            <th style="width: 150px;color:#000000!important">VerifiedBy</th>
+                            <th style="width: 150px;color:#000000!important">VerifiedDate</th>
+                            <th style="width: 150px;color:#000000!important">ValidatedBy</th>
+                            <th style="width: 150px;color:#000000!important">ValidatedDate</th>
+                            <th style="width: 160px;color:#000000!important">ApproveBy</th>
+                            <th style="width: 160px;color:#000000!important">ApproveDate</th>
+                            <th style="width: 150px;color:#000000!important">ClaimedBy</th>
+                            <th style="width: 140px;color:#000000!important">ClaimedDate</th>
+                            <th style="width: 140px;color:#000000!important">PurchaseFrom</th>
+                            <th style="width: 100px;color:#000000!important">PRAmount</th>
+
+                            <th style="width: 100px;color:#000000!important">PONo</th>
+                            <th style="width: 160px;color:#000000!important">POIssueDate</th>
+                            <th style="width: 160px;color:#000000!important">PaymentType</th>
+                            <th style="width: 160px;color:#000000!important">PaymentMethod</th>
+                            <th style="width: 160px;color:#000000!important">PaymentFrom</th>
+                            <th style="width: 160px;color:#000000!important">Computation</th>
+                            <th style="width: 160px;color:#000000!important">ApproveDate</th>
+                            <th style="width: 200px;color:#000000!important">POComment</th>
+                            <th style="width: 160px;color:#000000!important">PurchaseType</th>
+                            <th style="width: 100px;color:#000000!important">POQty</th>
+                            <th style="width: 100px;color:#000000!important">UnitPrice</th>
+                            <th style="width: 100px;color:#000000!important">IssuedBy</th>
+                            <th style="width: 100px;color:#000000!important">VerifiedBy</th>
+                            <th style="width: 100px;color:#000000!important">VerifiedDate</th>
+                            <th style="width: 100px;color:#000000!important">ValidatedBy</th>
+                            <th style="width: 100px;color:#000000!important">ValidatedDate</th>
+                            <th style="width: 100px;color:#000000!important">ApprovedBy</th>
+                            <th style="width: 170px;color:#000000!important">Buyer</th>
+                            <th style="width: 170px;color:#000000!important">Vendor</th>
+                            <th style="width: 100px;color:#000000!important">PO Line Amount</th>
+
+                            <th style="width: 150px;color:#000000!important">ReceiveDate</th>
+                            <th style="width: 100px;color:#000000!important">GRNNo</th>
+                            <th style="width: 160px;color:#000000!important">ReceiveBy</th>
+                        </tr>
+
+                        {% set i = 0 %}
+                        {% for budgetDaily in purchaseRequisitionItems %}
+
+                            {% set i = i + 1 %}
+                            {% if i is divisible by(2) %}
+                                {% set bgColor = '#dff0d8' %}
+                                {% set bgColorInnerOne = '#f2dede' %}
+                                {% set bgColorInnerTwo = '#b9b9e4' %}
+                            {% else %}
+                                {% set bgColor = '#eee' %}
+                                {% set bgColorInnerOne = '#ebcccc' %}
+                                {% set bgColorInnerTwo = '#c4b9e4' %}
+                            {% endif %}
+
+                            <tr style="background: {{ bgColor|join("") }};border: 1px solid grey;">
+
+                                {% if budgetDaily.purchaseRequisition.totalRequisitionItem == 0 %}
+                                    {% set totalRequisitionItem = 1 %}
+                                {% else %}
+                                    {% set totalRequisitionItem = budgetDaily.purchaseRequisition.totalRequisitionItem %}
+                                {% endif %}
+
+                                {% if budgetDaily.purchaseRequisition.totalRequisitionItemQuantity == 0 %}
+                                    {% set totalRequisitionItemQuantity = 1 %}
+                                {% else %}
+                                    {% set totalRequisitionItemQuantity = budgetDaily.purchaseRequisition.totalRequisitionItemQuantity %}
+                                {% endif %}
+
+                                <td style="width: 10px">{{ i }}.</td>
+                                <td style="width: 100px; margin-right: 20px;">{{ budgetDaily.purchaseRequisition.id }}</td>
+                                <td style="width: 100px; margin-right: 20px;">{{ budgetDaily.purchaseRequisition.refNo }}</td>
+                                <td style="width: 160px;">
+                                    {{ budgetDaily.purchaseRequisition.project.projectName }}
+                                </td>
+                                <td style="width: 160px;">
+                                    {{ budgetDaily.purchaseRequisition.project.projectCategory.projectCategoryName }}
+                                </td>
+                                <td style="width: 160px;">
+                                    {{ budgetDaily.purchaseRequisition.subcategory.subCategoryName }}
+                                </td>
+                                <td style="width: 160px;">
+                                    {{ budgetDaily.purchaseRequisition.costHeader.title }}
+                                </td>
+                                <td style="width: 100px">
+                                    {{ budgetDaily.purchaseRequisition.createdBy }}
+                                </td>
+                                <td style="width: 100px">
+                                    {% if budgetDaily.purchaseRequisition.status == 1
+                                    and budgetDaily.purchaseRequisition.approveStatus != 1
+                                    and budgetDaily.purchaseRequisition.approveStatus != 2
+                                    and budgetDaily.purchaseRequisition.approveStatus != 3
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                            Created
+                                        </div>
+                                    {% endif %}
+                                    {% if budgetDaily.purchaseRequisition.status == 1
+                                    and budgetDaily.purchaseRequisition.approveStatus == 1
+                                    and budgetDaily.purchaseRequisition.approveStatus != 2
+                                    and budgetDaily.purchaseRequisition.approveStatus != 3
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                            Verified
+                                        </div>
+                                    {% endif %}
+                                    {% if budgetDaily.purchaseRequisition.status == 1
+                                    and budgetDaily.purchaseRequisition.approveStatus != 1
+                                    and budgetDaily.purchaseRequisition.approveStatus == 2
+                                    and budgetDaily.purchaseRequisition.approveStatus != 3
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                            Validated
+                                        </div>
+                                    {% endif %}
+                                    {% if budgetDaily.purchaseRequisition.status == 1
+                                    and budgetDaily.purchaseRequisition.approveStatus != 1
+                                    and budgetDaily.purchaseRequisition.approveStatus != 2
+                                    and budgetDaily.purchaseRequisition.approveStatus == 3
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed == null
+                                    and budgetDaily.purchaseRequisition.totalOrderItemQuantity == 0
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                            Approved
+                                        </div>
+                                    {% endif %}
+                                    {% if budgetDaily.purchaseRequisition.status == 1
+                                    and budgetDaily.purchaseRequisition.approveStatus == 3
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed != null
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed < budgetDaily.purchaseRequisition.totalRequisitionItem
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        <div style="text-align:center;background: #4b8df8; color: #ffffff;height: 20px;">
+                                            PartialClaim
+                                        </div>
+                                    {% endif %}
+                                    {% if budgetDaily.purchaseRequisition.status == 1
+                                    and budgetDaily.purchaseRequisition.approveStatus == 3
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed != null
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemClaimed == budgetDaily.purchaseRequisition.totalRequisitionItem
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity > budgetDaily.purchaseRequisition.totalOrderItemQuantity
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                            InProgress
+                                        </div>
+                                    {% endif %}
+                                    {% if budgetDaily.purchaseRequisition.status == 1
+                                    and budgetDaily.purchaseRequisition.approveStatus == 3
+                                    and budgetDaily.purchaseRequisition.totalOrderItemQuantity >= budgetDaily.purchaseRequisition.totalRequisitionItemQuantity
+                                    and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                            PoIssued
+                                        </div>
+                                    {% endif %}
+                                    {% if budgetDaily.purchaseRequisition.totalRequisitionItemQuantity == 0 %}
+                                        <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                            No Qty
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td style="width: 100px">
+                                    {% if budgetDaily.purchaseRequisition.approveStatus == 1 and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        {% set approvePercentage = 33 %}
+                                    {% elseif budgetDaily.purchaseRequisition.approveStatus == 2 and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        {% set approvePercentage = 66 %}
+                                    {% elseif budgetDaily.purchaseRequisition.approveStatus == 3 and budgetDaily.purchaseRequisition.totalRequisitionItemQuantity != 0 %}
+                                        {% set approvePercentage = 100 %}
+                                    {% else %}
+                                        {% set approvePercentage = 0 %}
+                                    {% endif %}
+                                    {{ approvePercentage }}%
+                                </td>
+                                <td style="width: 100px">
+                                    {% if budgetDaily.purchaseRequisition.totalRequisitionItemQuantity == 0 %}
+                                        {% set claimPercentage = 0 %}
+                                    {% else %}
+                                        {% if ((budgetDaily.purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) > 100 %}
+                                            {% set claimPercentage = 100 %}
+                                        {% else %}
+                                            {% set claimPercentage = ((budgetDaily.purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | length > 3 ? ((budgetDaily.purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) | slice(0, 2) ~ '' : ((budgetDaily.purchaseRequisition.totalRequisitionItemClaimed * 100) / totalRequisitionItem) %}
+                                        {% endif %}
+                                    {% endif %}
+                                    {{ claimPercentage }}%
+                                </td>
+                                <td style="width: 100px">
+                                    {% if ((budgetDaily.purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) > 100 %}
+                                        {% set poIssuedPercentage = 100 %}
+                                    {% else %}
+                                        {% set poIssuedPercentage = ((budgetDaily.purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | length > 3 ? ((budgetDaily.purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) | slice(0, 2) ~ '' : ((budgetDaily.purchaseRequisition.totalOrderItemQuantity * 100) / totalRequisitionItemQuantity) %}
+                                    {% endif %}
+                                    {{ poIssuedPercentage }}%
+                                </td>
+                                <td style="width: 200px;">
+                                    {% for prComment in budgetDaily.purchaseRequisition.purchaseRequisitionComment %}
+                                        {{ prComment.comment }},
+                                    {% endfor %}
+                                </td>
+                                <td style="width: 150px;">{{ budgetDaily.item.itemName }}</td>
+                                <td style="width: 100px;">{{ budgetDaily.quantity }}</td>
+                                <td style="width: 150px;">{{ budgetDaily.purchaseRequisition.createdDate | date('d-M-Y') }}</td>
+                                <td style="width: 150px;">{{ budgetDaily.purchaseRequisition.approvedByProjectHead }}</td>
+                                <td style="width: 150px;">{{ budgetDaily.purchaseRequisition.approvedDateProjectHead | date('d-M-Y') }}</td>
+                                <td style="width: 150px;">{{ budgetDaily.purchaseRequisition.approvedByCategoryHeadOne }}</td>
+                                <td style="width: 150px;">{{ budgetDaily.purchaseRequisition.approvedDateCategoryHeadOne | date('d-M-Y') }}</td>
+                                <td style="width: 150px;">{{ budgetDaily.purchaseRequisition.approvedByCategoryHeadTwo }}</td>
+                                <td style="width: 160px;">{{ budgetDaily.purchaseRequisition.approvedDateCategoryHeadTwo | date('d-M-Y') }}</td>
+                                <td style="width: 150px;">{{ budgetDaily.claimedBy |default('...') }}</td>
+                                <td style="width: 140px;">{{ budgetDaily.claimedDate ? budgetDaily.claimedDate| date('d-M-Y') : '...' }}</td>
+                                <td style="width: 140px;">{{ budgetDaily.isHeadOrLocal ~ ' office' }}</td>
+                                <td style="width: 100px;">{{ budgetDaily.totalPrice | default() }}</td>
+
+                                <td colspan="23" style="background-color: #ebcccc;">
+                                    {% for po in budgetDaily.purchaseOrderItems %}
+                                        <table cellpadding="0" cellspacing="0">
+                                            <tr>
+
+                                                <td style="width: 82px;">
+                                                    {{ po.purchaseOrder.id }}
+                                                </td>
+                                                <td style="width: 150px;">
+                                                    {{ po.purchaseOrder.createdDate | date('d-M-Y') }}
+                                                </td>
+                                                <td style="width: 160px;">
+                                                    {{ po.purchaseOrder.paymentType | default('') }}
+                                                </td>
+                                                <td style="width: 145px;">
+                                                    {{ po.purchaseOrder.paymentMethod | default('') }}
+                                                </td>
+                                                <td style="width: 145px;">
+                                                    {% if po.purchaseOrder.paymentFrom == 1 %}
+                                                        {% set paymentFrom = 'Local Office' %}
+                                                    {% else %}
+                                                        {% set paymentFrom = 'Head Office' %}
+                                                    {% endif %}
+                                                    {{ paymentFrom }}
+                                                </td>
+                                                <td style="width: 160px;">
+                                                    {% if po.purchaseOrder.computationStatus == 1 %}
+                                                        {% set computationStatus = 'yes' %}
+                                                    {% else %}
+                                                        {% set computationStatus = 'no' %}
+                                                    {% endif %}
+                                                    {{ computationStatus }}
+                                                </td>
+                                                <td style="width: 132px;">
+                                                    {{ po.purchaseOrder.approvedThreeDate | date('d-M-Y') }}
+                                                </td>
+                                                <td style="width: 200px;">
+                                                    {% for poComment in po.purchaseOrder.purchaseOrderComment %}
+                                                        {{ poComment.comment }},
+                                                    {% endfor %}
+                                                </td>
+                                                <td style="width: 150px;">
+                                                    {{ po.purchaseOrder.poNonpo.name | default() }}
+                                                </td>
+                                                <td style="width: 93px;">
+                                                    {{ po.quantity }}
+                                                </td>
+                                                <td style="width: 93px;">
+                                                    {{ po.price }}
+                                                </td>
+                                                <td style="width: 100px;">
+                                                    {{ po.purchaseOrder.createdBy.username | default() }}
+                                                </td>
+                                                <td style="width: 100px;">
+                                                    {{ po.purchaseOrder.approvedOne.username | default() }}
+                                                </td>
+                                                <td style="width: 100px;">
+                                                    {{ po.purchaseOrder.approvedOneDate | date('d-m-Y') }}
+                                                </td>
+                                                <td style="width: 100px;">
+                                                    {{ po.purchaseOrder.approvedTwo.username | default() }}
+                                                </td>
+                                                <td style="width: 100px;">
+                                                    {{ po.purchaseOrder.approvedTwoDate | date('d-m-Y') }}
+                                                </td>
+                                                <td style="width: 100px;">
+                                                    {{ po.purchaseOrder.approvedThree.username | default() }}
+                                                </td>
+                                                <td style="width: 148px;">
+                                                    {{ po.purchaseOrder.buyer.username | default() }}
+                                                </td>
+                                                <td style="width: 148px;">
+                                                    {{ po.purchaseOrder.vendor.vendorName | default() }}
+                                                </td>
+                                                <td style="width: 105px;">
+                                                    {{ po.amount|number_format(2, '.', ',') }}
+                                                </td>
+
+                                                <td colspan="3" style="background-color: #c4b9e4;">
+                                                    {% for ri in po.receivedItems %}
+                                                        <table>
+                                                            <tr>
+
+                                                                <td style="width: 160px;">
+                                                                    {{ ri.receive.receivedDate | date('d-M-Y') }}
+                                                                </td>
+                                                                <td style="width: 115px;">
+                                                                    {{ ri.receive.id }}
+                                                                </td>
+                                                                <td style="width: 160px;">
+                                                                    {{ ri.receive.receivedBy.username | default() }}
+                                                                </td>
+
+                                                            </tr>
+                                                        </table>
+                                                    {% endfor %}
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                    {% endfor %}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                    <div class="modal-footer" style="text-align:left;margin-bottom:5px;width: 100%;background: lightgrey;">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--END TABS-->
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+
+    $('#requisitionExcel').click(function () {
+
+    $.ajax({
+    form: 'requisition_report_search_form',
+    url: Routing.generate('report_requisition_excel'),
+    dataType: 'form html',
+    success:function(data){
+    //Handle The response data
+    }
+    });
+    });
+
+    {{ parent() }}
+
+{% endblock %}

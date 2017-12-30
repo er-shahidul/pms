@@ -1,0 +1,137 @@
+purchase_order_refresh:
+    pattern: /purchase-order/refresh/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:refresh }
+    requirements:
+          id: \d+
+
+purchase_order_comment:
+    pattern: /purchase-order/comment
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:comment }
+    options:
+          expose: true
+
+purchase_order_edit:
+    pattern: /purchase-order/edit/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:edit }
+    requirements:
+          id: \d+
+
+purchase_order_approve_one_ajax:
+    pattern: /purchase-order/approve-one
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:approveOneAjax }
+    options:
+          expose: true
+
+purchase_order_approve_two_ajax:
+    pattern: /purchase-order/approve-two
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:approveTwoAjax }
+    options:
+          expose: true
+
+purchase_order_approve_three_ajax:
+    pattern: /purchase-order/approve-three
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:approveThreeAjax }
+    options:
+          expose: true
+
+purchase_order_approve_one:
+    pattern: /purchase-order/approve-one/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:approveOne }
+    requirements:
+          id: \d+
+
+purchase_order_approve_two:
+    pattern: /purchase-order/approve-two/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:approveTwo }
+    requirements:
+          id: \d+
+
+purchase_order_approve_three:
+    pattern: /purchase-order/approve-three/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:approveThree }
+    requirements:
+          id: \d+
+
+purchase_order_details:
+    pattern: /purchase-order/details/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:details }
+    requirements:
+          id: \d+
+
+purchase_order_hold:
+    pattern: /purchase-order/hold/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:hold }
+    requirements:
+          id: \d+
+
+purchase_order_open:
+    pattern: /purchase-order/open/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:open }
+    requirements:
+          id: \d+
+
+purchase_order_cancel:
+    pattern: /purchase-order/cancel/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:cancel }
+    requirements:
+          id: \d+
+
+purchase_order_item_close:
+    pattern: /purchase-order/item-close/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:itemClose }
+    requirements:
+          id: \d+
+
+purchase_order_last_details:
+    pattern: /purchase-order/last-details/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:lastDetails }
+
+purchase_order_details_others:
+    pattern: /purchase-order/details-others/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:detailsOthers }
+
+purchase_order_details_for_mobile:
+    pattern: /purchase-order/details-for-mobile/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:detailsForMobile }
+
+purchase_order_new:
+    pattern: /purchase-order/new
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:new }
+
+purchase_order_save:
+    pattern: /purchase-order/save
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:save }
+
+purchase_order_print:
+    pattern: /purchase-order/print/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:print }
+
+purchase_order_pdf:
+    pattern: /purchase-order/pdf/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:pdf }
+
+purchase_order_attachment_view:
+    pattern: /purchase-order/attachment-view/{id}/{index}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:attachmentView }
+
+purchase_order_no_auto_complete:
+    pattern: /purchase-order/po-auto-complete
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:purchaseOrderAutoComplete }
+    options:
+          expose: true
+
+purchase_order_ref_auto_complete:
+    pattern: /purchase-order/ref-auto-complete
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:purchaseOrderRefAutoComplete }
+    options:
+          expose: true
+
+purchase_order_data_ref_auto_complete:
+    pattern: /purchase-order/ref-po-data/{id}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:purchaseOrderRefDataAutoComplete }
+    options:
+          expose: true
+
+purchase_order:
+    pattern: /purchase-order/{status}
+    defaults: { _controller: PmsCoreBundle:PurchaseOrder:index, status:all }

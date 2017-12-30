@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .anchorClass{
+            color:#000000!important;
+            line-height:5px;
+            text-decoration: underline;
+            cursor:pointer;
+            font-weight:bolder;
+            font-size:11px;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Lowest Price Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_item_over_view_report_bundle') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Lowest Price</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+            <form action="{{ path('report_purchase_lowest_price') }}" method="get" name="item_over_view_report" id="item_over_view_report" style="margin-bottom: 20px;">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tbody>
+                        <tr class="numeric">
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.itemType, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.area, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer fa-align-left">
+            <input type="button" value="Export in excel" name="lowestPriceReportExcel" id="lowestPriceReportExcel" class="btn blue">
+        </div>
+        <div class="span12">
+
+            <div class="portlet-body" style="overflow: scroll; width: 1000px;height: auto;">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-content" style="background: #4b8df8">
+                    {#<tr class="numeric">
+                        <th colspan="8">Last</th>
+                        <th colspan="6">Highest</th>
+                        <th colspan="6">Lowest</th>
+                    </tr>#}
+                    <tr class="numeric">
+                        <th>Sl</th>
+                        <th>Item</th>
+                        <th>Item Type</th>
+
+                        <th>Date</th>
+                        <th>Month</th>
+                        <th>Brand</th>
+                        <th>Project</th>
+                        <th>PoNo</th>
+                        <th>IssuedBy</th>
+                        <th>Last Price</th>
+
+                        <th>Date</th>
+                        <th>Month</th>
+                        <th>Brand</th>
+                        <th>Project</th>
+                        <th>PoNO</th>
+                        <th>IssuedBy</th>
+                        <th>Highest Price</th>
+
+                        <th>Date</th>
+                        <th>Month</th>
+                        <th>Brand</th>
+                        <th>Project</th>
+                        <th>PoNo</th>
+                        <th>IssuedBy</th>
+                        <th>Lowest Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for itemUse in compareLastPrice %}
+                        <tr>
+                            <td class="numeric">{{ loop.index }}.&nbsp;</td>
+                            <td class="numeric">{{ itemUse.itemName }}&nbsp;</td>
+                            <td class="numeric">{{ itemUse.itemTypeName|default }}&nbsp;</td>
+
+                            <td class="numeric">{{ itemUse['createdDate'] | date('Y-m-d') }}</td>
+                            <td class="numeric">{{ itemUse['createdDate'] | date('F-Y') }}</td>
+                            <td class="numeric">{{ itemUse['brand'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['projectName'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['poNo'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['username'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['price'] |number_format(2, '.', ',') }}</td>
+
+                            <td class="numeric">{% if( itemUse['highest']['createdDate'] is defined ) %}{{ itemUse['highest']['createdDate'] | date('Y-m-d') }} {% endif %}</td>
+                            <td class="numeric">{% if( itemUse['highest']['createdDate'] is defined ) %}{{ itemUse['highest']['createdDate'] | date('F-Y') }} {% endif %}</td>
+                            <td class="numeric">{{ itemUse['highest']['brand'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['highest']['projectName'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['highest']['poNo'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['highest']['username'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['highest']['price'] | default('')|number_format(2, '.', ',') }} </td>
+
+                            <td class="numeric">{% if( itemUse['lowest']['createdDate'] is defined ) %}{{ itemUse['lowest']['createdDate'] | date('Y-m-d') }} {% endif %}</td>
+                            <td class="numeric">{% if( itemUse['lowest']['createdDate'] is defined ) %}{{ itemUse['lowest']['createdDate'] | date('F-Y') }} {% endif %}</td>
+                            <td class="numeric">{{ itemUse['lowest']['brand'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['lowest']['projectName'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['lowest']['poNo'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['lowest']['username'] | default('') }}</td>
+                            <td class="numeric">{{ itemUse['lowest']['price'] | default('')|number_format(2, '.', ',') }} </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $('#lowestPriceReportExcel').click(function () {
+
+    setTimeout(function(){
+    $('#item_over_view_report').attr('action', '{{ path('report_purchase_lowest_price') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'item_over_view_report',
+    url: Routing.generate('report_purchase_lowest_price_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock documentready %}

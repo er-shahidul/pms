@@ -1,0 +1,61 @@
+vendor_add:
+    pattern: /vendor/add
+    defaults: { _controller: PmsSettingBundle:Vendor:add }
+
+vendor_vendors_list_excel:
+    pattern: /vendors-list-excel
+    defaults: { _controller: PmsSettingBundle:Vendor:vendorsListExcel }
+    options:
+            expose: true
+
+vendor_delete:
+    pattern: /vendor/delete/{id}
+    defaults: { _controller: PmsSettingBundle:Vendor:delete }
+    requirements:
+          id: \d+
+
+vendor_active:
+    pattern: /vendor/active/{id}
+    defaults: { _controller: PmsSettingBundle:Vendor:active }
+    requirements:
+          id: \d+
+
+vendor_update:
+    pattern: /vendor/update/{id}
+    defaults: { _controller: PmsSettingBundle:Vendor:update }
+    requirements:
+          id:  \d+
+
+vendor_details:
+    pattern: /vendors/details/{id}
+    defaults: { _controller: PmsSettingBundle:Vendor:details }
+
+vendor_details_for_mobile:
+    pattern: /vendors/details-for-mobile/{id}
+    defaults: { _controller: PmsSettingBundle:Vendor:mobileDetails }
+
+vendor_attach:
+    pattern: /vendor/attach/{id}
+    defaults: { _controller: PmsSettingBundle:Vendor:attach }
+    requirements:
+          id:  \d+
+
+vendor_check:
+    pattern: /vendor/check
+    defaults: { _controller: PmsSettingBundle:Vendor:check }
+    options:
+            expose: true
+
+vendor_attachment_view:
+    pattern: /vendor/attachment-view/{path}
+    defaults: { _controller: PmsSettingBundle:Vendor:attachmentView }
+
+vendor_auto_complete:
+    pattern: /vendor/vendor-auto-complete
+    defaults: { _controller: PmsSettingBundle:Vendor:vendorAutoComplete }
+    options:
+          expose: true
+
+vendor:
+    pattern: /vendor/{status}
+    defaults: { _controller: PmsSettingBundle:Vendor:index, status:active }

@@ -1,0 +1,202 @@
+<h2 class="page-title">
+    Nourish purchase management system
+</h2>
+<style>
+    table{
+        width:100%;text-align: left;border: 1px solid #808080;font-family: arial,sans-serif;font-size:12px;color:#414141;border-collapse: collapse;
+    }
+    p{
+        font-size: 20px;
+        text-align: center;
+        font-weight: bold;
+    }
+</style>
+{% if status == 'prApprovalPending' %}
+<p>Pending for Requisition Approval list</p>
+<table>
+    <thead>
+    <tr>
+        <th style="width:5%;">Sl</th>
+        <th style="width:15%;">PR Number</th>
+        <th style="width:20%;">Issue Date</th>
+        <th style="width:25%;">Project Name</th>
+        <th style="width:25%;">SubCategory Name</th>
+        <th style="width:10%;">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for purchaseRequisition in EmailInformation %}
+                <tr>
+                    <td style="border: 1px solid #808080;">{{ loop.index }}.</td>
+                    <td style="border: 1px solid #808080;">{{ purchaseRequisition.id }}</td>
+                    <td style="border: 1px solid #808080;">{{ purchaseRequisition.createdDate | date('d-M-Y') }}</td>
+                    <td style="border: 1px solid #808080;">{{ purchaseRequisition.projectName }}</td>
+                    <td style="border: 1px solid #808080;">{{ purchaseRequisition.subCategoryName }}</td>
+                    <td style="border: 1px solid #808080;">
+                        {% if purchaseRequisition.status == 1
+                        and purchaseRequisition.approveStatus != 1
+                        and purchaseRequisition.approveStatus != 2
+                        and purchaseRequisition.approveStatus != 3 %}
+                                Created
+                        {% endif %}
+                        {% if purchaseRequisition.status == 1
+                        and purchaseRequisition.approveStatus == 1
+                        and purchaseRequisition.approveStatus != 2
+                        and purchaseRequisition.approveStatus != 3 %}
+                                Verified
+                        {% endif %}
+                        {% if purchaseRequisition.status == 1
+                        and purchaseRequisition.approveStatus != 1
+                        and purchaseRequisition.approveStatus == 2
+                        and purchaseRequisition.approveStatus != 3 %}
+                                Validated
+                        {% endif %}
+                    </td>
+                </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% if status == 'priClaim' %}
+<p> Pending for item  Claimed list </p>
+<table>
+    <thead>
+    <tr>
+        <th style="width:5%;">Sl</th>
+        <th style="width:10%;">PR Number</th>
+        <th style="width:20%;">Item Name</th>
+        <th style="width:10%;">Approval Date</th>
+        <th style="width:20%;">Project Name</th>
+        <th style="width:25%;">SubCategory Name</th>
+        <th style="width:10%;">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for purchaseRequisitionItem in EmailInformation %}
+        <tr>
+            <td style="border: 1px solid #808080;">{{ loop.index }}.</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.id }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.itemName }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.approvedDateCategoryHeadTwo | date('d-M-Y') }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.projectName }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.subCategoryName }}</td>
+            <td style="border: 1px solid #808080;">
+                Not Claim
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% if status == 'poPending' %}
+<p> Pending for open order item list </p>
+<table>
+    <thead>
+    <tr>
+        <th style="width:5%;">Sl</th>
+        <th style="width:10%;">PR Number</th>
+        <th style="width:10%;">Approval Date</th>
+        <th style="width:15%;">Item Name</th>
+        <th style="width:10%;">Claimed Date</th>
+        <th style="width:10%;">Claimed By</th>
+        <th style="width:15%;">Project Name</th>
+        <th style="width:15%;">SubCategory Name</th>
+        <th style="width:10%;">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for purchaseRequisitionItem in EmailInformation %}
+        <tr>
+            <td style="border: 1px solid #808080;">{{ loop.index }}.</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.id }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.approvedDateCategoryHeadTwo | date('d-M-Y') }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.itemName }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.claimedDate | date('d-M-Y') }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.username }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.projectName }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseRequisitionItem.subCategoryName }}</td>
+            <td style="border: 1px solid #808080;">
+                InProgress
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% if status == 'receivePending' %}
+<p> Pending open receiving item list </p>
+<table style="width:100%;text-align: left;border: 1px solid #808080;font-family: arial,sans-serif;font-size:9.0pt;color:#414141">
+    <thead>
+    <tr>
+        <th style="width:5%;">Sl</th>
+        <th style="width:15%;">PO Number</th>
+        <th style="width:15%;">Approval Date</th>
+        <th style="width:15%;">Item Name</th>
+        <th style="width:20%;">Project Name</th>
+        <th style="width:20%;">SubCategory Name</th>
+        <th style="width:10%;">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for purchaseOrderItem in EmailInformation %}
+        <tr>
+            <td style="border: 1px solid #808080;">{{ loop.index }}.</td>
+            <td style="border: 1px solid #808080;">{{ purchaseOrderItem.id }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseOrderItem.approvedThreeDate | date('d-M-Y') }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseOrderItem.itemName }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseOrderItem.projectName }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseOrderItem.subCategoryName }}</td>
+            <td style="border: 1px solid #808080;">
+                InProgress
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% if status == 'poApprovalPending' %}
+<p>Pending for Order Approval list</p>
+<table>
+    <thead>
+    <tr>
+        <th style="width:5%;">Sl</th>
+        <th style="width:20%;">PO Number</th>
+        <th style="width:25%;">Issue Date</th>
+        <th style="width:25%;">Vendor/Buyer</th>
+        <th style="width:25%;">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for purchaseOrder in EmailInformation %}
+        <tr>
+            <td style="border: 1px solid #808080;">{{ loop.index }}.</td>
+            <td style="border: 1px solid #808080;">{{ purchaseOrder.poId }}</td>
+            <td style="border: 1px solid #808080;">{{ purchaseOrder.createdDate | date('d-M-Y') }}</td>
+            <td style="border: 1px solid #808080;">
+                {{ purchaseOrder.username ? purchaseOrder.username : purchaseOrder.vendorName }}
+            </td>
+            <td style="border: 1px solid #808080;">
+                {% if purchaseOrder.status == 1
+                and purchaseOrder.approveStatus != 1
+                and purchaseOrder.approveStatus != 2
+                and purchaseOrder.approveStatus != 3 %}
+                    Created
+                {% endif %}
+                {% if purchaseOrder.status == 1
+                and purchaseOrder.approveStatus == 1
+                and purchaseOrder.approveStatus != 2
+                and purchaseOrder.approveStatus != 3 %}
+                    Verified
+                {% endif %}
+                {% if purchaseOrder.status == 1
+                and purchaseOrder.approveStatus != 1
+                and purchaseOrder.approveStatus == 2
+                and purchaseOrder.approveStatus != 3 %}
+                    Validated
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}

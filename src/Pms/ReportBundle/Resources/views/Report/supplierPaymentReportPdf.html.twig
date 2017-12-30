@@ -1,0 +1,42 @@
+<table style="width: 1000px;margin-top: 150px;text-align: center;">
+    <tr>
+        <td style="width:100%;font-weight:bold;height: 30px;background-color: lightgrey;">
+            Supplier Report
+        </td>
+    </tr>
+</table>
+
+<table class="table-bordered table-striped table-condensed flip-content responsiveDiv dataTable" id="listPo">
+    <thead class="flip-content"  style="background: #4b8df8">
+    <tr>
+        <th class="numeric">Sl</th>
+        <th class="numeric">Vendor Name</th>
+        <th class="numeric">PO Date</th>
+        <th class="numeric">PO No</th>
+        <th class="numeric">GRN</th>
+        <th class="numeric">PO Amount</th>
+        <th class="numeric">Advance Amount</th>
+        <th class="numeric">Payment Amount</th>
+        <th class="numeric">Bank</th>
+        <th class="numeric">Cheque</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for index ,payment in payments %}
+
+        <tr>
+            <td class="numeric">{{ index+1 }}.</td>
+            <td class="numeric">{{ payment['vendorName']| default('') }}</td>
+            <td class="numeric">{{ payment['poDate'] | date('Y m d') }}</td>
+            <td class="numeric">{{ payment['poId'] | default('') }}</td>
+            <td class="numeric">{{ payment['grnId'] | default('') }}</td>
+            <td class="numeric">{{ payment['poAmount'] | number_format(2, '.', ',')  }}</td>
+            <td class="numeric">{{ payment['advanceAmount'] |number_format(2, '.', ',') }}</td>
+            <td class="numeric">{{ payment['paymentAmount'] | number_format(2, '.', ',')  }}</td>
+            <td class="numeric">{{ payment['bankName'] | default('') }}</td>
+            <td class="numeric">{{ payment['cheque'] | default('') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,33 @@
+parameters:
+    pms.user.permission.security_provider.class: Pms\UserBundle\Permission\Provider\SecurityPermissionProvider
+    pms.user.permission_builder.class: Pms\UserBundle\Permission\PermissionBuilder
+
+services:
+    pms_user.registration.form.type:
+        class: Pms\UserBundle\Form\UserType
+        arguments: [%fos_user.model.user.class%]
+        tags:
+            - { name: form.type, alias: pms_userbundle_user }
+
+    pms.user.permission.security_provider:
+        class: %pms.user.permission.security_provider.class%
+        tags:
+            - { name: pms.user.permission_provider, alias: user }
+
+    pms.user_manager:
+        class: Pms\UserBundle\Manager\UserManager
+        arguments:
+            - @security.encoder_factory
+            - @fos_user.util.username_canonicalizer
+            - @fos_user.util.email_canonicalizer
+            - @fos_user.entity_manager
+            - %fos_user.model.user.class%
+
+    pms.user.permission_builder:
+        class: %pms.user.permission_builder.class%
+
+    fos_user.group.form.type:
+        class: Pms\UserBundle\Form\Type\GroupFormType
+        arguments: [%fos_user.model.group.class%, @pms.user.permission_builder]
+        tags:
+            - { name: form.type, alias: fos_user_group }

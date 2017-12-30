@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Related Bank
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('relatedbank') }}" style="color: #333 !important;">Related Bank</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <div class="form-group">
+        <div class="col-md-12" style="margin-top: 30px;">
+            {% if is_granted("ROLE_RELATED_BANK_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                <a href="{{ path('relatedbank_new') }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                    Related Bank
+                </a>
+            {% endif %}
+            <table class="table bold" style="border: 1px solid ghostwhite;">
+                <thead style="background: #4b8df8;color: #fff;">
+                <tr>
+                    <th>Sl</th>
+                    <th class="col-md-6">Name</th>
+                    <th class="col-md-4">Branch</th>
+                    <th class="col-md-1"></th>
+                    <th class="col-md-1"></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% set offset = relatedBanks.getItemNumberPerPage * (relatedBanks.currentPageNumber - 1) %}
+
+                {% for relatedBank in relatedBanks %}
+
+                    <tr>
+                        <td>{{ loop.index + offset }}.</td>
+                        <td>{{ relatedBank.name }}</td>
+                        <td>{{ relatedBank.branch }}</td>
+                        <td>
+                            <a href="{{ path('relatedbank_delete',{id:relatedBank.id}) }}" style="width: 65px;" class="btn default btn-xs confirm"><i
+                                        class="fa fa-trash-o"></i> Delete</a>
+                        </td>
+                        <td>
+                            <a href="{{ path('relatedbank_update',{id:relatedBank.id}) }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-edit"></i> Update</a>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+            <div class="navigation text-right">
+                {{ knp_pagination_render(relatedBanks) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $(".confirm").easyconfirm();
+
+    $( "tr:odd" ).css( "background-color", "#bbf" );
+
+{% endblock %}

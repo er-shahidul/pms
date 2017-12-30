@@ -1,0 +1,12 @@
+report_compare_price_directory:
+    pattern: /compare-price-directory-report
+    defaults: { _controller: PmsReportBundle:ComparePriceDirectoryReport:comparePriceDirectory }
+
+report_compare_price_directory_excel:
+    pattern: /compare-price-directory-report-excel
+    defaults: { _controller: PmsReportBundle:ComparePriceDirectoryReport:comparePriceDirectoryExcel }
+    options:
+           expose: true
+
+
+

@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Project Spend Sub Category Wise Detail
+
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_project_spend_sub_category_wise') }}" style="color: #333 !important;">Project Spend Sub Category Wise</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <div id="reload-all-receive">
+
+        <div class="modal-dialog" style="width: 1000px;">
+            <div class="modal-content">
+                <div class="modal-header" style="background: lightgrey;">
+                    <button type="button" class="close close-modal-refresh closeBack" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title bold" style="text-align: center;">{{ projectSpendSubCategoryWiseAmounts[0]['projectName'] }}</h4>
+                </div>
+
+                <div class="col-md-12">
+
+                    <div class="portlet box green">
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-cogs"></i>Project Spend Sub Category Wise Detail</div>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            <table class="table-bordered table-striped table-condensed flip-content">
+                                <thead style="background: #4b8df8">
+                                <tr>
+                                    {#<th>Project</th>#}
+                                    <th>Item</th>
+                                    <th>Area</th>
+                                    <th>Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for projectSpendSubCategoryWiseAmount in projectSpendSubCategoryWiseAmounts %}
+                                    <tr>
+
+                                        {#<td>{{ projectSpendSubCategoryWiseAmount['projectName']  }}</td>#}
+                                        <td>{{ projectSpendSubCategoryWiseAmount['itemName']  }}</td>
+                                        <td>{{ projectSpendSubCategoryWiseAmount['areaName']   }}</td>
+                                        <td>{{ projectSpendSubCategoryWiseAmount['total']|number_format(2, '.', ',')   }}</td>
+                                    </tr>
+
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer" style="width: 100%;background: lightgrey;"></div>
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+{#
+{% block documentready %}
+    &#123;&#35;<script>&#35;&#125;
+    {{ parent() }}
+
+    $(".closeBack").click( function (){
+    window.history.back();
+    });
+
+{% endblock %}#}

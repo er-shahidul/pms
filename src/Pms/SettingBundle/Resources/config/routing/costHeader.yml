@@ -1,0 +1,37 @@
+cost_header_refresh:
+    pattern: /cost-header/refresh
+    defaults: { _controller: PmsSettingBundle:CostHeader:refresh }
+
+cost_header_active:
+    pattern: /cost-header/active/{id}
+    defaults: { _controller: PmsSettingBundle:CostHeader:active }
+    requirements:
+          id: \d+
+
+cost_header_delete:
+    pattern: /cost-header/delete/{id}
+    defaults: { _controller: PmsSettingBundle:CostHeader:delete }
+    requirements:
+          id: \d+
+
+cost_header_update:
+    pattern: /cost-header/update/{id}
+    defaults: { _controller: PmsSettingBundle:CostHeader:update }
+    requirements:
+          id:  \d+
+
+cost_header_check:
+    pattern: /cost-header/check
+    defaults: { _controller: PmsSettingBundle:CostHeader:check }
+    options:
+            expose: true
+
+cost_header_ajax_add:
+    pattern: /cost-header/add
+    defaults: { _controller: PmsSettingBundle:CostHeader:add }
+    options:
+            expose: true
+
+cost_header:
+    pattern: /cost-header/{status}
+    defaults: { _controller: PmsSettingBundle:CostHeader:index, status:active }

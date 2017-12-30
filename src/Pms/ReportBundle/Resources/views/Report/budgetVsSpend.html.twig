@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .highcharts-button{
+            display: none;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Budget Vs Spend
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_budget_vs_spend') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> Budget Vs Spend</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+
+        <div class="span12">
+            <form method="get" style="margin-bottom: 20px;margin-left: -15px;margin-top: -20px;">
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <div class="input-icon">
+                            <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.month, { 'attr': {'class': 'form-control datepicker', 'style': 'width: 197px;'} }) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="submit" value="Search" class="btn blue" style="margin-left: 55px;">
+
+            </form>
+        </div>
+            <!--BEGIN TABS-->
+        <div class="span12">
+
+            <div id="container" style="min-width: 310px; height: 500px; margin: 0 auto"></div>
+
+            {#<div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">#}
+                {#<input type="button" value="Export in excel" name="itemOverViewReportExcel" id="itemOverViewReportExcel" class="btn blue">#}
+            {#</div>#}
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead style="background: #4b8df8;color: #fff;">
+                    <tr class="numeric">
+                        <th>Sl</th>
+                        <th>Sub Category</th>
+                        <th>Budget</th>
+                        <th>Spend</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for index, data in dataArray %}
+
+                        <tr>
+                            <td class="numeric">{{ index + 1 }}.</td>
+                            <td class="numeric">
+                                <a style="color: #000000!important;" href="{{ path('subcategory_spend_details', {'subCategoryID': data['subCategoryID'], 'month': data['month']}) }}">
+                                    {{ data['subCategoryName'] }}
+                                </a>
+                            </td>
+                            <td class="numeric">
+                                {{ data['budgetAmount'] | number_format(2, '.', ',')}}
+                            </td>
+                            <td class="numeric">
+                                {{ data['spendAmount'] | number_format(2, '.', ',') }}
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    'assets/Highcharts-4.1.7/js/highcharts.js'
+    'assets/Highcharts-4.1.7/js/modules/exporting.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+{#<script>#}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $('#itemOverViewReportExcel').click(function () {
+
+    setTimeout(function(){
+    $('#item_over_view_report').attr('action', '{{ path('report_budget_vs_spend') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'item_over_view_report',
+    url: Routing.generate('report_budget_vs_spend_excel'),
+    dataType: 'form html'
+    });
+    });
+
+    var subCategoryNameArray = {{ subCategoryNameArray|raw }}
+    var budgetAmountArray = {{ budgetAmountArray|raw }}
+    var spendAmountArray = {{ spendAmountArray|raw }}
+
+$('#container').highcharts({
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Budget VS Spend Chart'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: subCategoryNameArray,
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Budget VS Spend'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Budget',
+        data: budgetAmountArray
+
+    }, {
+        name: 'Spend',
+        data: spendAmountArray
+
+    }]
+});
+
+{% endblock %}

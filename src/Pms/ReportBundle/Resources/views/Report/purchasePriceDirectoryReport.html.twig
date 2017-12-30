@@ -1,0 +1,257 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .parentTbl table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            border: 0;
+
+        }
+        .childTbl table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            border: 1px solid #d7d7d7;
+
+        }
+        .childTbl th,
+        .childTbl td {
+            border: 1px solid #d7d7d7;
+        }
+        .scrollData {
+
+            max-height: 450px;
+            overflow-x: auto;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Price Directory
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_purchase_price_directory') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Price Directory</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+
+            <form action="{{ path('report_purchase_price_directory') }}" method="get"
+                  name="purchase_order_price_directory_excel_search"
+                  id="purchase_order_price_directory_excel_search" style="margin-bottom: 20px;">
+                <div class="portlet-body flip-scroll">
+                <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                    <tbody>
+                    <tr class="numeric">
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                {{ form_widget(form.project, { 'attr': {'class': 'col-md-4 form-control select2me fontColorBlack'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            {{ form_widget(form.item, { 'attr': {'class': 'form-control select2AutoComplete fontColorBlack', 'style': 'width: 220px;', 'placeholder': ' Select Item'} }) }}
+                        </td>
+                        <td>
+                            {{ form_widget(form.itemType, { 'attr': {'class': 'form-control select2me fontColorBlack', 'style': 'width: 220px;', 'placeholder': ' Select Item'} }) }}
+                        </td>
+                        <td>
+                            <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+            <input type="button" value="Export in excel" name="purchaseOrderPriceDirectoryReportExcel" id="purchaseOrderPriceDirectoryReportExcel" class="btn blue">
+        </div>
+        <div class="col-md-12" style="float: left;">
+            <div class="portlet box">
+                <div class="portlet-title">
+                    <div class="portlet-body flip-scroll">
+                        <table class="table table-bordered table-striped table-condensed flip-content responsiveDiv">
+                            <thead class="flip-content tableHeadColor">
+                            <tr>
+                                <td class="numeric"></td>
+                                <th class="numeric">Sl</th>
+                                <th class="numeric">Category Name</th>
+                                <th class="numeric">Item Type</th>
+                                <th class="numeric">Item Name</th>
+                                <th class="numeric">UM</th>
+                                <th class="numeric">Quantity</th>
+                                <th class="numeric">Per Unit Rate</th>
+                                <th class="numeric">Brand Name</th>
+                                <th class="numeric">Date</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for index, item in priceDirectoryReport %}
+                                <tr>
+                                    <td class="numeric"><span id="{{ index + 1 }}" class="toggle  row-details row-details-close" style="cursor:pointer;"><span>[+]</span></span></td>
+                                    <td>{{ index + 1 }}</td>
+                                    <td class="numeric">
+                                        {{ item.purchaseRequisitionItem.purchaseRequisition.category.categoryName | default('...') }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ item.item.itemType.itemType | default('...') }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ item.item.itemName | default('...') }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ item.item.itemUnit | default('...') }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ item.quantity|default() }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ item.price|number_format(2, '.', ',') }}
+                                    </td>
+
+                                    <td class="numeric">
+                                        {{ item.brand | default('') }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ item.purchaseOrder.createdDate | date('d/m/Y') }}
+                                    </td>
+
+                                </tr>
+
+                                <tr class="showing-overview" id="show-{{ index + 1 }}" style="display: none;">
+                                    <td colspan="10">
+                                        <table class="inner-table" style="width: 100%">
+
+                                            <tr class="inner-numeric"><td>Area</td><td>{{ item.project.projectArea.areaName | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>Project Name</td><td>{{ item.project.projectName | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>Supplier</td><td>{{ item.purchaseOrder.vendor.vendorName | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>Address</td><td>{{ item.purchaseOrder.vendor.vendorAddress | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>Contact Person</td><td>{{ item.purchaseOrder.vendor.contractPerson | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>PO No</td><td>{{ item.purchaseOrder.id | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>PO Ref No</td><td>{{ item.purchaseOrder.refNo | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>Issued By</td><td>{{ item.purchaseOrder.createdBy.username | default('...') }}</td></tr>
+                                            <tr class="inner-numeric"><td>Purchase Type</td><td>{{ item.purchaseOrder.poNonpo.name | default('...') }}</td></tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".toggle").click(function(){
+    var id = $(this).attr('id');
+    //$('.showing-overview').hide();
+    $("#show-"+id).slideToggle(100);
+    }).toggle( function() {
+    $(this).children("span").text("[-]");
+    }, function() {
+    $(this).children("span").text("[+]");
+    });
+
+    var $url = Routing.generate('item_auto_complete');
+    var queryStringObject = {{ app.request.query.all|json_encode|raw }};
+    var selectedItemId = (queryStringObject && queryStringObject.search && queryStringObject.search.item) ? queryStringObject.search.item : '';
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+
+            return m;
+        },
+        formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+            $.ajax({
+                url: $url,
+                data: 'item=' + selectedItemId,
+                dataType: 'json'
+            }).done(function(data){
+                callback(data);
+            });
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+        $('#purchaseOrderPriceDirectoryReportExcel').click(function () {
+
+            setTimeout(function () {
+                $('#purchase_order_price_directory_excel_search').attr('action', '{{ path('report_purchase_price_directory') }}');
+            }, 1000);
+
+            $.ajax({
+                form: 'purchase_order_price_directory_excel_search',
+                url: Routing.generate('report_purchase_price_directory_excel'),
+                dataType: 'form html'
+            });
+        });
+
+{% endblock %}

@@ -1,0 +1,408 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    {% stylesheets filter='cssrewrite'
+    '@PmsCoreBundle/Resources/public/css/mobile.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Requisition
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('purchase_requisition') }}" style="color: #333 !important;">Purchase Requisition</a>
+                </li>
+
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE TABLE PORTLET-->
+            <div class="portlet box">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <fieldset>
+                            <legend>PR Basic Information:</legend>
+                            <ul class="details_wrapper unstyled divWrapper">
+                                <li><strong>Project :</strong> {{ pr.project.projectName | default() }}</li>
+                                <li><strong>Area :</strong> {{ pr.project.projectArea.areaName | default() }}</li>
+                                <li><strong>Company Type :</strong>{{ pr.project.projectCategory.projectCategoryName | default() }}</li>
+                                <li><strong>CCN :</strong>{{ pr.project.costCenterNumber | default() }}</li>
+                                <li><strong>Project Head :</strong>{{ pr.project.projectHead.username | default() }}</li>
+                                <li><strong>Address :</strong>{{ pr.project.address | default() }}</li>
+                                <li><strong>Cost Header :</strong>{{ pr.costHeader.title | default() }}</li>
+                                <li><strong>Category :</strong>{{ pr.category.categoryName | default() }}</li>
+                                <li><strong>Sub Category :</strong>{{ pr.subCategory.subCategoryName | default() }}</li>
+                                <li><strong>Priority :</strong>{{ pr.priority }}</li>
+                                <li><strong>Status :</strong>
+                                    {% if pr.approvedDateCategoryHeadTwo != null and pr.closedDate != null and pr.status == 0 %}
+                                        Closed
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <fieldset>
+                            <legend>PR Date Information:</legend>
+                            <ul class="details_wrapper unstyled divWrapper">
+                                <li><strong>Requisition No :</strong> {{ pr.id | default() }}</li>
+                                <li><strong>Ref. No :</strong> {{ pr.refNo | default() }}</li>
+                                <li><strong>Issued by :</strong>{{ pr.createdby.username | default() }}</li>
+                                <li><strong>Issue Date :</strong>{{ pr.createdDate | date('d M Y') }}</li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <fieldset>
+                            <legend>PR Approval Information:</legend>
+                            <ul class="details_wrapper unstyled divWrapper">
+                                <li><strong>Verified :</strong>
+                                    <span>{{ pr.approvedByProjectHead.username | default('not verified') }}</span>
+                                    {% if  pr.approvedDateProjectHead != null %}
+                                        on <span style="font-weight: bold;">{{ pr.approvedDateProjectHead | date('d M Y') }}</span>
+                                    {% endif %}
+                                </li>
+                                <li><strong>Validated :</strong>
+                                    {% if  pr.approvedDateCategoryHeadOne != null %}
+                                        on <span style="font-weight: bold;">{{ pr.approvedDateCategoryHeadOne | date('d M Y') }}</span>
+                                    {% endif %}
+                                </li>
+                                <li><strong>Approved :</strong>
+                                    <span style="font-weight: bold;">{{ pr.approvedByCategoryHeadTwo.username | default('not approved') }}</span>
+                                    {% if  pr.approvedDateCategoryHeadTwo != null %}
+                                        on <span style="font-weight: bold;">{{ pr.approvedDateCategoryHeadTwo | date('d M Y') }}</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="span12">
+                        <fieldset>
+                            <legend>Purchase Requisition Item:</legend>
+                            {% for requisitionItem in pr.purchaseRequisitionItems %}
+                                <ul class="details_wrapper unstyled divWrapper">
+                                    <li><strong>Item :</strong> {{ requisitionItem.item.itemName | default() }}</li>
+                                    <li><strong>ItemType :</strong> {{ requisitionItem.item.itemType.itemType | default() }}</li>
+                                    <li><strong>Quantity :</strong> {{ requisitionItem.quantity }}</li>
+                                    <li><strong>CancelQty :</strong>
+                                        {% if requisitionItem.purchaseRequisitionItemCloseInfo.quantity is defined %}
+                                            {{ requisitionItem.purchaseRequisitionItemCloseInfo.quantity }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </li>
+                                    <li><strong>Unit :</strong> {{ requisitionItem.item.itemUnit | default() }}</li>
+                                    <li><strong>Claimed :</strong>
+                                        {% if requisitionItem.claimedBy != null %}
+                                            {{ requisitionItem.claimedBy.username }}
+                                        {% endif %}
+                                        {% if requisitionItem.claimedBy == null %}
+                                            None
+                                        {% endif %}
+                                    </li>
+                                    <li><strong>Local/Head :</strong>
+                                        {{ requisitionItem.isHeadOrLocal ~ ' office' |default('') }}
+                                    </li>
+                                    <li><strong>status :</strong>
+                                        {% if requisitionItem.claimedBy != null %}
+                                            <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                                                Claimed
+                                            </div>
+                                        {% endif %}
+                                        {% if requisitionItem.claimedBy == null %}
+                                            <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                                                Open
+                                            </div>
+                                        {% endif %}
+                                    </li>
+
+                                    <li><strong>Required By :</strong> {{ requisitionItem.dateOfRequired | date('d M Y') }}</li>
+                                    <li><strong>Remarks/Specification/Brand :</strong> {{ requisitionItem.comment }}</li>
+                                    {#<li><strong>Action</strong> {% if requisitionItem.purchaseRequisition.approvedByCategoryHeadTwo != null %}
+                                            {% if requisitionItem.claimedBy == null %}
+                                                {% if requisitionItem.status == 1 and (is_granted("ROLE_PURCHASE_REQUISITION_CLAIM") or is_granted("ROLE_SUPER_ADMIN")) %}
+                                                    <a class="btn blue btn-xs claim" rel="{{ requisitionItem.id }}" style="width: 65px; color:#ffffff !important;">Claim</a>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}</li>#}
+
+                                </ul>
+                                <div class="clearfix"></div>
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+                </div>
+                {% if is_granted("ROLE_COMMENTS_USERS") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                <div class="row-fluid">
+                    <div class="span12">
+                        <fieldset>
+                            <legend>Last Item History:</legend>
+                            <ul class="details_wrapper unstyled divWrapper">
+                                <li><strong>Requisition No :</strong> {{ pr.id | default() }}</li>
+                                <li><strong>Ref. No :</strong> {{ pr.refNo | default() }}</li>
+                                <li><strong>Issued by :</strong>{{ pr.createdby.username | default() }}</li>
+                                <li><strong>Issue Date :</strong>{{ pr.createdDate | date('d M Y') }}</li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>
+                {% endif %}
+                {% if is_granted("ROLE_COMMENTS_USERS") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                <div class="row-fluid">
+                    <div class="span12">
+                        <fieldset>
+                            <legend>Requisition Amount:</legend>
+                            <ul class="details_wrapper unstyled divWrapper">
+                                <li><span id="amountCheck" class="" style="color: darkred;font-weight: bolder;margin-left: -5px;"></span>
+                                        <span style="color: darkred;font-weight: bolder;"> The amount is {{ pr.prCost |number_format(2, '.', ',') }}
+                                        </span>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if is_granted("ROLE_COMMENTS_USERS") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <fieldset>
+                                <legend>Comments Information:</legend>
+                                {% for prc in pr.purchaseRequisitionComment %}
+                                    <ul class="details_wrapper unstyled divWrapper">
+                                        <li><strong>Date :</strong> {{ prc.createdDate | date('d M Y') }}</li>
+                                        <li><strong>Commented By :</strong> {{ prc.createdBy.username | default() }}</li>
+                                        <li><strong>Comments :</strong>{{ prc.comment | default() }}</li>
+                                    </ul>
+                                {% endfor %}
+                            </fieldset>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if is_granted("ROLE_COMMENTS_USERS") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <fieldset>
+                                <legend>Remark:</legend>
+                                    <ul class="details_wrapper unstyled divWrapper">
+                                        <li><textarea class="post-comment"  name="comment" id="comment"></textarea></li>
+                                        <li><input type="button" name="commentAdd" id="commentAdd" value="Comment" class="btn blue"></li>
+                                    </ul>
+                            </fieldset>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="row-fluid">
+                    <div class="span12">
+                        <fieldset>
+                            <ul class="details_wrapper unstyled divWrapper pull-center">
+                                <li>
+                                    {% if pr.status < 5 %}
+                                        {% if pr.approvedByProjectHead == null
+                                        and ((pr.project.projectHead == app.user.username)
+                                        or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE")
+                                        or is_granted("ROLE_SUPER_ADMIN")) %}
+                                            <a class="btn green mini approveOne onVerified" rel="{{ pr.id }}"  >Verify</a>
+                                        {% endif %}
+                                        {% if pr.approvedByProjectHead != null
+                                        and pr.approvedByCategoryHeadOne == null
+                                        and ((app.user.username == pr.category.subHead|default())
+                                        or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO")
+                                        or is_granted("ROLE_SUPER_ADMIN")) %}
+                                            <a class="btn green mini approveTwo" rel="{{ pr.id }}"  >Validate</a>
+                                        {% endif %}
+                                        {% if pr.approvedByCategoryHeadOne != null
+                                        and pr.approvedByCategoryHeadTwo == null
+                                        and ((app.user.username == pr.category.head|default())
+                                        or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE")
+                                        or is_granted("ROLE_SUPER_ADMIN")) %}
+                                            <a class="btn green mini approveThree" rel="{{ pr.id }}"  >Approve</a>
+                                        {% endif %}
+                                        {% if pr.approvedByCategoryHeadTwo != null %}
+                                            <a class="btn mini" style="background:#C0D08E;color: white !important;">Approved</a>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if is_granted("ROLE_SUPER_ADMIN") %}
+                                        {% if pr.status < 5 and pr.approveStatus < 3 %}
+                                            <a href="{{ path('purchase_requisition_hold', { 'id': pr.id }) }}"
+                                               onclick="return confirm('Do You Want To Hold It?')" class="btn red mini">Inactive</a>
+                                        {% endif %}
+                                        {% if pr.status == 5 %}
+                                            <a href="{{ path('purchase_requisition_open', { 'id': pr.id }) }}"
+                                               onclick="return confirm('Do You Want To Open It?')" class="btn blue mini" >Active</a>
+                                        {% endif %}
+                                        {% if pr.status < 6 and pr.approveStatus < 3 %}
+                                            <a href="{{ path('purchase_requisition_cancel', { 'id': pr.id }) }}"
+                                               onclick="return confirm('Do You Want To Cancel It?')" class="btn red mini">Cancel</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <!-- END SAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+{% endblock %}
+
+{% block documentready %}
+
+        {{ parent() }}
+        $("#commentAdd").click(function () {
+            var requisitionComment = $("#comment").val();
+            var reqId = {{ pr.id|json_encode|raw }}
+
+            var requisitionCommentArray = new Array(requisitionComment, reqId);
+            var answer = confirm('Do You Want To Add comment');
+            if(answer) {
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_requisition_comment'),
+                    data: "requisitionCommentArray=" + requisitionCommentArray,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if(msg.responseCode == 202) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Comment Add Successfully</span></div>');
+                            $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $(':input','#pr-comment-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('');
+                            $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                        }else{
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Comment Not Add</span></div>');
+                            $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $("#reload-all").load("/purchase-requisition/refresh/"+reqId)
+                        }
+                    }
+                });
+            }else{
+                return false;
+            }
+        });
+
+        $(".claim").click(function () {
+
+            var reqItemId = $(this).attr('rel');
+            var reqId = {{ pr.id|json_encode|raw }}
+
+            var answer = confirm('Do You Want To Claim It');
+            if(answer) {
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_requisition_claim'),
+                    data: "reqItemId=" + reqItemId,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if (msg.responseCode == 202) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Successfully</span></div>');
+                            $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $(':input', '#pr-comment-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('');
+                            $("#reload-all").load("/purchase-requisition/refresh/" + reqId)
+                        } else {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Not Add</span></div>');
+                            $('.requisitionCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $("#reload-all").load("/purchase-requisition/refresh/" + reqId)
+                        }
+                    }
+                });
+            }else{
+                return false;
+            }
+        });
+
+        $(".approveOne").click(function () {
+            var reqId = $(this).attr('rel');
+
+            var answer = confirm('Do You Want To Approve It');
+            if(answer) {
+                $('.verifiedStatus').val(reqId);
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_requisition_approve_project_head_ajax'),
+                    data: "reqId=" + reqId,
+                    dataType: 'json',
+                    success: function (msg) {
+                        location.reload();
+                    }
+                });
+            }else{
+                return false;
+            }
+        });
+
+        $(".approveTwo").click(function () {
+            var reqId = $(this).attr('rel');
+
+            var answer = confirm('Do You Want To Approve It');
+            if(answer) {
+                $('.verifiedStatus').val(reqId);
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_requisition_approve_category_head_one_ajax'),
+                    data: "reqId=" + reqId,
+                    dataType: 'json',
+                    success: function (msg) {
+                        location.reload();
+                    }
+                });
+            }else{
+                return false;
+            }
+        });
+
+        $(".approveThree").click(function () {
+            var reqId = $(this).attr('rel');
+
+            var answer = confirm('Do You Want To Approve It');
+            if(answer) {
+                $('.verifiedStatus').val(reqId);
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_requisition_approve_category_head_two_ajax'),
+                    data: "reqId=" + reqId,
+                    dataType: 'json',
+                    success: function (msg) {
+                        location.reload();
+                    }
+                });
+            }else{
+                return false;
+            }
+        });
+
+ {% endblock %}

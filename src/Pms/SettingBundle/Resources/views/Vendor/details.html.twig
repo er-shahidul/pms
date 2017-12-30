@@ -1,0 +1,122 @@
+{% block body %}
+    <div id="reload-all">
+        <div class="modal-dialog " style="width:70%;" >
+            <div class="modal-content">
+                <div class="modal-header" style="background: lightgrey;">
+                    <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title bold" style="text-align: center;">{{ vendor.vendorName }}</h4>
+                </div>
+
+                <div class="col-md-12">
+
+                    <div class="col-md-6" >
+                        <table class="table table-hover">
+                            <tr>
+                                <td class="label-td">
+                                    Email :
+                                </td>
+                                <td class="value-td">
+                                    {{ vendor.email | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    TradeLicenseNo :
+                                </td>
+                                <td class="value-td" >
+                                    {{ vendor.tradeLicenseNo | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    TinCertificateNo :
+                                </td>
+                                <td class="value-td" >
+                                    {{ vendor.tinCertificateNo | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    VATCertificateNo :
+                                </td>
+                                <td class="value-td" >
+                                    {{ vendor.vatCertificateNo | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Area :
+                                </td>
+                                <td class="value-td" >
+                                    {{ vendor.area.areaName | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Address :
+                                </td>
+                                <td class="value-td" >
+                                    {{ vendor.vendorAddress | default() }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6" >
+                        <table class="table table-hover">
+                            <tr>
+                                <td class="label-td">
+                                    BankAccountName :
+                                </td>
+                                <td class="value-td" >
+                                    <span style="font-weight: bold;">{{ vendor.bankAccountName | default() }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    BranchName :
+                                </td>
+                                <td class="value-td" >
+                                    <span style="font-weight: bold;">{{ vendor.branchName | default() }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Item Type :
+                                </td>
+                                <td class="value-td" >
+                                {% for item in vendor.itemTypes %}
+                                {{ item.ItemType }} <br/>
+                                {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    payment Type :
+                                </td>
+                                <td class="value-td" >
+                                    {{ vendor.paymentType | default() }}
+                                </td>
+                            </tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr>
+                                <td class="label-td">
+                                    Attachment :
+                                </td>
+                                <td class="label-td" colspan="2">
+                                    {% for document in vendor.vendorAttach %}
+                                        <a class="btn btn-xs" href="{{ path('homepage') }}uploads/vendor/{{ document.path }}" target="_blank">
+                                            <i class="fa fa-cloud-upload"></i>
+                                        </a>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

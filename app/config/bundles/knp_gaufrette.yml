@@ -1,0 +1,10 @@
+knp_gaufrette:
+    adapters:
+        backup:
+          local:
+              directory: %backup_path%
+
+    filesystems:
+        local_backup:
+            adapter:    backup
+            alias:      local_backup_filesystem

@@ -1,0 +1,11 @@
+report_requisition_vs_order_saving:
+    pattern: /requisition-vs-order-saving-report
+    defaults: { _controller: PmsReportBundle:RequisitionVsOrderSavingReport:requisitionVsOrderSavingReport }
+
+report_requisition_vs_order_saving_excel:
+    pattern: /requisition-vs-order-saving-report-excel
+    defaults: { _controller: PmsReportBundle:RequisitionVsOrderSavingReport:requisitionVsOrderSavingReportExcel }
+    options:
+            expose: true
+
+

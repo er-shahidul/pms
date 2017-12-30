@@ -1,0 +1,214 @@
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('assets/css/pdfprint.css',null,true) }}">
+    <table class="table">
+    <tr valign="top">
+        <td valign="top" class="main-table">
+            <div class="table-head">
+                <table>
+                    <tr>
+                        <td colspan="2" class="title">Receive Item Details</td>
+                    </tr>
+                    <tr>
+                        <td class="header-td">
+                            <table class="table table-hover">
+                                <tr>
+                                    <td class="label-td">
+                                        Project :
+                                    </td>
+                                    <td class="value-td">
+                                        {{ receive.companyType }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        GRN# :
+                                    </td>
+                                    <td class="value-td">
+                                        {{ receive.id }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Ref. No :
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ receive.refGrn }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Received By :
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ receive.receivedBy.username }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Contact No :
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ receive.receivedBy.profile.cellphone }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Received Date :
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ receive.receivedDate | date('d M Y') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Approved By:
+                                    </td>
+                                    <td class="value-td" >
+                                        <span style="font-weight: bold;">{{ receive.approvedOne.username | default('not Approved') }}</span>
+                                        {% if  receive.approvedOneDate != null %}
+                                            on <span style="font-weight: bold;">{{ receive.approvedOneDate | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Bill Date/Number:
+                                    </td>
+                                    <td class="value-td" >
+                                        {% if receive.billDate is not null and receive.billNumber is not null %}
+                                            {{ receive.billDate | date('d-m-Y') }}/{{ receive.billNumber | default('') }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="header-td">
+                            <table class="table-left">
+                                {% if  receive.vendor is not null %}
+                                    <tr>
+                                        <td class="value-td" colspan="2">
+                                            <span style="font-weight: bold;"><u>Vendor Info</u></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="value-td">
+                                            Vendor name: {{ receive.vendor.vendorName }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="value-td">
+                                            Contact Person: {{ receive.vendor.contractPerson | default() }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="value-td">
+                                            Mobile: {{ receive.vendor.contractNo | default() }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="value-td">
+                                            Address: {{ receive.vendor.vendorAddress | default() }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% if receive.buyer is not null %}
+                                    <tr>
+                                        <td class="value-td" colspan="2">
+                                            <span style="font-weight: bold;"><u>Buyer Info</u></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="value-td">
+                                            Buyer name: {{ receive.buyer.profile.cellphone | default() }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="value-td">
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="table-body-first">
+            <table id="table_requisition" class="table_order col-md-12" >
+                <thead>
+                <tr>
+                    <th class="numeric">Sl</th>
+                    <th class="numeric">Particulars</th>
+                    <th class="numeric">PRNo</th>
+                    <th class="numeric">PRQty</th>
+                    <th class="numeric">PONo</th>
+                    <th class="numeric">POQty</th>
+                    <th class="numeric">POAmount</th>
+                    <th class="numeric">RemainingQTY</th>
+                    <th class="numeric">GRNQty</th>
+                    <th class="numeric">GRNAmount</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% set totalPoAmount = 0 %}
+                {% set totalBillAmount = 0 %}
+                {% for index, receivedItem in receive.receiveItems %}
+
+                    {% set totalPoAmount = totalPoAmount + receivedItem.purchaseOrderItem.amount %}
+                    {% set totalBillAmount = totalBillAmount + (receivedItem.quantity * receivedItem.purchaseOrderItem.price) %}
+                    <tr>
+                        <td class="numeric">{{ index + 1 }}.</td>
+                        <td class="numeric">{{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemName }}</td>
+                        <td class="numeric">
+                            {{ receivedItem.pr.id }}
+                        </td>
+                        <td class="numeric">
+                            {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.quantity |number_format(2, '.', ',') }}
+                            {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemUnit }}
+                        </td>
+                        <td class="numeric">
+                            {{ receivedItem.po.id }}
+                        </td>
+                        <td class="numeric">
+                            {{ receivedItem.purchaseOrderItem.quantity |number_format(2, '.', ',') }}
+                            {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemUnit }}
+                        </td>
+                        <td class="numeric">{{ receivedItem.purchaseOrderItem.amount |number_format(2, '.', ',') }}</td>
+                        <td class="numeric">
+                            {{ (receivedItem.purchaseOrderItem.quantity - receivedItem.quantity) | number_format(2, '.', ',') }}
+                            {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemUnit }}
+                        </td>
+                        <td class="numeric">
+                            {{ receivedItem.quantity |number_format(2, '.', ',') }}
+                            {{ receivedItem.purchaseOrderItem.purchaseRequisitionItem.item.itemUnit }}
+                        </td>
+                        <td class="numeric">{{ (receivedItem.quantity * receivedItem.purchaseOrderItem.price) | number_format(2, '.', ',') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td class="numeric" colspan="7">
+                        Total PO Amount:
+                    </td>
+                    <td class="numeric">
+                        <strong>{{ totalPoAmount | number_format(2, '.', ',') }}</strong>
+                    </td>
+                    <td class="numeric">
+                        Total Receive Amount:
+                    </td>
+                    <td class="numeric">
+                        <strong>{{ totalBillAmount | number_format(2, '.', ',') }}</strong>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+
+    </table>
+
+{% endblock %}

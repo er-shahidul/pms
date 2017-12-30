@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .form-group ul li {
+            list-style: none;
+            margin-left: -96px;
+        }
+        table tr td ul li {
+            list-style: none;
+            margin-left: -41px;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('vendor') }}" style="color: #333 !important;">Vendor</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="modal-dialog bodyWidth">
+        <div class="modal-content backgroundWhite">
+            <div class="modal-header backGroundLightGrey">
+                <h4 class="modal-title bold text-center"> Vendor</h4>
+            </div>
+            <br/>
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'vendor-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            {{ form_label(form.fileType, 'File Type :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.fileType, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.fileType) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.fileName, 'File Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.fileName, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.fileName) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.description, 'Description :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.description, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.description) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.file, 'File Attach :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } } ) }}
+                            <div class="col-md-8">
+                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.file, { 'attr': {'class': 'default'} }) }}
+													</span>
+                                        <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.file) }}</span>
+                            </div>
+                        </div>
+                        <input type="hidden" value="{{ id }}" name="vendorId">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: lightgrey;">
+                <div class="btn-group">
+                    <a href="/vendor" class="btn" style="width: 100px;background: #0353D6; color: white !important;">
+                        <i class="fa fa-ban"> Cancel</i>
+                    </a>
+                </div>
+                {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width', 'style': 'width: 100px;background: #0353D6; color: white !important;'} }) }}
+            </div>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+{% endblock %}

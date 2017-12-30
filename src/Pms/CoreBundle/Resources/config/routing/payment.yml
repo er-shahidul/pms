@@ -1,0 +1,125 @@
+payment_approved:
+    pattern: /payment/approved
+    defaults: { _controller: PmsCoreBundle:Payment:paymentApproved }
+    methods: [POST]
+
+payment_delivery:
+    pattern: /payment/delivery/{id}
+    defaults: { _controller: PmsCoreBundle:Payment:paymentDelivery }
+    methods: [POST]
+payment_delivery_vendor_wise:
+    pattern: /payment/delivery-vendor-wise/
+    defaults: { _controller: PmsCoreBundle:Payment:paymentDeliveryVendorWise }
+    methods: [POST]
+
+payment_verify:
+    pattern: /payment/verify
+    defaults: { _controller: PmsCoreBundle:Payment:verified }
+
+payment_verify_send_Back:
+    pattern: /payment/verify/{id}
+    defaults: { _controller: PmsCoreBundle:Payment:verifiedSendBack }
+
+payment_delete:
+    pattern: /payment/delete/{id}
+    defaults: { _controller: PmsCoreBundle:Payment:paymentDelete }
+    requirements:
+          id:  \d+
+
+payment_advance_verified:
+    pattern: /payment/advance-verified/{id}
+    defaults: { _controller: PmsCoreBundle:Payment:paymentAdvanceVerified }
+
+payment_create:
+    pattern: /payment/create/{id}
+    defaults: { _controller: PmsCoreBundle:Payment:create }
+
+payment_confirm:
+    pattern: /payment/confirm/{id}
+    defaults: { _controller: PmsCoreBundle:Payment:confirm }
+
+payment_confirm_vendor_wise:
+    pattern: /payment/confirm-vendor-wise/
+    defaults: { _controller: PmsCoreBundle:Payment:confirmVendorWise }
+
+payment_confirm_details:
+    pattern: /payment/confirm-details/{id}
+    defaults: { _controller: PmsCoreBundle:Payment:confirmDetails }
+
+payment_advance_receive:
+    pattern: /payment/advance-receive
+    defaults: { _controller: PmsCoreBundle:Payment:paymentAdvanceReceive }
+    methods: [POST]
+    options:
+            expose: true
+
+approved_payment:
+    pattern: /payment/verified
+    defaults: { _controller: PmsCoreBundle:Payment:approvedPaymentList }
+
+approved_payment_advance:
+    pattern: /payment/approved-advance-list/{id}
+    defaults: { _controller: PmsCoreBundle:Payment:approvedAdvancePayment }
+
+payment_company_monthly_detail:
+    pattern: /payment/payment-company-monthly-detail/{date}/{monthValue}
+    defaults: { _controller: PmsCoreBundle:Payment:paymentCompanyMonthlyDetail }
+
+payment_archive:
+    pattern: /payment/archive
+    defaults: { _controller: PmsCoreBundle:Payment:paymentArchive }
+
+payment_advance:
+    pattern: /payment/advance
+    defaults: { _controller: PmsCoreBundle:Payment:advancePaymentList }
+
+payment_advance_archive:
+    pattern: /payment/advance/{status}
+    defaults: { _controller: PmsCoreBundle:Payment:advancePaymentArchiveList }
+
+payment_purchase_order_no_auto_complete:
+    pattern: /payment/po-auto-complete/{status}
+    defaults: { _controller: PmsCoreBundle:Payment:paymentPurchaseOrderAutoComplete }
+    options:
+          expose: true
+
+payment_request_purchase_order_no_auto_complete:
+    pattern: /payment-request/po-auto-complete/{status}
+    defaults: { _controller: PmsCoreBundle:Payment:paymentRequestPurchaseOrderAutoComplete }
+    options:
+          expose: true
+
+payment_monthly_report_po_info_excel:
+    pattern: /payment-monthly/po-info-excel-report
+    defaults: { _controller: PmsCoreBundle:Payment:paymentMonthlyReportPoInfoExcel }
+    options:
+            expose: true
+
+payment_monthly_report_receive_info_excel:
+    pattern: /payment-monthly/receive-info-excel-report
+    defaults: { _controller: PmsCoreBundle:Payment:paymentMonthlyReportReceiveInfoExcel }
+    options:
+            expose: true
+
+payment_monthly_report_payment_request_info_excel:
+    pattern: /payment-monthly/payment-request-info-excel-report
+    defaults: { _controller: PmsCoreBundle:Payment:paymentMonthlyReportPaymentRequestInfoExcel }
+    options:
+            expose: true
+
+payment_monthly_report_payment_info_excel:
+    pattern: /payment-monthly/payment-info-excel-report
+    defaults: { _controller: PmsCoreBundle:Payment:paymentMonthlyReportPaymentInfoExcel }
+    options:
+            expose: true
+
+payment_request_bundle_excel:
+    pattern: /payment-request-excel
+    defaults: { _controller: PmsCoreBundle:Payment:paymentRequestExcel }
+    options:
+            expose: true
+
+payment:
+    pattern: /payment/request
+    defaults: { _controller: PmsCoreBundle:Payment:index }
+

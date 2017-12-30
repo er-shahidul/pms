@@ -1,0 +1,241 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Sub Category
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('sub_category') }}" style="color: #333 !important;">Sub Category</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="subCategoryMessege"></span>
+    {% if is_granted("ROLE_SUB_CATEGORY_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+    <div class="modal-dialog" style="width: 1000px;padding-top: 15px !important;">
+        <div class="modal-content" style="background: white;">
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'sub-category-form', 'novalidate': 'novalidate'} }) }}
+                <div class="form-group">
+                    <div class="col-md-12" style="margin-top: 30px;">
+                        <label class="col-md-2" style="text-align: right;">Sub-Category :</label>
+                        <div class="col-md-4" style="margin-left: 2px;">
+                            {{ form_widget(form.subCategoryName, { 'attr': {'class': 'form-control'} }) }}
+                            <span class="help-block" style="color:darkred;">{{ form_errors(form.subCategoryName) }}</span>
+                        </div>
+                        <div class="col-md-4" style="margin-left: 20px;">
+                            <div class="input-icon">
+                                {{ form_widget(form.category, { 'attr': {'class': 'form-control select2me'} }) }}
+                                <span class="help-block" style="color:darkred;">{{ form_errors(form.category) }}</span>
+                            </div>
+                        </div>
+                        <span class="userMessege" style="margin-left: 195px;"></span>
+                    </div>
+                </div>
+            <div class="form-group">
+                {{ form_label(form.head, 'Head :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-50px;' } }
+                ) }}
+                <div class="col-md-8">
+                    <div class="input-icon">
+                        <i class="fa"></i>
+                        {{ form_widget(form.head, { 'attr': {'class': 'form-control select2me'} }) }}
+                    </div>
+                    <span class="help-block" style="color:darkred;">{{ form_errors(form.head) }}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.subHead, 'Sub Head :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-50px;' } }
+                ) }}
+                <div class="col-md-8">
+                    <div class="input-icon">
+                        <i class="fa"></i>
+                        {{ form_widget(form.subHead, { 'attr': {'class': 'form-control select2me'} }) }}
+                    </div>
+                    <span class="help-block" style="color:darkred;">{{ form_errors(form.subHead) }}</span>
+                </div>
+                <input type="button" name="ajaxSaveSubCategory" value="Save" id="ajaxSaveSubCategory" class="btn button-width" style="width: 100px;background: #0353D6; color: white !important;margin-top:2px;margin-left:10px;height:32px;">
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            <li class="{% if status == 'active' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('sub_category',{status:'active'} ) }}">All</a></li>
+            <li class="{% if status == 'delete' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('sub_category',{status:'delete'} ) }}">Deleted</a></li>
+        </ul>
+        <div class="tab-content" style="height: auto;background: #eee;">
+            <div class="tab-pane active">
+                <div data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="sub-category-refresh">
+                        <div class="form-group">
+                            <div class="col-md-12" style="margin-top: 30px;">
+
+                                <table class="table bold" style="border: 1px solid ghostwhite;">
+                                    <thead style="background: #4b8df8;color: #fff;">
+                                    <tr>
+                                        <th>Sl</th>
+                                        <th class="col-md-3">Sub Category Name</th>
+                                        <th class="col-md-3">Category Name</th>
+                                        <th class="col-md-2">Head</th>
+                                        <th class="col-md-2">Sub Head</th>
+                                        <th class="col-md-2"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% set offset = subCategories.getItemNumberPerPage * (subCategories.currentPageNumber - 1) %}
+
+                                    {% for subCategory in subCategories %}
+
+                                        <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                                            <td>{{ loop.index + offset }}.</td>
+                                            <td>{{ subCategory.subCategoryname }}</td>
+                                            <td>{{ subCategory.category.categoryName }}</td>
+                                            <td>{{ subCategory.head }}</td>
+                                            <td>{{ subCategory.subHead }}</td>
+                                            <td>
+                                                {% if subCategory.status == 1 %}
+                                                    <a href="/sub-category/delete/{{ subCategory.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-trash-o"></i> Delete</a>
+
+                                                    <a href="/sub-category/update/{{ subCategory.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-edit"></i> Update</a>
+                                                {% endif %}
+                                                {% if subCategory.status == 0 %}
+                                                    <a href="#" class="btn default btn-xs" style="width: 65px;"><i
+                                                                class="fa fa-times"></i> Deleted</a>
+
+                                                    <a href="/sub-category/active/{{ subCategory.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                                class="fa fa-repeat"></i> Restore</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                                <div class="navigation" style="text-align: right">
+                                    {{ knp_pagination_render(subCategories) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $("#ajaxSaveSubCategory").click(function () {
+        var sPageURL = window.location.pathname;
+        var sURLVariables = sPageURL.split('/');
+        var subcategory = $("#subcategory_subCategoryName").val();
+        var category = $("#subcategory_category").val();
+        var categoryHead = $("#subcategory_head").val();
+        var categorySubHead = $("#subcategory_subHead").val();
+
+        var subCategoryArray = new Array(subcategory, category, sURLVariables[3], categoryHead, categorySubHead);
+        $.ajax({
+            type: "post",
+            url: Routing.generate('sub_category_ajax_add'),
+            data: "subCategoryArray=" + subCategoryArray,
+            dataType: 'json',
+            success: function (msg) {
+                if(msg.responseCode == 200) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Sub-category/category already exist</span></div>');
+                    $('.subCategoryMessege').css('color', 'red').html(msg.item_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#sub-category-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                } else if(msg.responseCode == 204) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Please Insert Sub-categories Field</span></div>');
+                    $('.subCategoryMessege').css('color', 'red').html(msg.item_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#sub-category-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                } else if(msg.responseCode == 202) {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Sub-category Update Successfully</span></div>');
+                    $('.subCategoryMessege').css('color', 'green').html(msg.item_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#sub-category-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                    window.location.pathname = 'sub-category';
+                } else {
+                    var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Sub-category Add Successfully</span></div>');
+                    $('.subCategoryMessege').css('color', 'green').html(msg.item_ajax_add).fadeIn(1000).append($addLink);
+                    $(':input','#sub-category-form')
+                            .not(':button, :submit, :reset, :hidden')
+                            .val('')
+                            .removeAttr('checked')
+                            .removeAttr('selected');
+                }
+
+                $('.userMessege').fadeOut();
+                $("#sub-category-refresh").load("/sub-category/refresh")
+            }
+        });
+    });
+
+    $("#subcategory_subCategoryName").keyup(function () {
+        var subCategoryName = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('sub_category_check'),
+            data: "subCategoryName=" + subCategoryName,
+            dataType: 'json',
+            success: function (msg) {
+                if (msg.responseCode == 200) {
+                    $('.userMessege').css('color', 'red').html(msg.sub_category_name).fadeIn(1000);
+                }
+                else {
+                    $('.userMessege').css('color', 'green').html(msg.sub_category_name).fadeIn(1000);
+                }
+            }
+        });
+    });
+
+{% endblock %}

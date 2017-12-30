@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PMS{% endblock %}
+
+{% block body %}
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Dashboard
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="#" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>Dashboard</li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <!-- BEGIN DASHBOARD STATS -->
+
+
+    {#<img src="{{ asset('img/npms.png') }}" style="margin:57px;" >#}
+    <img src="{{ asset('assets/img/npms.png') }}" style="margin:57px;" >
+
+    <!-- END DASHBOARD STATS -->
+
+{% endblock %}
+{#<script>#}
+{% block documentready %}
+    {{ parent() }}
+
+{% endblock %}

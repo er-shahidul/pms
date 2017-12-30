@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .pagination > li > a, .pagination > li > span
+        {
+            background-color: #eee !important;
+            color: #000000 !important;
+        }
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+            background-color: #428bca !important;
+        }
+        .addBtn{
+            float: right;
+            margin-right: 16px;
+        }
+
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Bank Amount
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Petty Cash</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Current Status</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    {{ include('::flash-message.html.twig') }}
+
+    <div class="tab-pane active" id="tab_1_1">
+        <div class="" data-always-visible="1" data-rail-visible="0">
+
+            <div class="fluid" id="cost-header-list-div">
+
+                <div class="form-group">
+
+                    <div class="col-md-12" style="margin-top: 30px;">
+                        <label><strong>Total Bank Balance</strong></label>
+                        <table class="table bold" style="border: 1px solid ghostwhite;">
+                            <thead style="background: #4b8df8;color: #fff;">
+                            <tr>
+                                <th>Total Bank Balance</th>
+                                <th>Total Balance</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="width: 50%"><strong>Total Balance</strong></td>
+                                <td style="width: 50%"><strong>{{ totalBankAmount }}</strong></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12" style="margin-top: 30px;">
+                        <label><strong>Total disburse Balance</strong></label>
+                        <table class="table bold" style="border: 1px solid ghostwhite;">
+                            <thead style="background: #4b8df8;color: #fff;">
+                            <tr>
+                                <th>Username</th>
+                                <th>Cash Balance</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set total = 0 %}
+                            {% for  totalCashAmount in totalCashAmounts %}
+                                {%  set total = total + totalCashAmount['TotalCashAmount'] %}
+                            <tr>
+                                <td>{{ totalCashAmount['username'] }}</td>
+                                <td>{{ totalCashAmount['TotalCashAmount'] }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td style="width: 50%"><strong>Total</strong></td>
+                                <td style="width: 50%"><strong>{{ total }}</strong></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12" style="margin-top: 30px;">
+                        <label><strong>Total Invoice Balance</strong></label>
+                        <table class="table bold" style="border: 1px solid ghostwhite;">
+                            <thead style="background: #4b8df8;color: #fff;">
+                            <tr>
+                                <th>Username</th>
+                                <th>Invoice Balance</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set totalInvoice = 0 %}
+                            {% for  totalInvoiceAmount in totalInvoiceAmounts %}
+                                {%  set totalInvoice = totalInvoice + totalInvoiceAmount['TotalInvoiceAmount'] %}
+                                <tr>
+                                    <td>{{ totalInvoiceAmount['username'] }}</td>
+                                    <td>{{ totalInvoiceAmount['TotalInvoiceAmount'] }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td style="width: 50%"><strong>Total</strong></td>
+                                <td style="width: 50%"><strong>{{ totalInvoice }}</strong></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

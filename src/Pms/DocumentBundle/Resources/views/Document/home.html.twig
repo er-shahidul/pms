@@ -1,0 +1,248 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .popover-title {
+            color: #000000;
+        }
+        .popover-content{
+            color:#000000;
+        }
+        .modal-details{
+            background: #35aa47;padding: 1px 5px
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Document
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('document') }}" style="color: #333 !important;">Document</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+<div class="row-fluid">
+    <div class="span12">
+        <form method="get" style="margin-bottom: 20px;margin-left: -15px;margin-top: -20px;">
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    <div class="input-icon right">
+                        {{ form_widget(formSearch.po, { 'attr': {'class': 'form-control select2AutoComplete fontColorBlack','placeholder':'Select PO'} }) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    {#<div class="input-icon right">
+                        {{ form_widget(formSearch.document, { 'attr': {'class': 'form-control select2AutoComplete fontColorBlack'} }) }}
+                    </div>#}
+
+                    <div class="input-group input-medium">
+                        <input type="hidden" value="{{ app.request.query.get('document') }}" class="form-control  fontColorBlack
+ select2AutoComplete1" placeholder="Select Document Title" name="document">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-1">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3">
+                    <div class="input-icon" style="">
+                        {{ form_widget(formSearch.user, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-1">
+                    <input type="submit" value="Search" class="btn blue">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="span12">
+        <!-- BEGIN SAMPLE TABLE PORTLET-->
+        <div class="portlet box">
+            <div class="portlet-title">
+                <ul class="nav nav-tabs">
+            <li class="{% if status == 'invoice' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('document',{status:'invoice'} ) }}">Invoice</a></li>
+            <li class="{% if status == 'calan' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('document',{status:'calan'} ) }}">Challan</a></li>
+            {% if is_granted("ROLE_DOCUMENT_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                <li style="float: right;margin-right: -1px;">
+                    <a href="{{ path('document_upload_file') }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                        File Upload
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        </div>
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Sl</th>
+                        <th class="numeric">PO</th>
+                        <th class="numeric">UploadBy</th>
+                        <th class="numeric">Upload Date</th>
+                        <th class="numeric">Bill No/Bill Date</th>
+                        <th class="numeric">Amount</th>
+                        <th class="numeric">&ensp;</th>
+                        <th class="numeric">&ensp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                        {% set offset = documents.getItemNumberPerPage * (documents.currentPageNumber - 1) %}
+
+                        {% for document in documents %}
+
+                            <tr>
+                                <td class="numeric">{{ loop.index + offset }}.</td>
+                                <td class="numeric">{{ document.purchaseOrder.id|default('N/A') }}</td>
+                                {#<td class="numeric">{{ document.title }}</td>#}
+                                <td class="numeric">{{ document.uploadedBy }}</td>
+                                <td class="numeric">{{ document.uploadedDate | date('d M Y') }}</td>
+                                <td class="numeric">{{ document.billNumber }}/{{ document.dateOfBill|date('d M Y') }}</td>
+                                <td class="numeric">{{ document.billAmount|format(2) }}</td>
+                                <td class="numeric">
+                                    {% if document.path is not null %}
+                                        <a class="btn btn-xs" href="#" onclick="javascript: window.open('/document/attachment-view/{{ document.id }}/1')">
+                                            <i class="fa fa-cloud-upload"></i>
+                                        </a>
+                                    {% else %}
+                                        &ensp;
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+                                    <a href="/document/details/{{ document.id }}" data-target="#ajax" data-toggle="modal"  class="mini modal-details" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="navigation" style="text-align: right">
+                        {{ knp_pagination_render(documents) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{#{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    '@PmsInventoryBundle/Resources/public/js/inventory.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascriptBlock %}#}
+
+{% block documentready %}
+    {{ parent() }}
+
+    {#<script>#}
+
+        $(".select2AutoComplete").select2({
+            ajax: {
+                url: Routing.generate('purchase_order_no_auto_complete'),
+                dataType: 'json',
+                delay: 250,
+                data: function (params, page) {
+                    return {
+                        q: params,
+                        page_limit: 100
+                    };
+                },
+                results: function (data, page) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (m) {
+                return m;
+            },
+            formatResult: function(item){ return item.id}, // omitted for brevity, see the source of this page
+            formatSelection: function(item){return item.id}, // omitted for brevity, see the source of this page
+            initSelection: function(element, callback) {
+                return callback({ id : element.val()});
+            },
+            allowClear: true,
+            minimumInputLength:1
+        });
+
+        var $url = Routing.generate('document_title_auto_complete');
+        var selectedDocumentId = {{ app.request.query.get('document')}}
+
+                $(".select2AutoComplete1").select2({
+
+                    ajax: {
+
+                        url: $url,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params, page) {
+                            return {
+                                q: params,
+                                page_limit: 100
+                            };
+                        },
+                        results: function (data, page) {
+                            return {
+                                results: data
+                            };
+                        },
+                        cache: true
+                    },
+                    escapeMarkup: function (m) {
+
+                        return m;
+                    },
+                    formatResult: function(document){ return document.text}, // omitted for brevity, see the source of this page
+                    formatSelection: function(document){return document.text}, // omitted for brevity, see the source of this page
+                    initSelection: function(element, callback) {
+
+                        $.ajax({
+                            url: $url,
+                            data: 'document=' + selectedDocumentId,
+                            dataType: 'json'
+                        }).done(function(data){
+                            callback(data);
+                        });
+                    },
+
+                    allowClear: true,
+                    minimumInputLength:1
+                });
+
+{% endblock %}

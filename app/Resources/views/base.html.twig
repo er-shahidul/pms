@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+
+<head>
+    <meta charset="utf-8"/>
+    <title>PMS | Admin Panel</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <meta name="MobileOptimized" content="320">
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    <script>
+        window.CKEDITOR_BASEPATH = '/assets/plugins/ckeditor/';
+    </script>
+    {% block stylesheets %}
+
+        {% stylesheets filter='cssrewrite'
+
+        'assets/plugins/font-awesome/css/font-awesome.min.css'
+        'assets/plugins/bootstrap/css/bootstrap.min.css'
+        'assets/plugins/uniform/css/uniform.default.css'
+        'assets/plugins/select2/select2_metro.css'
+        'assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css'
+        'assets/plugins/bootstrap-timepicker/compiled/timepicker.css'
+        'assets/plugins/bootstrap-datetimepicker/css/datetimepicker.css'
+        'assets/plugins/fancybox/source/jquery.fancybox.css'
+        'assets/plugins/jquery-file-upload/css/jquery.fileupload-ui.css'
+        'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css'
+        'assets/plugins/gritter/css/jquery.gritter.css'
+        'assets/plugins/clockface/css/clockface.css'
+        'assets/plugins/bootstrap-datepicker/css/datepicker.css'
+        'assets/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css'
+        'assets/plugins/bootstrap-editable/inputs-ext/address/address.css'
+        'assets/plugins/jquery-multi-select/css/multi-select.css'
+        'assets/plugins/bootstrap-switch/static/stylesheets/bootstrap-switch-metro.css'
+        'assets/plugins/jquery-tags-input/jquery.tagsinput.css'
+        'assets/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css'
+        'assets/css/plugins.css'
+        'assets/plugins/jquery-easy-pie-chart/jquery.easy-pie-chart.css'
+        'assets/css/style-metronic.css'
+        'assets/css/style.css'
+        'assets/css/style-responsive.css'
+        'assets/css/themes/default.css'
+        'assets/css/pages/inbox.css'
+        'assets/css/custom.css' %}
+
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+
+        {% endstylesheets %}
+
+        <link rel="shortcut icon" href="favicon.ico"/>
+    {% endblock %}
+</head>
+<body class="page-header-fixed {{ app.request.locale }}{% block bodyClass %}{% endblock bodyClass %}">
+
+<div class="modal fade" id="ajax" tabindex="-1" role="basic" aria-hidden="true">
+    {% image 'assets/img/ajax-modal-loading.gif'
+    filter='' output='/img/ajax-modal-loading.gif' %}
+    <img src="{{ asset_url }}" alt="" class="loading"/>
+    {% endimage %}
+</div>
+
+<div class="header navbar navbar-inverse navbar-fixed-top">
+    <div class="header-inner">
+        <div style="margin-left: 0;float: left;">
+            {{ render(controller('PmsCoreBundle:Core:renderLogo')) }}
+        </div>
+        <div class="logo-title" style="margin-left: 0;float: left;">
+            <a class="navbar-brand" href="#">
+                {{ render(controller('PmsCoreBundle:Core:renderTitle')) }}
+            </a>
+        </div>
+
+        <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            {% image 'assets/img/menu-toggler.png'
+            filter='' output='/img/menu-toggler.png' %}
+            <img src="{{ asset_url }}" alt="menu-toggler"/>
+            {% endimage %}
+        </a>
+
+        <ul class="nav navbar-nav pull-right">
+            <li class="dropdown user">
+                <a href="{{ path('homepage') }}" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                   data-close-others="true">
+                    {% if app.user.profile.path != null  %}
+                        <img src='{{ asset('uploads/user/'~app.user.profile.path) }}' style="width: 29px;height: 29px;"/>
+                    {% endif %}
+                    {% if app.user.profile.path == null  %}
+                        <img src='{{ asset('assets/img/avatar1.png') }}' style="width: 29px;height: 29px;"/>
+                    {% endif %}
+                    <span class="username">{{ app.user.fullName }}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/profile" class="btnColor"><i class="fa fa-user"></i> My Profile</a>
+                    </li>
+                    <li>
+                        <a href="/password/edit/{{ app.user.id }}" class="btnColor"><i class="fa fa-exchange"></i> Password Change</a>
+                    </li>
+                    <li>
+                        <a href="/logout" class="btnColor"><i class="fa fa-sign-out"></i> Log Out</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="page-container">
+    {#{{ dump(app.security.token.user.roles) }}#}
+    {#{{ Route }}#}
+    {#{% set menuItem = knp_menu_get('PmsCoreBundle:MenuBuilder:mainMenu', [], {'some_option': app.security.token.user.roles}) %}#}
+    {% block navigation %}
+        <div class="page-sidebar navbar-collapse collapse">
+            {{ knp_menu_render('PmsCoreBundle:MenuBuilder:mainMenu',{'ancestorClass': 'active', 'currentClass': 'active', 'template': 'PmsCoreBundle:Menu:knp_menu.html.twig'}) }}
+        </div>
+    {% endblock navigation %}
+
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% block javascriptBlock %}
+    {% javascripts
+    'assets/plugins/respond.min.js'
+    'assets/plugins/excanvas.min.js'
+    'assets/plugins/jquery-1.10.2.min.js'
+    'assets/plugins/jquery-migrate-1.2.1.min.js'
+    'assets/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js'
+    'assets/plugins/bootstrap/js/bootstrap.min.js'
+    'assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js'
+    'assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js'
+    'assets/plugins/jquery.blockui.min.js'
+    'assets/plugins/jquery.cookie.min.js'
+    'assets/plugins/uniform/jquery.uniform.min.js'
+
+    'assets/plugins/flot/jquery.flot.js'
+    'assets/plugins/flot/jquery.flot.resize.js'
+    'assets/plugins/jquery.pulsate.min.js'
+    'assets/plugins/bootstrap-daterangepicker/moment.min.js'
+    'assets/plugins/bootstrap-daterangepicker/daterangepicker.js'
+    'assets/plugins/gritter/js/jquery.gritter.js'
+    'assets/plugins/fullcalendar/fullcalendar/fullcalendar.min.js'
+    'assets/plugins/jquery-easy-pie-chart/jquery.easy-pie-chart.js'
+    'assets/plugins/jquery.sparkline.min.js'
+    'assets/scripts/app.js'
+    'assets/scripts/index.js'
+    'assets/scripts/tasks.js'
+    'assets/plugins/jquery-validation/dist/jquery.validate.min.js'
+    'assets/plugins/select2/select2.min.js'
+    'assets/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js'
+    'assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js'
+    'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'
+    'assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js'
+    'assets/plugins/jquery-validation/dist/additional-methods.min.js'
+    'assets/plugins/ckeditor/ckeditor.js'
+    'assets/plugins/bootstrap-markdown/js/bootstrap-markdown.js'
+    'assets/plugins/bootstrap-markdown/lib/markdown.js'
+    'assets/plugins/data-tables/jquery.dataTables.js'
+    'assets/plugins/data-tables/DT_bootstrap.js'
+
+    'assets/scripts/form-validation.js'
+    'assets/scripts/table-managed.js'
+
+    'assets/plugins/bootstrap/js/bootstrap2-typeahead.min.js'
+    'assets/plugins/fuelux/js/spinner.min.js'
+    'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js'
+
+    'assets/plugins/bootstrap-daterangepicker/moment.min.js'
+    'assets/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js'
+    'assets/plugins/jquery.input-ip-address-control-1.0.min.js'
+    'assets/plugins/jquery-multi-select/js/jquery.multi-select.js'
+    'assets/plugins/jquery-multi-select/js/jquery.quicksearch.js'
+    'assets/plugins/jquery.pwstrength.bootstrap/src/pwstrength.js'
+    'assets/plugins/bootstrap-switch/static/js/bootstrap-switch.min.js'
+    'assets/plugins/jquery-tags-input/jquery.tagsinput.min.js'
+    'assets/plugins/bootstrap-markdown/js/bootstrap-markdown.js'
+    'assets/plugins/bootstrap-editable/bootstrap-editable/js/bootstrap-editable.min.js'
+    'assets/plugins/bootstrap-editable/inputs-ext/address/address.js'
+    'assets/plugins/bootstrap-editable/inputs-ext/wysihtml5/wysihtml5.js'
+
+    'assets/plugins/bootstrap-markdown/lib/markdown.js'
+    'assets/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js'
+    'assets/plugins/bootstrap-touchspin/bootstrap.touchspin.js'
+    'assets/plugins/bootstrap-confirmation/jquery.easy.confirm.js'
+
+    'assets/plugins/flot/jquery.flot.pie.js'
+    'assets/scripts/charts.js'
+    'assets/scripts/index.js'
+    'assets/scripts/tasks.js'
+    'assets/scripts/jquery-form-transport.js'
+
+    'assets/scripts/form-components.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        {% block documentready %}
+
+        App.init();
+        FormValidation.init();
+        FormComponents.init();
+
+        $('.buyer-group').hide();
+        Tasks.initDashboardWidget();
+        Index.initPieCharts();
+        TableManaged.init();
+
+
+       /* if (window.history && window.history.pushState) {
+
+            window.history.pushState('forward', null, './#forward');
+
+            $(window).on('popstate', function() {
+                alert('Back button was pressed.');
+
+            });
+
+        }*/
+        {% endblock %}
+    });
+</script>
+<style>
+    .inner-table{
+        height: 100% !important;
+    }
+    .inner-numeric{
+        width: 100% !important;
+    }
+    .ui-widget-header{
+        background-color: #0353D6!important;
+    }
+    .ui-dialog .ui-dialog-buttonpane button{
+        background-color: #0353D6!important;
+    }
+    .ui-dialog-titlebar-close{
+        background-color: darkred!important;
+    }
+</style>
+
+{% block footer %}
+    <div class="footer">
+        <div class="footer-inner">
+            2013 &copy; Create By RBS.
+        </div>
+        <div class="footer-tools">
+        <span class="go-top">
+            <i class="fa fa-angle-up"></i>
+        </span>
+        </div>
+    </div>
+{% endblock footer %}
+
+</body>
+
+</html>

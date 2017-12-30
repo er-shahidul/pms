@@ -1,0 +1,9 @@
+petty_cash_report:
+    pattern: /petty-cash-report
+    defaults: { _controller: PmsPettyCashBundle:PettyReport:index }
+
+petty_cash_report_excel:
+    pattern: /petty-cash-report-excel
+    defaults: { _controller: PmsPettyCashBundle:PettyReport:pettyExcelReport }
+    options:
+            expose: true

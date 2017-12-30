@@ -1,0 +1,9 @@
+dizda_cloud_backup:
+    timeout: 600
+    output_file_prefix: %database_name%
+    cloud_storages:
+        local:
+            path: %backup_path%
+
+    databases:
+        mysql:

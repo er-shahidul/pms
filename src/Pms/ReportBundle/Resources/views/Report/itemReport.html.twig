@@ -1,0 +1,302 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .highcharts-button{
+            display: none;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Item Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_item_report_bundle') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Item</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+
+            <form action="{{ path('report_item_report_bundle') }}" method="get" name="item_report" id="item_report">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tbody>
+                        <tr class="numeric">
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.item, { 'attr': {'class': 'form-control fontColorBlack select2AutoComplete', 'placeholder': ' Select Item'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+
+        <div class="span12">
+
+            <div class="portlet-body flip-scroll" style="margin-top: 15px;">
+
+                <div id="container" style="min-width: 310px; height: 400px; max-width: 700px; margin: 0 auto">
+
+                </div>
+
+                <table class="table-bordered table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Sl</th>
+                        <th class="numeric">Item Name</th>
+                        <th class="numeric">Frequency</th>
+                        <th class="numeric">Project</th>
+                        <th class="numeric">Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for index, itemTopUse in itemTopUses %}
+                        <tr class="numeric" style="background: #eee;">
+                            <td class="numeric">{{ index + 1 }}.</td>
+                            <td class="numeric">{{ itemTopUse.itemName }}</td>
+                            <td class="numeric">{{ itemTopUse.totalUsed }} time</td>
+                            <td class="numeric">{{ itemTopUse.projectName }}</td>
+                            <td class="numeric">{{ itemTopUse.total|number_format(2, '.', ',') }} Tk</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="modal-footer fa-align-left">
+                <input type="button" value="Export in excel" name="itemReportExcel" id="itemReportExcel" class="btn blue">
+            </div>
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Sl</th>
+                        <th class="numeric">Item Name</th>
+                        <th class="numeric">Frequency</th>
+                        <th class="numeric">Project</th>
+                        <th class="numeric">Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set offset = itemUses.getItemNumberPerPage * (itemUses.currentPageNumber - 1) %}
+                    {% for itemUse in itemUses %}
+                        <tr class="numeric">
+                            <td class="numeric">{{ loop.index + offset }}.</td>
+                            <td class="numeric">{{ itemUse.itemName }}</td>
+                            <td class="numeric">{{ itemUse.totalUsed }} time</td>
+                            <td class="numeric">{{ itemUse.projectName }}</td>
+                            <td class="numeric">{{ itemUse.total|number_format(2, '.', ',') }} Tk</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="navigation text-right">
+                    {{ knp_pagination_render(itemUses) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    'assets/Highcharts-4.1.7/js/highcharts.js'
+    'assets/Highcharts-4.1.7/js/modules/exporting.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    var item0 = {{ itemTopUsesForPieChart[0]['total']|json_encode|raw }}
+    var item1 = {{ itemTopUsesForPieChart[1]['total']|json_encode|raw }}
+    var item2 = {{ itemTopUsesForPieChart[2]['total']|json_encode|raw }}
+    var item3 = {{ itemTopUsesForPieChart[3]['total']|json_encode|raw }}
+    var item4 = {{ itemTopUsesForPieChart[4]['total']|json_encode|raw }}
+    var item5 = {{ itemTopUsesForPieChart[5]['total']|json_encode|raw }}
+    var item6 = {{ itemTopUsesForPieChart[6]['total']|json_encode|raw }}
+    var item7 = {{ itemTopUsesForPieChart[7]['total']|json_encode|raw }}
+    var item8 = {{ itemTopUsesForPieChart[8]['total']|json_encode|raw }}
+    var item9 = {{ itemTopUsesForPieChart[9]['total']|json_encode|raw }}
+
+    var total = parseInt(item0, 10) + parseInt(item1, 10) + parseInt(item2, 10) + parseInt(item3, 10) + parseInt(item4, 10) + parseInt(item5, 10) + parseInt(item6, 10) + parseInt(item7, 10) + parseInt(item8, 10) + parseInt(item9, 10) ;
+
+    $('#container').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Top ten items pie chart'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: "items",
+            colorByPoint: true,
+            data: [{
+                name: {{ itemTopUsesForPieChart[0]['itemName']|json_encode|raw }},
+                y: (item0 * 100)/total,
+                sliced: true,
+                selected: true
+            }, {
+                name: {{ itemTopUsesForPieChart[1]['itemName']|json_encode|raw }},
+                y: (item1 * 100)/total,
+                sliced: true,
+                selected: true
+            }, {
+                name: {{ itemTopUsesForPieChart[2]['itemName']|json_encode|raw }},
+                y: (item2 * 100)/total,
+                sliced: true,
+                selected: true
+            }, {
+                name: {{ itemTopUsesForPieChart[3]['itemName']|json_encode|raw }},
+                y: (item3 * 100)/total
+            }, {
+                name: {{ itemTopUsesForPieChart[4]['itemName']|json_encode|raw }},
+                y: (item4 * 100)/total
+            }, {
+                name: {{ itemTopUsesForPieChart[5]['itemName']|json_encode|raw }},
+                y: (item5 * 100)/total
+            }, {
+                name: {{ itemTopUsesForPieChart[6]['itemName']|json_encode|raw }},
+                y: (item6 * 100)/total
+            }, {
+                name: {{ itemTopUsesForPieChart[7]['itemName']|json_encode|raw }},
+                y: (item7 * 100)/total
+            }, {
+                name: {{ itemTopUsesForPieChart[8]['itemName']|json_encode|raw }},
+                y: (item8 * 100)/total
+            }, {
+                name: {{ itemTopUsesForPieChart[9]['itemName']|json_encode|raw }},
+                y: (item9 * 100)/total
+            }]
+        }]
+    });
+
+    var $url = Routing.generate('item_auto_complete');
+    var queryStringObject = {{ app.request.query.all|json_encode|raw }};
+    var selectedItemId = (queryStringObject && queryStringObject.search && queryStringObject.search.item) ? queryStringObject.search.item : '';
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+
+            return m;
+        },
+        formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+            $.ajax({
+                url: $url,
+                data: 'item=' + selectedItemId,
+                dataType: 'json'
+            }).done(function(data){
+                callback(data);
+            });
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+    $('#itemReportExcel').click(function () {
+
+        setTimeout(function(){
+            $('#item_report').attr('action', '{{ path('report_item_report_bundle') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'item_report',
+            url: Routing.generate('report_item_report_bundle_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock documentready %}

@@ -1,0 +1,62 @@
+{% block body %}
+    <div class="modal-dialog">
+    <div class="modal-content">
+        {{ form_start(form,  {'attr':{'class': 'form-horizontal', 'id': 'subCategory-form', 'novalidate': 'novalidate'}, 'action' : path('budget_additional_list', {'id': budget.id })  } ) }}
+
+        <div class="modal-header" style="background: lightgrey;">
+        <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title bold" style="text-align: center;">Select Your Sub Category</h4>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.subcategory, 'Sub category:', {'label_attr': {'class': 'control-label col-md-4', 'style': 'margin-left: -15px;margin-right:-12px;' } }
+                ) }}
+                <div class="col-md-6">
+                    <div class="input-icon">
+                        {{ form_widget(form.subcategory, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select PO No'} }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.amount, 'Amount:', {'label_attr': {'class': 'control-label col-md-4', 'style': 'margin-left: -15px;margin-right:-12px;' } }
+                ) }}
+                <div class="col-md-6">
+                    <div class="input-icon">
+                        {{ form_widget(form.amount, { 'attr': {'class': 'form-control fontColorBlack', 'placeholder': ' Additional amount'} }) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="clear: both"></div>
+    </div>
+
+    <div class="modal-footer" style="background: lightgrey;">
+        {{ form_widget(form.save, { 'attr': {'class': 'btn btn-primary button-width'} }) }}
+        <button type="button" class="btn close-modal-refresh btn-primary" data-dismiss="modal">Close</button>
+
+    </div>
+        {{ form_end(form) }}
+
+    </div>
+    </div>
+
+    <script type="text/javascript">
+
+        $('#budgetsubcategorylist_save').click( function (){
+           var subCategory = $('#budgetsubcategorylist_subcategory').val();
+           var amount = $('#budgetsubcategorylist_amount').val();
+            if(subCategory && amount){
+                document.getElementById("subCategory-form").submit();
+            } else{
+                alert('Should be select sub category and amount field');
+                return false;
+            }
+        })
+
+
+    </script>
+
+{% endblock %}

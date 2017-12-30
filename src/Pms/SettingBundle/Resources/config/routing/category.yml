@@ -1,0 +1,37 @@
+category_refresh:
+    pattern: /category/refresh
+    defaults: { _controller: PmsSettingBundle:Category:refresh }
+
+category_active:
+    pattern: /category/active/{id}
+    defaults: { _controller: PmsSettingBundle:Category:active }
+    requirements:
+          id: \d+
+
+category_delete:
+    pattern: /category/delete/{id}
+    defaults: { _controller: PmsSettingBundle:Category:delete }
+    requirements:
+          id: \d+
+
+category_update:
+    pattern: /category/update/{id}
+    defaults: { _controller: PmsSettingBundle:Category:update }
+    requirements:
+          id:  \d+
+
+category_check:
+    pattern: /category/check
+    defaults: { _controller: PmsSettingBundle:Category:check }
+    options:
+            expose: true
+
+category_ajax_add:
+    pattern: /category/add
+    defaults: { _controller: PmsSettingBundle:Category:add }
+    options:
+            expose: true
+
+category:
+    pattern: /category/{status}
+    defaults: { _controller: PmsSettingBundle:Category:index, status:active }

@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .highcharts-button{
+            display: none;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor Overview Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_item_report_bundle') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Item</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+
+            <form action="{{ path('report_vendor_overview') }}" method="get" name="vendor_overview_report" id="vendor_overview_report">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tbody>
+                        <tr class="numeric">
+                            <td>
+                                <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.month, { 'attr': {'class': 'form-control datepicker', 'style': 'width: 197px;'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.area, { 'attr': {'class': 'form-control fontColorBlack select2AutoComplete', 'placeholder': ' Select Area'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-medium">
+                                    {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                                </div>
+                            </td>
+                            <td>
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+
+        <div class="span12">
+
+            <div class="portlet-body flip-scroll" style="margin-top: 15px;">
+
+                {#<div id="container" style="min-width: 310px; height: 400px; max-width: 700px; margin: 0 auto">
+
+                </div>#}
+
+                <table class="table-bordered table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Sl</th>
+                        <th class="numeric">Vendor Name</th>
+                        <th class="numeric">Payment Type</th>
+                        <th class="numeric">PO Amount</th>
+                        <th class="numeric">Area</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for index, topTenVendorOverView in topTenVendorOverViews %}
+                        <tr class="numeric" style="background: #eee;">
+                            <td class="numeric">{{ index + 1 }}.</td>
+                            <td class="numeric">{{ topTenVendorOverView['vendorName'] }}</td>
+                            <td class="numeric">{{ topTenVendorOverView['paymentType'] }} time</td>
+                            <td class="numeric">{{ topTenVendorOverView['PoAmount']|number_format(2, '.', ',') }} Tk</td>
+                            <td class="numeric">{{ topTenVendorOverView['areaName'] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="modal-footer fa-align-left">
+                <input type="button" value="Export in excel" name="vendorOverViewExcel" id="vendorOverViewExcel" class="btn blue">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+    {% javascripts
+    'assets/Highcharts-4.1.7/js/highcharts.js'
+    'assets/Highcharts-4.1.7/js/modules/exporting.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $('#vendorOverViewExcel').click(function () {
+
+        setTimeout(function(){
+            $('#vendor_overview_report').attr('action', '{{ path('report_vendor_overview') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'vendor_overview_report',
+            url: Routing.generate('report_vendor_overview_bundle_excel'),
+            dataType: 'form html'
+        });
+    });
+
+
+{% endblock documentready %}

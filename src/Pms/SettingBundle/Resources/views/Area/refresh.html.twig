@@ -1,0 +1,48 @@
+<div class="form-group">
+    <div class="col-md-12" style="margin-top: 30px;">
+
+        <table class="table bold" style="border: 1px solid ghostwhite;">
+            <thead style="background: #4b8df8;color: #fff;">
+            <tr>
+                <th>Sl</th>
+                <th class="col-md-3">Area Name</th>
+                <th class="col-md-3"></th>
+                <th class="col-md-4"></th>
+                <th class="col-md-2"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% set offset = areas.getItemNumberPerPage * (areas.currentPageNumber - 1) %}
+
+            {% for area in areas %}
+
+                <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                    <td>{{ loop.index + offset }}.</td>
+                    <td>{{ area.areaName }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        {% if area.status == 1 %}
+                            <a href="/area/delete/{{ area.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-trash-o"></i> Delete</a>
+
+                            <a href="/area/update/{{ area.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-edit"></i> Update</a>
+                        {% endif %}
+                        {% if area.status == 0 %}
+                            <a href="#" style="width: 65px;" class="btn default btn-xs">Deleted</a>
+                            <a href="/area/active/{{ area.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                        class="fa fa-repeat"></i> Restore</a>
+                        {% endif %}
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="navigation" style="text-align: right">
+            {{ knp_pagination_render(areas) }}
+        </div>
+    </div>
+</div>

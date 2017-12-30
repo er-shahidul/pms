@@ -1,0 +1,40 @@
+{% block body %}
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header" style="background: lightgrey;">
+        <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title bold" style="text-align: center;">Select Your Project</h4>
+    </div>
+
+    <div class="col-md-12">
+        <table class="table table-striped bold" style="margin-top: 30px;">
+            <thead class="backgroundTableHeader">
+                <tr>
+                    <th class="col-md-2">Sl</th>
+                    <th class="col-md-6">project Name</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for index, userProject in userProjects %}
+                <tr style="height: 32px !important;">
+                    <td>{{ index + 1 }}</td>
+                    <td>
+                        <a href="/receive/new/{{ userProject.id }}" style="color: #000000!important;">
+                            {{ userProject.projectName }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer" style="background: lightgrey;">
+        <button type="button" class="btn close-modal-refresh" style="width: 100px;background: #0353D6; color: white !important;"
+                data-dismiss="modal">Close
+        </button>
+    </div>
+
+    </div>
+    </div>
+{% endblock %}

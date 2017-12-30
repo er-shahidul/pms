@@ -1,0 +1,520 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    {% stylesheets filter='cssrewrite'
+    '@PmsCoreBundle/Resources/public/css/mobile.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Order
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('purchase_order') }}" style="color: #333 !important;">Purchase Order</a>
+                </li>
+
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <form method="get" style="margin-bottom: 20px;margin-left: -15px;margin-top: -20px;">
+
+                <div class="span3">
+                    <input type="hidden" value="{{ app.request.get('month') }}" name="month">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="input-icon right">
+                                {{ form_widget(formSearch.po, { 'attr': {'class': 'form-control  fontColorBlack select2AutoComplete', 'placeholder': ' Select PO No'} }) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="span3">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="input-icon right">
+                                {{ form_widget(formSearch.poRef, { 'attr': {'class': 'form-control  fontColorBlack select2AutoRefNoComplete', 'placeholder': ' Select PO Ref. No'} }) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="span5">
+                    <div class="form-group">
+                        <div class="col-md-5">
+                            <div class="input-icon right">
+                                {{ form_widget(formSearch.vendor, { 'attr': {'class': 'form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="span1">
+                    <div class="col-md-1">
+                        <input type="submit" value="Search" class="btn blue">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="span12">
+            <!-- BEGIN SAMPLE TABLE PORTLET-->
+            <div class="portlet box">
+
+
+                <div class="portlet-body flip-scroll">
+
+                    <div class="span12">
+                        <div class="span4 invoice-payment">
+                            {% set offset = purchaseOrders.getItemNumberPerPage * (purchaseOrders.currentPageNumber - 1) %}
+
+                            {% for purchaseOrder in purchaseOrders %}
+
+                                {% set amendment = '' %}
+                                {% set amendmentRef = '' %}
+                                {% set companyName = '' %}
+
+                                {% for purchaseOrderItem in purchaseOrder.purchaseOrderItems %}
+
+                                    {% if purchaseOrderItem.amendment == 7 %}
+
+                                        {% set amendment = 'amendment' %}
+                                    {% endif %}
+
+                                    {% if purchaseOrderItem.amendment == 8 %}
+                                        {% set amendmentRef = 'amendmentRef' %}
+                                    {% endif %}
+
+                                    {% set companyName = purchaseOrderItem.purchaseRequisitionItem.purchaseRequisition.project.projectCategory.projectCategoryName %}
+
+                                {% endfor %}
+
+                                <a href="{{ path('purchase_order_details',{'id':purchaseOrder.id }) }}" style="color: #000000!important; text-underline:none;">
+                                    <ul class="norm_jobs_wrapper unstyled divWrapper {% if (loop.index + offset)% 2 == 0 %}gray-color{% else %}white-color{% endif %}">
+
+                                        <li><strong>S/L:</strong> {{ loop.index + offset }}</li>
+                                        <li><strong>PO Date:</strong> {{ purchaseOrder.createdDate|date('d M Y') }}</li>
+                                        <li><strong>PO N0:</strong>{{ purchaseOrder.id }}</li>
+                                        <li><strong>PO Ref N0:</strong>{{ purchaseOrder.refNo }}</li>
+                                        <li><strong>Company Name:</strong>{{ companyName }}</li>
+                                        <li><strong>Vendor :</strong>{{ purchaseOrder.vendorOrBuyer|default() }}</li>
+                                        <li><strong>Amount :</strong>{{ purchaseOrder.netTotal|number_format(2, '.', ',') }}</li>
+                                        <li><strong>Created :</strong>{{ purchaseOrder.createdBy.username }}</li>
+                                        <li><strong>Delivery Date :</strong> {{ purchaseOrder.dateOfDelivered|date('d M Y') }}</li>
+                                        <li>
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.status != 5
+                                            and purchaseOrder.status != 6
+                                            and purchaseOrder.approveStatus != 1
+                                            and purchaseOrder.approveStatus != 2
+                                            and purchaseOrder.approveStatus != 3 %}
+                                                <div style="text-align:center;background: #35aa47; color: #ffffff;height: 20px;">
+                                                    Created
+                                                </div>
+                                                {% if purchaseOrder.amendmentStatus == 7 %}
+
+                                                    {% if purchaseOrder.amendmentByPoNo is not null %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amended {{ purchaseOrder.amendmentByPoNo }}
+                                                        </div>
+
+                                                    {% else %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amendment {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                {% else %}
+                                                    <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                        {{ amendment }} {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                    </div>
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                            {#{% endif %}#}
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.approveStatus == 1
+                                            and purchaseOrder.approveStatus != 2
+                                            and purchaseOrder.approveStatus != 3 %}
+                                                <div style="text-align:center;background: #ffb848; color: #ffffff;height: 20px;">
+                                                    Verified
+                                                </div>
+
+                                                {% if purchaseOrder.amendmentStatus == 7 %}
+
+                                                    {% if purchaseOrder.amendmentByPoNo is not null %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amended {{ purchaseOrder.amendmentByPoNo }}
+                                                        </div>
+
+                                                    {% else %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amendment {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                {% else %}
+                                                    <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                        {{ amendment }} {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                    </div>
+                                                {% endif %}
+
+                                            {% endif %}
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.approveStatus != 1
+                                            and purchaseOrder.approveStatus == 2
+                                            and purchaseOrder.approveStatus != 3 %}
+                                                <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                    Validated
+                                                </div>
+
+                                                {% if purchaseOrder.amendmentStatus == 7 %}
+
+                                                    {% if purchaseOrder.amendmentByPoNo is not null %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amended {{ purchaseOrder.amendmentByPoNo }}
+                                                        </div>
+
+                                                    {% else %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amendment {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                {% else %}
+                                                    <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                        {{ amendment }} {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                    </div>
+                                                {% endif %}
+
+                                            {% endif %}
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.approveStatus != 1
+                                            and purchaseOrder.approveStatus != 2
+                                            and purchaseOrder.approveStatus == 3
+                                            and purchaseOrder.totalOrderReceiveQuantity is null %}
+                                                <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                    Approved
+                                                </div>
+                                                {% if purchaseOrder.amendmentStatus == 7 %}
+
+                                                    {% if purchaseOrder.amendmentByPoNo is not null %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amended {{ purchaseOrder.amendmentByPoNo }}
+                                                        </div>
+
+                                                    {% else %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amendment {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                {% else %}
+                                                    <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                        {{ amendment }} {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                    </div>
+                                                {% endif %}
+
+                                            {% endif %}
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.approveStatus == 3
+                                            and purchaseOrder.totalOrderReceiveQuantity is not null
+                                            and purchaseOrder.totalOrderItemQuantity > purchaseOrder.totalOrderReceiveQuantity %}
+                                                <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                                    InProgress
+                                                </div>
+
+                                                {% if purchaseOrder.amendmentStatus == 7 %}
+
+                                                    {% if purchaseOrder.amendmentByPoNo is not null %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amended {{ purchaseOrder.amendmentByPoNo }}
+                                                        </div>
+
+                                                    {% else %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amendment {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                {% else %}
+                                                    <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                        {{ amendment }} {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                    </div>
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.approveStatus == 3
+                                            and purchaseOrder.totalOrderReceiveQuantity is not null
+                                            and purchaseOrder.totalOrderReceiveQuantity >= purchaseOrder.totalOrderItemQuantity %}
+                                                <div style="text-align:center;background: #759e1a; color: #ffffff;height: 20px;">
+                                                    Received
+                                                </div>
+
+                                                {% if purchaseOrder.amendmentStatus == 7 %}
+
+                                                    {% if purchaseOrder.amendmentByPoNo is not null %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amended {{ purchaseOrder.amendmentByPoNo }}
+                                                        </div>
+
+                                                    {% else %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            Amendment {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                {% else %}
+                                                    <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                        {{ amendment }} {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                    </div>
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                            {% if status == 'hold' or status == 'all' %}
+                                                {% if purchaseOrder.status == 5 %}
+                                                    <div style="text-align:center;background: #852b99; color: #ffffff;height: 20px;">
+                                                        Hold
+                                                    </div>
+                                                    {% if purchaseOrder.amendmentStatus == 7 %}
+
+                                                        {% if purchaseOrder.amendmentByPoNo is not null %}
+                                                            <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                                Amended {{ purchaseOrder.amendmentByPoNo }}
+                                                            </div>
+
+                                                        {% else %}
+                                                            <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                                Amendment {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                            </div>
+                                                        {% endif %}
+
+                                                    {% else %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            {{ amendment }} {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {% if status == 'cancel' or status == 'all' %}
+                                                {% if purchaseOrder.status == 6 %}
+                                                    {%  if purchaseOrder.approveStatus == 3 %}
+                                                        <div style="text-align:center;background: #555555;color: #ffffff;height: 20px;">
+                                                            ReceiveCancel
+                                                        </div>
+                                                    {% else %}
+                                                        <div style="text-align:center;background: #555555; color: #ffffff;height: 20px;">
+                                                            PO Cancel
+                                                        </div>
+
+                                                    {% endif %}
+                                                    {% if purchaseOrder.amendmentStatus == 7 %}
+
+                                                        {% if purchaseOrder.amendmentByPoNo is not null %}
+                                                            <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                                Amended {{ purchaseOrder.amendmentByPoNo }}
+                                                            </div>
+
+                                                        {% else %}
+                                                            <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                                Amendment {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                            </div>
+                                                        {% endif %}
+
+                                                    {% else %}
+                                                        <div style="text-align:center; background: #696969;color: white;font-size: 10px;">
+                                                            {{ amendment }} {{ render(controller('PmsCoreBundle:PurchaseOrder:getAmendmentPo', { 'poId': purchaseOrder.id })) }}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if purchaseOrder.isAdvancePayment == 1 %}
+                                                <div style="text-align:center; background: #A66262;color: white;font-size: 10px;">advanced</div>
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            <strong>Action:</strong>
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.approveStatus == 0
+                                            and ((purchaseOrder.approvedOne == null
+                                            and is_granted("ROLE_PURCHASE_ORDER_APPROVE_ONE") )
+                                            or (purchaseOrder.approvedOne == null
+                                            and is_granted("ROLE_SUPER_ADMIN"))) %}
+                                                <a href="/purchase-order/approve-one/{{ purchaseOrder.id }}"
+                                                   class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?"  >Approve</a>
+                                                <a href="/purchase-order/approve-one/{{ purchaseOrder.id }}"
+                                                   class="btn blue btn-xs confirm displayForMob" style="display:none;" title="Do You Want To Approve It?"  >Approve</a>
+                                            {% endif %}
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.approveStatus == 1
+                                            and ((purchaseOrder.approvedOne != null
+                                            and purchaseOrder.approvedTwo == null
+                                            and is_granted("ROLE_PURCHASE_ORDER_APPROVE_TWO") )
+                                            or (purchaseOrder.approvedOne != null
+                                            and purchaseOrder.approvedTwo == null
+                                            and is_granted("ROLE_SUPER_ADMIN"))) %}
+                                                <a href="/purchase-order/approve-two/{{ purchaseOrder.id }}"
+                                                   class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?" >Approve</a>
+                                                <a href="/purchase-order/approve-two/{{ purchaseOrder.id }}"
+                                                   class="btn blue btn-xs confirm displayForMob" style="display:none;" title="Do You Want To Approve It?" >Approve</a>
+                                            {% endif %}
+                                            {% if purchaseOrder.status == 1
+                                            and purchaseOrder.approveStatus == 2
+                                            and ((purchaseOrder.approvedTwo != null
+                                            and purchaseOrder.approvedThree == null
+                                            and is_granted("ROLE_PURCHASE_ORDER_APPROVE_THREE") )
+                                            or (purchaseOrder.approvedTwo != null
+                                            and purchaseOrder.approvedThree == null
+                                            and is_granted("ROLE_SUPER_ADMIN"))) %}
+                                                <a href="/purchase-order/approve-three/{{ purchaseOrder.id }}"
+                                                   class="btn blue btn-xs confirm displayForDesktop" title="Do You Want To Approve It?"  >Approve</a>
+                                                <a href="/purchase-order/approve-three/{{ purchaseOrder.id }}"
+                                                   class="btn blue btn-xs confirm displayForDesktop" style="display: none;" title="Do You Want To Approve It?"  >Approve</a>
+                                            {% endif %}
+
+                                            {% if purchaseOrder.status == 5
+                                            or purchaseOrder.status == 6
+                                            or purchaseOrder.status == 7
+                                            or purchaseOrder.status == 8
+                                            or purchaseOrder.approveStatus == 3
+                                            or purchaseOrder.approvedThree != null %}
+                                                <a class="btn btn-xs displayForDesktop" style="background:#C0D0E9;color:#ffffff !important;">Approved</a>
+                                                <a class="btn btn-xs displayForMob" style=" display:none;background:#C0D0E9;color:#ffffff !important;">Approved</a>
+                                            {% endif %}
+
+                                            </li>
+
+                                        {#<li><strong>{{ knp_pagination_sortable( purchaseRequisitions , 'Project', 'p.projectName') }}:</strong> 542554(DEMO)78</li>
+                                        <li><strong>{{ knp_pagination_sortable( purchaseRequisitions , 'SubCategory', 'sc.subCategoryName') }}</strong> FoodMaster Ltd</li>
+                                        <li><strong>Status:</strong> 45454DEMO545DEMO</li>
+                                        <li><strong>Approved%:</strong> 45454DEMO545DEMO</li>
+                                        <li><strong>Claimed%:</strong> 45454DEMO545DEMO</li>
+                                        <li><strong>PoIssued%:</strong> 45454DEMO545DEMO</li>#}
+
+                                    </ul>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="navigation text-right">
+                        {{ knp_pagination_render(purchaseOrders) }}
+                    </div>
+                </div>
+            </div>
+            <!-- END SAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+
+    <!--END TABS-->
+
+{% endblock %}
+
+{#<script>#}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $(".confirm").easyconfirm();
+
+    $(".select2AutoComplete").select2({
+    ajax: {
+
+    url: Routing.generate('purchase_order_no_auto_complete'),
+    dataType: 'json',
+    delay: 250,
+    data: function (params, page) {
+    return {
+    q: params,
+    page_limit: 100
+    };
+    },
+    results: function (data, page) {
+    return {
+    results: data
+    };
+    },
+    cache: true
+    },
+    escapeMarkup: function (m) {
+    return m;
+    },
+    formatResult: function(item){ return item.id}, // omitted for brevity, see the source of this page
+    formatSelection: function(item){return item.id}, // omitted for brevity, see the source of this page
+    initSelection: function(element, callback) {
+    return callback({ id : element.val()});
+    },
+    allowClear: true,
+    minimumInputLength:1
+    });
+
+    $(".select2AutoRefNoComplete").select2({
+    ajax: {
+
+    url: Routing.generate('purchase_order_ref_auto_complete'),
+    dataType: 'json',
+    delay: 250,
+    data: function (params, page) {
+    return {
+    q: params,
+    page_limit: 100
+    };
+    },
+    results: function (data, page) {
+    return {
+    results: data
+    };
+    },
+    cache: true
+    },
+    escapeMarkup: function (m) {
+    return m;
+    },
+    formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+    formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+    initSelection: function(element, callback) {
+    // return callback({ id : element.val()});
+
+    var id = $(element).val();
+
+    $.ajax(Routing.generate('purchase_order_data_ref_auto_complete', {id : id}), {
+    dataType: "json"
+    }).done(function (data) {
+    console.log(data);
+    return  callback(data);
+
+    });
+
+    },
+    allowClear: true,
+    minimumInputLength:1
+    });
+
+
+
+{% endblock %}

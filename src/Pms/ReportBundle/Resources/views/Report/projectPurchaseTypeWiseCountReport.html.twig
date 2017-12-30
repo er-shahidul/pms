@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Report Project Purchase Type Wise Count
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_project_purchase_type_wise_count') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Project</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+
+        <form action="{{ path('report_project_purchase_type_wise_count') }}" method="get" name="project_spend_sub_category_wise" id="project_spend_sub_category_wise" style="margin-bottom: 20px;">
+            <div class="portlet-body flip-scroll">
+                <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                <tbody>
+                <tr class="numeric">
+                    <td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <div class="col-md-1">
+                                <div class="input-icon right">
+                                    <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                        </div>
+                    </td>
+                    <td>
+                        <input type="submit" value="Search" class="btn blue" style="margin-left: 55px;">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+                </div>
+        </form>
+    </div>
+
+      <div class="span12">
+        <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+            <input type="button" value="Export in excel" name="projectSpendReportExcel" id="projectSpendReportExcel" class="btn blue">
+        </div>
+       <div class="portlet-body flip-scroll">
+        <table class="table table-bordered table-striped table-condensed flip-content responsiveDiv">
+            <thead class="flip-content tableHeadColor">
+            <tr>
+                <td class="numeric"></td>
+                <th class="numeric">Sl</th>
+                <th class="numeric">Project Name</th>
+                <th class="numeric">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for index, purchaseOrderItem in purchaseOrderItems %}
+                <tr>
+                    <td class="numeric"><span id="{{ index + 1 }}" class="toggle  row-details row-details-close" style="cursor:pointer;"><span>[+]</span></span></td>
+                    <td class="numeric">{{ index + 1 }}.</td>
+                    <td class="numeric">{{ purchaseOrderItem.projectName }}</td>
+                    <td class="numeric">{{ purchaseOrderItem.total }}</td>
+                </tr>
+                <tr class="showing-overview" id="show-{{ index + 1 }}" style="display: none;">
+                    <td colspan="9">
+                        <table class="inner-table" style="width: 100%">
+
+
+                            {% for purchaseType in purchaseTypes %}
+
+                                <tr class="inner-numeric"><td>{{ purchaseType.name }}</td>
+                                {% if purchaseOrderItem.typeSummary[purchaseType.id] is defined %}
+                                    <td  class="numeric">{{ purchaseOrderItem.typeSummary[purchaseType.id] }}</td>
+                                {% else %}
+                                    <td class="numeric">0</td>
+                                {% endif %}
+                                </tr>
+
+                            {% endfor %}
+
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+       </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $(".toggle").click(function(){
+    var id = $(this).attr('id');
+    //$('.showing-overview').hide();
+    $("#show-"+id).slideToggle(100);
+    }).toggle( function() {
+    $(this).children("span").text("[-]");
+    }, function() {
+    $(this).children("span").text("[+]");
+    });
+
+    $('#projectSpendReportExcel').click(function () {
+
+    setTimeout(function(){
+    $('#project_spend_sub_category_wise').attr('action', '{{ path('report_project_purchase_type_wise_count') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'project_spend_sub_category_wise',
+    url: Routing.generate('report_project_purchase_type_wise_count_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock documentready %}

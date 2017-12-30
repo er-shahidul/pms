@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Budget Report Yearly
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_budget_yearly') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> Budget Report Yearly</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row-fluid">
+        <div class="span12">
+            <form method="get" name="budget-report" id="budget-report">
+                <div class="portlet-body flip-scroll">
+                    <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                        <tbody>
+                        <tr>
+                            <td class="numeric">
+                                <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-minviewmode="years" data-date-viewmode="years">
+                                    <span class="input-group-btn"></span>
+                                    {{ form_widget(form.year, { 'attr': {'class': 'form-control datepicker'} }) }}
+                                </div>
+                            </td>
+                            <td class="numeric">
+                                <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="numeric" style="margin-bottom: 20px;"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+            <!--BEGIN TABS-->
+        <div class="span12">
+            <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                <input type="button" value="Export in excel" name="budgetReportExcel" id="budgetReportExcel" class="btn blue">
+            </div>
+            <!-- BEGIN SAMPLE TABLE PORTLET-->
+            <div class="portlet box">
+                <div class="portlet-body flip-scroll">
+                    <table class="table-bordered table-striped table-condensed flip-content">
+                        <thead class="flip-content"  style="background: #4b8df8">
+                        <tr>
+                            <th class="numeric">Month</th>
+                            <th class="numeric">Total Budget</th>
+                            <th class="numeric">Total Spend</th>
+                            <th class="numeric">Total Savings Or Spend over Budget</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in 0..11 %}
+                            <tr>
+                                <td class="numeric">{{ month[i] | default('') }}</td>
+                                <td class="numeric">{{ totalMonthlyBudget[i]['totalBudget'] | number_format(2, '.', ',') }}</td>
+                                <td class="numeric">{{ totalMonthlyBudgetSpend[i]['totalBudgetSpend'] | number_format(2, '.', ',') }}</td>
+                                <td class="numeric">{{ totalSavingsOrSpendOverBudget[i] | number_format(2, '.', ',') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-01-01",
+    viewMode: "years",
+    minViewMode: "years"
+    });
+
+    $('#budgetReportExcel').click(function () {
+
+        setTimeout(function(){
+            $('#budget-report').attr('action', '{{ path('report_budget_yearly') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'budget-report',
+            url: Routing.generate('report_budget_yearly_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock %}

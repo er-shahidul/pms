@@ -1,0 +1,31 @@
+<td>
+    {{ form_widget(form.item, { 'attr': {'class': 'form-control select2ItemAutoComplete', 'style': 'width: 160px;', 'placeholder': ' Select Item'} }) }}
+    <span class="help-block" style="color:darkred;">{{ form_errors(form.item) }}</span>
+</td>
+<td>
+    {{ form_widget(form.itemType, { 'attr': {'class': 'form-control', 'style': 'width: 90px;padding-left: 10px! important;'} }) }}
+</td>
+<td>
+    {{ form_widget(form.quantity, { 'attr': {'class': 'form-control', 'style': 'width: 60px;padding-left: 10px! important;'} }) }}
+    <span class="help-block" style="color:darkred;">{{ form_errors(form.quantity) }}</span>
+</td>
+<td>
+    {{ form_widget(form.UOM, { 'attr': {'class': 'form-control', 'style': 'width: 50px;padding-left: 10px! important;'} }) }}
+    {{ form_widget(form.totalPrice, { 'attr': {'class': 'form-control totalPriceAll', 'style': 'width: 50px;padding-left: 10px! important;'} }) }}
+</td>
+<td>
+    <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+        <span class="input-group-btn"></span>
+        {{ form_widget(form.dateOfRequiredText, { 'attr': {'class': 'form-control', 'style': 'width: 90px;padding-left: 10px! important;'} }) }}
+    </div>
+    <span class="help-block" style="color:darkred;">{{ form_errors(form.dateOfRequiredText) }}</span>
+</td>
+<td>
+   {{ form_widget(form.isHeadOrLocal, { 'attr': {'class': 'form-control', 'style': 'width: 110px;padding-left: 10px! important;'} }) }}
+</td>
+<td>
+    {{ form_widget(form.comment, { 'attr': {'class': 'form-control', 'style': 'width: 180px;max-height: 54px;max-width: 200px;padding-left: 10px! important;'} }) }}
+</td>
+<td>
+    <a href="javascript:;" class="btn red btn-xs closeTd"  style =  "margin-top:15px;height:23px;width: 20px;font-size:10px;margin-left:10px;color: white !important;">×</a>
+</td>

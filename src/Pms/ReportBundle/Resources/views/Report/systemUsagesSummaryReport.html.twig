@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                System Usages Summary
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('system_usages_summary') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">System Summary</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <form method="get" id="accountFrm">
+             <div class="portlet-body flip-scroll">
+                 <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                    <tbody>
+                    <tr>
+                        <td class="numeric">
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-minviewmode="years" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(formSearch.year, { 'attr': {'class': 'form-control datepicker'} }) }}
+                            </div>
+                        </td>
+                        <td class="numeric">
+                            <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="numeric" style="margin-bottom: 20px;"></td>
+                    </tr>
+                    </tbody>
+                </table>
+             </div>
+        </form>
+    </div>
+            <!--BEGIN TABS-->
+    <div class="span12">
+        <div class="portlet-body flip-scroll">
+            <table class="table-bordered table-striped table-condensed flip-content">
+                <thead class="flip-content"  style="background: #4b8df8">
+                <tr>
+                    <th class="numeric">Month</th>
+                    <th class="numeric">TotalPr Raised</th>
+                    <th class="numeric">TotalPr Approved</th>
+                    <th class="numeric">Total Pr Items</th>
+                    <th class="numeric">Total Items Claimed</th>
+                    <th class="numeric">Total Po</th>
+                    {#<th class="numeric">Total Po Issued</th>#}
+                    <th class="numeric">Total Po Items</th>
+                    <th class="numeric">Total Received Items</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in 0..11 %}
+                    <tr>
+                        <td class="numeric">{{ month[i] | default('') }}</td>
+                        <td class="numeric">{{ totalPrRaised[i][0]['TotalPrRaised'] | default('') }}</td>
+                        <td class="numeric">{{ totalPrApproved[i][0]['TotalPrApproved'] | default('') }}</td>
+                        <td class="numeric">{{ totalPrItemApproved[i][0]['TotalPrItemApproved'] | default('') }}</td>
+                        <td class="numeric">{{ totalItemClaimed[i][0]['TotalItemClaimed'] | default('') }}</td>
+                        <td class="numeric">{{ totalPoQuantity[i][0]['PoId'] | default('') }}</td>
+                        {#<td class="numeric">{{ totalPoIssued[i][0]['TotalPoIssued'] | default('') }}</td>#}
+                        <td class="numeric">{{ totalPoItems[i][0]['TotalPoItem'] | default('') }}</td>
+                        <td class="numeric">{{ totalDeliveredItem[i][0]['TotalDeliverItem'] | default('') }}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+
+{{ parent() }}
+
+    $(".datepicker").datepicker( {
+    format: "yyyy-01-01",
+    viewMode: "years",
+    minViewMode: "years"
+    });
+
+{% endblock %}

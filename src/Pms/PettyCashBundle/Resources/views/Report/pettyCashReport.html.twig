@@ -1,0 +1,249 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .desc{
+        text-align: right;
+        font-size: 16px;
+        letter-spacing: 0px;
+        font-weight: 300;
+        color: #fff;
+        margin-top: 16px;
+    }
+</style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Petty Cash  Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('transaction_history') }}" style="color: #333 !important;">Petty Cash</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Petty Cash Report</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <form method="get" name="petty_report" id="petty_report">
+
+                <table id="table_project_cost">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                            </div>
+                        </td>
+                        {#<td>
+                            <div class="form-group">
+                                <div class="col-md-1">
+                                    <div class="input-icon right">
+                                        <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>#}
+                       {# <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                            </div>
+                        </td>#}
+                        <td>
+                            <input type="submit" value="Search" class="btn blue" style="margin-left:25px;">
+                        </td>
+                        <td>
+                            <a  class="btn blue" href="{{ path('petty_cash_report') }}"style="margin-left:25px;cursor: pointer;">All</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div><br/>
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat blue">
+                    <div class="visual">
+                        <i>&#2547;</i>
+                    </div>
+                    <div class="details">
+                        <div class="number" style="font-size: 20px;">
+                            {{  (monthlyTotalCash + monthlyTotalInvoice)| number_format(0, '.', ',') }}
+                        </div>
+                        <div class="desc">
+                            Monthly Total Transaction
+                        </div>
+                    </div>
+                    <a class="more" href="#">
+
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat green">
+                    <div class="visual">
+                        <i>&#2547;</i>
+                    </div>
+                    <div class="details">
+                        <div class="number" style="font-size: 20px;">
+                            {{  monthlyTotalCash | number_format(0, '.', ',') }}
+                        </div>
+                        <div class="desc">
+                            Monthly Cash Amount
+                        </div>
+                    </div>
+                    <a class="more" href="#">
+
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="dashboard-stat green">
+                    <div class="visual">
+                        <i>&#2547;</i>
+                    </div>
+                    <div class="details">
+                        <div class="number" style="font-size: 20px;">
+                            {{  monthlyTotalInvoice | number_format(0, '.', ',') }}
+                        </div>
+                        <div class="desc">
+                            Monthly Invoice Amount
+                        </div>
+                    </div>
+                    <a class="more" href="#">
+
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-12" style="float: left;">
+
+            <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                <input type="button" value="Export in excel" name="PettyCashReportExcel"
+                       id="PettyCashReportExcel" class="btn blue">
+            </div>
+            <div class="portlet-body flip-scroll">
+                {#<table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr class="numeric">
+                        #}{#<th>Sl</th>#}{#
+                        <th>Date</th>
+                        #}{#<th>Opening Balance</th>#}{#
+                        <th>Cash In Credit</th>
+                        <th>Description</th>
+                        <th>From</th>
+                        <th>Transaction Id</th>
+                        <th>Cash Out Debit</th>
+                        <th>To</th>
+                        #}{#<th>As</th>#}{#
+                        #}{#<th>Comments</th>#}{#
+                        <th>Bank Balance</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for index ,transaction in transactions %}
+                        <tr>
+                            <td class="numeric">{{ index }}</td>
+                            #}{#<td class="numeric">{{ transaction.OpeningBalance }}</td>#}{#
+                            <td class="numeric">{{ transaction.cashInCredit }}</td>
+                            <td class="numeric">{{ transaction.description }}</td>
+                            <td class="numeric">{{ transaction.transactFrom }}</td>
+                            <td class="numeric">{{ transaction.transactionId }}</td>
+                            <td class="numeric">{{ transaction.CashOutDebit }}</td>
+                            <td class="numeric">{{ transaction.transactTo }}</td>
+                            <td class="numeric">{{ transaction.BankBalance }}</td>
+                            #}{#<td class="numeric"></td>#}{#
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>#}
+                <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr class="numeric">
+                        <th>Start Date</th>
+                        <th>Transaction Id</th>
+                        <th>Given Amount</th>
+                        {#<th>As</th>#}
+                        <th>Description</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Adjustment Amount</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Due Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for index ,transaction in transactions %}
+                        <tr>
+                            <td class="numeric">{{ transaction['createdDate']|date('Y-m-d') }}</td>
+                            <td class="numeric">{{ transaction['transactionId']|default() }}</td>
+                            <td class="numeric">{{ transaction['transactionAmount']|number_format(2, '.', ',') }}</td>
+                            {#<td class="numeric">{{ transaction['transactionType']|default() }}</td>#}
+                            <td class="numeric">{{ transaction['description']|default() }}</td>
+                            <td class="numeric">{{ transaction['transactFrom']|default() }}</td>
+                            <td class="numeric">{{ transaction['transactTo']|default() }}</td>
+                            <td class="numeric">{{ transaction['transactionHistoryAmount']|number_format(2, '.', ',') }}</td>
+                            <td class="numeric">{{ transaction['transactTo']|default() }}</td>
+                            <td class="numeric">{{ transaction['transactFrom']|default() }}</td>
+                            <td class="numeric">{{ (transaction['transactionAmount'] - transaction['transactionHistoryAmount'])|number_format(2, '.', ',')}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".start_date").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $('#PettyCashReportExcel').click(function () {
+
+        setTimeout(function(){
+            $('#petty_report').attr('action', '{{ path('petty_cash_report') }}');
+        }, 1000);
+
+        $.ajax({
+            form: 'petty_report',
+            url: Routing.generate('petty_cash_report_excel'),
+            dataType: 'form html'
+        });
+    });
+
+{% endblock documentready %}

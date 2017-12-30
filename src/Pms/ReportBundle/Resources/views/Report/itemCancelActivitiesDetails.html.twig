@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Purchase Requisition
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('purchase_requisition') }}" style="color: #333 !important;">Purchase Requisition</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="col-md-12">
+        {% if(status == 'approve') %}
+            <a href="{{ path('report_requisition_item_excel',{status:status,month:app.request.get('month')}) }}" target="_blank" id="excelReport" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                Pr Item Approve Excel
+            </a><br/>
+        {% endif %}
+            {% if(status == 'in-progress') %}
+            <a href="{{ path('report_requisition_item_in-progress_excel',{status:status,month:app.request.get('month')}) }}" target="_blank" id="excelReport" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                Pr Item In-progress Excel
+            </a><br/>
+        {% endif %}
+            {% if(status == 'cancel') %}
+            <a href="{{ path('report_requisition_item_cancel_excel',{status:status,month:app.request.get('month')}) }}" target="_blank" id="excelReport" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                Pr Item Cancel Excel
+            </a><br/>
+        {% endif %}
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-cogs"></i>Item {{ status }} Activities</div>
+
+                </div>
+                <div class="portlet-body flip-scroll">
+                    <table class="table-bordered table-striped table-condensed flip-content">
+                        <thead class="flip-content" style="background: #4b8df8">
+                        <tr>
+                            <th class="numeric">Item</th>
+                            <th class="numeric">PR No</th>
+                            <th class="numeric">Project</th>
+                            <th class="numeric">approved Date</th>
+                            <th class="numeric">Quantity</th>
+                            <th class="numeric">CancelQty</th>
+                            <th class="numeric">Unit</th>
+                            <th class="numeric">Local/Head</th>
+                            <th class="numeric">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for requisitionItem in purchaseRequisitionItems %}
+                            <tr>
+                                <td class="numeric">
+                                    {{ requisitionItem.item.itemName | default() }}
+                                </td>
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisition.id | default() }}
+                                </td>
+                                <td class="numeric">
+                                    {{ requisitionItem.purchaseRequisition.project.projectName | default() }}
+                                </td>
+                                <td class="numeric" >
+                                    {% if(status == 'in-progress') %}
+                                        {{ requisitionItem.purchaseRequisition.approvedDateCategoryHeadTwo | date('Y-m-d') }}
+                                    {% elseif(status == 'po-issued') %}
+                                        {{ requisitionItem.purchaseRequisition.approvedDateCategoryHeadTwo | date('Y-m-d') }}
+                                    {% elseif(status == 'open') %}
+                                   {{ requisitionItem.purchaseRequisition.createdDate | date('Y-m-d') }}
+                                    {% elseif(status == 'approve') %}
+                                        {{ requisitionItem.purchaseRequisition.approvedDateCategoryHeadTwo | date('Y-m-d') }}
+                                    {% else %}
+                                        {{ requisitionItem.purchaseRequisition.createdDate | date('Y-m-d') }}
+                                    {% endif %}
+
+
+                                </td>
+                                <td class="numeric">
+                                    {{ requisitionItem.quantity }}
+                                </td>
+                                <td class="numeric">
+                                    {% if requisitionItem.purchaseRequisitionItemCloseInfo.quantity is defined %}
+                                        {{ requisitionItem.purchaseRequisitionItemCloseInfo.quantity }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                                <td class="numeric">
+                                    {{ requisitionItem.item.itemUnit | default() }}
+                                </td>
+
+                                <td class="numeric">{{ requisitionItem.isHeadOrLocal ~ 'office' |default('') }}</td>
+
+                                <td class="numeric">
+                                   {% if(requisitionItem.purchaseRequisition.closedBy is not null  ) %}
+                                            Canceled By {{ requisitionItem.purchaseRequisition.closedBy|default('') }}
+                                   {% else %}
+                                       {% if(status == 'in-progress') %}
+                                           in-progress
+                                           {% elseif(status == 'po-issued') %}
+                                                po-issued
+                                           {% elseif(status == 'open') %}
+                                                open
+                                           {% elseif(status == 'approve') %}
+                                               approve
+                                           {% else %}
+                                           Closed By {{ requisitionItem.purchaseRequisitionItemCloseInfo.closedBy|default('') }}
+                                           {% endif %}
+                                   {% endif %}
+                                </td>
+                                {#<td class="numeric">
+                                    {% if(requisitionItem.purchaseRequisition.prLogs is defined and requisitionItem.purchaseRequisition.prLogs is not null  ) %}
+                                        {{ requisitionItem.purchaseRequisition.closedDate|date('Y-m-d') }}
+
+                                    {% endif %}
+                                </td>#}
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {{ knp_pagination_render(purchaseRequisitionItems) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

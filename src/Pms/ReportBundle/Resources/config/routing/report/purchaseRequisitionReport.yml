@@ -1,0 +1,17 @@
+report_requisition:
+    pattern: /requisition-report
+    defaults: { _controller: PmsReportBundle:PurchaseRequisitionReport:requisition }
+
+report_requisition_excel:
+    pattern: /requisition-report-excel
+    defaults: { _controller: PmsReportBundle:PurchaseRequisitionReport:requisitionExcel }
+    options:
+            expose: true
+
+pr_in_progress_report_excel:
+    pattern: /pr-in-progress-report-excel/{status}
+    defaults: { _controller: PmsReportBundle:PurchaseRequisitionReport:prInprogressReportExcel, status:in-progress }
+
+pr_approved_report_excel:
+    pattern: /pr-approved-report-excel/{status}
+    defaults: { _controller: PmsReportBundle:PurchaseRequisitionReport:prApprovedReportExcel, status:approve }

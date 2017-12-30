@@ -1,0 +1,47 @@
+stock_list:
+    path:     /stock/list
+    defaults: { _controller: PmsInventoryBundle:Stock:index }
+
+stock_item_add:
+    path:     /stock/item
+    defaults: { _controller: PmsInventoryBundle:Stock:stockItemAdd }
+
+stock_update:
+    pattern: /stock/update/{id}
+    defaults: { _controller: PmsInventoryBundle:Stock:stockItemUpdate }
+    requirements:
+          id:  \d+
+
+stock_add:
+    path:     /stock/add
+    defaults: { _controller: PmsInventoryBundle:Stock:saveMinStock }
+    options:
+           expose: true
+stock_max_add:
+    path:     /stock-max/add
+    defaults: { _controller: PmsInventoryBundle:Stock:saveMaxStock }
+    options:
+           expose: true
+stock_item_price_get:
+    path:     /stock-item-price-get/get-price
+    defaults: { _controller: PmsInventoryBundle:Stock:getItemPrice }
+    options:
+           expose: true
+
+check_stock_item_available:
+    path:     /stock/available
+    defaults: { _controller: PmsInventoryBundle:Stock:existItemStockCheck }
+    options:
+           expose: true
+
+stock_open_item:
+    path:     /stock/open-item
+    defaults: { _controller: PmsInventoryBundle:Stock:saveOpenItem }
+    options:
+           expose: true
+
+stock_item_list_excel:
+    pattern: /stock/stock-item-list-excel
+    defaults: { _controller: PmsInventoryBundle:Stock:stockItemExcel }
+    options:
+           expose: true

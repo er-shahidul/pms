@@ -1,0 +1,52 @@
+
+.popover-title {
+    color: #000000;
+}
+.popover-content{
+    color:#000000;
+}
+.modal-details{
+    background: #35aa47;padding: 1px 5px
+}
+.gray-color:hover{
+    background-color:#f0f1f2;
+
+}
+.norm_jobs_wrapper {
+    float: left;
+    width: 100%;
+    margin: 10px 15px 0px 10px;
+    position: relative;
+    clear: both;
+    background: #f0f1f2;
+    border: 1px solid #c6c4c5;
+    font-size: 12px;
+    padding-left: 5px;
+    padding: 5px;
+}
+
+.details_wrapper {
+    float: left;
+    width: 100%;
+    position: relative;
+    clear: both;
+    background: #f0f1f2;
+    border: 1px solid #c6c4c5;
+    font-size: 12px;
+    padding-left: 5px;
+    padding: 5px;
+}
+
+.norm_jobs_wrapper:hover {
+    background: #ddd;
+    cursor: pointer;
+}
+.divWrapper{
+    list-style:none;
+}
+.invoice-payment{
+    margin-left: -20px!important;
+}
+.unstyled li{
+    line-height:22px;
+}

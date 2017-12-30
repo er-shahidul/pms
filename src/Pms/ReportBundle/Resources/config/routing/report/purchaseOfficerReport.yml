@@ -1,0 +1,9 @@
+report_purchase_officer:
+    pattern: /purchase-officer-report
+    defaults: { _controller: PmsReportBundle:PurchaseOfficerReport:purchaseOfficer }
+
+report_purchase_officer_excel:
+    pattern: /purchase-officer-report-excel
+    defaults: { _controller: PmsReportBundle:PurchaseOfficerReport:purchaseOfficerExcel }
+    options:
+          expose: true

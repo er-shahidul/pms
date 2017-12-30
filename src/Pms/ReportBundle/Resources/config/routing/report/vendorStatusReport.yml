@@ -1,0 +1,34 @@
+report_vendor_status:
+    pattern: /vendor-status-report
+    defaults: { _controller: PmsReportBundle:VendorStatusReport:vendorStatusReport }
+
+report_vendor_status_two:
+    pattern: /vendor-status-two-report
+    defaults: { _controller: PmsReportBundle:VendorStatusReport:vendorStatusTwoReport }
+
+report_vendor_status_two_detail:
+    pattern: /vendor-status-two-report-detail
+    defaults: { _controller: PmsReportBundle:VendorStatusReport:vendorStatusTwoReportDetail }
+
+report_vendor_overview:
+    pattern: /vendor-overview-report
+    defaults: { _controller: PmsReportBundle:VendorOverviewReport:vendorOverviewReport }
+
+report_vendor_overview_bundle_excel:
+    pattern: /vendor-overview-report-excel
+    defaults: { _controller: PmsReportBundle:VendorOverviewReport:vendorOverViewExcel }
+    options:
+            expose: true
+
+
+report_vendor_status_excel:
+    pattern: /vendor-status-report-excel
+    defaults: { _controller: PmsReportBundle:VendorStatusReport:vendorStatusReportExcel }
+    options:
+            expose: true
+
+report_vendor_status_two_excel:
+    pattern: /vendor-status-two-report-excel
+    defaults: { _controller: PmsReportBundle:VendorStatusReport:vendorStatusTwoReportExcel }
+    options:
+            expose: true

@@ -1,0 +1,149 @@
+<table style="width: 1100px;margin-top: 100px;">
+    <tr>
+        <td colspan="2" style="height: 50px;">
+            <table style="width: 100%;font-size:25px;margin-top: 20px;">
+                <tr>
+                    <td style="width:100%;font-weight:bold;height: 30px;background-color: lightgrey;text-align: center;">
+                        Budget details
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="height: 150px;width: 550px;">
+            <table style="width: 50%;font-size:20px;margin-top: 20px;float: left;">
+                <tr>
+                    <td style="width: 50%;">
+                        Budget :
+                    </td>
+                    <td style="width: 50%;">
+                        <span style="font-weight: bold;">{{ budget.month | date('F Y') }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        Project :
+                    </td>
+                    <td style="width: 50%;">
+                        <span style="font-weight: bold;">{{ budget.project.projectName }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        Created By :
+                    </td>
+                    <td style="width: 50%;">
+                        <span style="font-weight: bold;">{{ budget.createdBy.username }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        Created Date :
+                    </td>
+                    <td style="width: 50%;">
+                        <span style="font-weight: bold;">{{ budget.createdDate | date('d-m-Y') }}</span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="height: 150px;width: 550px;">
+            <table style="width: 50%;font-size:20px;margin-top: 20px;float: left;">
+                <tr>
+                    <td colspan="2" style="width: 100%;">
+                        <span style="font-weight: bold;"><u>Approval Info</u></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        Verified :
+                    </td>
+                    <td style="width: 50%;">
+                        <span style="font-weight: bold;">{{ budget.approvedOne.username | default('not approved') }}</span>
+                        {% if  budget.approvedOneDate != null %}
+                            on <span style="font-weight: bold;">{{ budget.approvedOneDate | date('d-m-Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        Validated :
+                    </td>
+                    <td style="width: 50%;">
+                        <span style="font-weight: bold;">{{ budget.approvedTwo.username | default('not validated') }}</span>
+                        {% if  budget.approvedTwoDate != null %}
+                            on <span style="font-weight: bold;">{{ budget.approvedTwoDate | date('d-m-Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        Approved :
+                    </td>
+                    <td style="width: 50%;">
+                        <span style="font-weight: bold;">{{ budget.approvedThree.username | default('not verified') }}</span>
+                        {% if  budget.approvedThreeDate != null %}
+                            on <span style="font-weight: bold;">{{ budget.approvedThreeDate | date('d-m-Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="width: 100%;">
+
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="height: 50px;">
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table id="table_requisition" style="width: 100%;border: 1px solid ghostwhite;">
+                <thead style="background: lightgrey;">
+                <tr>
+                    <th style="width:5%;text-align: left;">Sl</th>
+                    <th style="width:50%;text-align: left;">SubCategory</th>
+                    <th style="width:45%;text-align: left;">Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for index, budgetForSubCategory in budget.budgetForSubCategories %}
+                    <tr>
+                        <td style="text-align: left;">
+                            {{ index + 1 }}
+                        </td>
+                        <td style="text-align: left;">
+                            {{ budgetForSubCategory.subCategory.subCategoryName }}
+                        </td>
+                        <td style="text-align: left;">
+                            {{ budgetForSubCategory.amount|number_format(2, '.', ',') }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3" style="border-bottom: 5px solid lightgrey;height: 10px;">
+
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td></td>
+                    <td style="text-align: right;font-weight: bold !important;">
+                        Total :
+                    </td>
+                    <td style="text-align: left;">
+                        {{ budget.netTotal|number_format(2, '.', ',') }}
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+</table>
+
+

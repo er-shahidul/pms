@@ -1,0 +1,8 @@
+{% block body %}
+    {#{% set path %}#}
+
+    <iframe src="http://docs.google.com/viewer?url={{ url('homepage') | url_encode }}{{ '/uploads/DeliveryDocuments/' | url_encode }}{{ path | url_encode }}
+    &embedded=true" style="width: 900px;height: 600px;margin-left: 15%;border: 1px solid;" frameborder="0">
+    </iframe>
+
+{% endblock %}

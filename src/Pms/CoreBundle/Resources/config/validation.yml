@@ -1,0 +1,66 @@
+Pms\CoreBundle\Entity\PurchaseRequisition:
+    properties:
+        project:
+            - NotBlank: { message: "Project name should not be blank" }
+        refNo:
+            - NotBlank: { message: "Ref. No should not be blank" }
+#            - Regex:
+#                  pattern: "/^[0-9]+$/i"
+#                  htmlPattern: "^[0-9]+$"
+#                  message: "Ref. No should  be Number"
+        costHeader:
+            - NotBlank: { message: "Cost Header name should not be blank" }
+        category:
+            - NotBlank: { message: "Category Header name should not be blank" }
+        subCategory:
+            - NotBlank: { message: "Sub Category name should not be blank" }
+
+Pms\CoreBundle\Entity\PurchaseRequisitionItem:
+    properties:
+        item:
+            - NotBlank: { message: "Item should not be blank" }
+        quantity:
+            - NotBlank: { message: "Quantity should not be blank" }
+        dateOfRequiredText:
+            - NotBlank: { message: "Date should not be blank" }
+
+Pms\CoreBundle\Entity\PurchaseOrder:
+    properties:
+        dateOfDelivered:
+            - NotBlank: { message: "Date is required" }
+        paymentMethod:
+            - NotBlank: { message: "Payment is required" }
+        computationStatus:
+            - NotBlank: { message: "Computation is required" }
+        paymentFrom:
+            - NotBlank: { message: "Payment From is required" }
+        paymentType:
+            - NotBlank: { message: "Payment Type is required" }
+        refNo:
+            - NotBlank: { message: "Ref. No is required" }
+#            - Regex:
+#                pattern: "/^[0-9]+$/i"
+#                htmlPattern: "^[0-9]+$"
+#                message: "Ref. No should  be Number"
+        poNonpo:
+            - NotBlank: { message: "Purchase Type should not be blank" }
+        vendorQuotationReferenceNumber:
+            - NotBlank: { message: "Vendor Quotation ref should not be blank" }
+#        file:
+#            - NotBlank: { message: "Vendor Quotation Attach should not be blank" }
+
+Pms\CoreBundle\Entity\Receive:
+    properties:
+        refGrn:
+            - NotBlank: { message: "Ref. Grn should not be blank" }
+            - Regex:
+                pattern: "/^[0-9]+$/i"
+                htmlPattern: "^[0-9]+$"
+                message: "Ref. Grn should  be Number"
+
+Pms\InventoryBundle\Entity\TotalReceiveItem:
+    properties:
+        project:
+            - NotBlank: { message: "Project Name should not be blank" }
+        item:
+            - NotBlank: { message: "Item should not be blank" }

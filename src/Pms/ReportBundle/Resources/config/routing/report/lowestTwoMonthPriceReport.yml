@@ -1,0 +1,6 @@
+report_lowest_two_month_price:
+    pattern: /lowest-two-month-price-report
+    defaults: { _controller: PmsReportBundle:LowestTwoMonthPriceReport:lowestTwoMonthPrice }
+
+
+

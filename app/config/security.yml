@@ -1,0 +1,243 @@
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: sha512
+
+    role_hierarchy:
+        ROLE_DATA:        [ROLE_USER]
+        ROLE_ADMIN:       [ROLE_DATA]
+        ROLE_BUYER:       [ROLE_DATA]
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_DATA, ROLE_ADMIN, ROLE_BUYER, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_provider: form.csrf_provider
+            logout:       true
+            anonymous:    true
+
+    access_control:
+
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/send-email, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+#user and group section#
+        - { path: ^/users$, role: ROLE_SUPER_ADMIN }
+        - { path: ^/users/group/list, role: ROLE_SUPER_ADMIN }
+        - { path: ^/users/group/new, role: ROLE_SUPER_ADMIN }
+
+#ajax url#
+        - { path: ^/item/po-auto-complete, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/find-terms-and-conditions, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/vendor-address, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/purchase-total-quantity, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/find-budget, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/item-wise-category, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/category-wise-item, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/category-wise-subCategory, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/subCategory-wise-costHeader, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/all-project-find, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/find-item-type, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/area/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/area/add, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/category/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/category/add, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/cost-header/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/cost-header/add, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/item/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/items-list-excel, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/vendors-list-excel, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/item-type/add, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/item-type/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/project/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/project/project/add, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/project/excelProjectsList, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/company-type/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/company-type/add, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/purchase-type/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/sub-category/add, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/sub-category/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/terms-and-conditions/add, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/terms-and-conditions/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/vendor/check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/delivery/projectList, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/receive/project-list, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+
+#core section#
+#        - { path: ^/budget, role: [ROLE_SUPER_ADMIN, ROLE_BUDGET_VIEW] }
+
+        - { path: ^/receive, role: [ROLE_SUPER_ADMIN, ROLE_RECEIVE_VIEW] }
+        - { path: ^/document, role: [ROLE_SUPER_ADMIN, ROLE_DOCUMENT_VIEW] }
+        - { path: ^/purchase-order, role: [ROLE_SUPER_ADMIN, ROLE_PURCHASE_ORDER_VIEW] }
+        - { path: ^/purchase-requisition, role: [ROLE_SUPER_ADMIN, ROLE_PURCHASE_REQUISITION_VIEW] }
+
+        - { path: ^/payment/request, role: [ROLE_SUPER_ADMIN, ROLE_PAYMENT_VIEW, ROLE_ACCOUNT_LOCAL, ROLE_ACCOUNT_HEAD, ROLE_ACCOUNT_ALL, ROLE_ACCOUNT_ENTRY_LOCAL, ROLE_ACCOUNT_ENTRY_HEAD, ROLE_ACCOUNT_ENTRY_ALL] }
+        - { path: ^/payment/archive, role: [ROLE_SUPER_ADMIN, ROLE_PAYMENT_VIEW, ROLE_ACCOUNT_LOCAL, ROLE_ACCOUNT_HEAD, ROLE_ACCOUNT_ALL, ROLE_ACCOUNT_ENTRY_LOCAL, ROLE_ACCOUNT_ENTRY_HEAD, ROLE_ACCOUNT_ENTRY_ALL] }
+        - { path: ^/payment/verified, role: [ROLE_SUPER_ADMIN, ROLE_PAYMENT_VIEW, ROLE_ACCOUNT_ENTRY_LOCAL, ROLE_ACCOUNT_ENTRY_HEAD, ROLE_ACCOUNT_ENTRY_ALL] }
+        - { path: ^/payment/advance, role: [ROLE_SUPER_ADMIN, ROLE_PAYMENT_VIEW, ROLE_ADVANCE_PAYMENT_LOCAL, ROLE_ADVANCE_PAYMENT_HEAD, ROLE_ADVANCE_PAYMENT_ALL] }
+        - { path: ^/payment/advance/archive, role: [ROLE_SUPER_ADMIN, ROLE_PAYMENT_VIEW] }
+
+#attach url#
+        - { path: ^/purchase-order/attachment-view/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/purchase-requisition/attachment-view/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/receive/attachment-view/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/document/attachment-view/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/uploads/DeliveryDocuments/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+#pdf url#
+        - { path: ^/purchase-requisition/pdf/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/purchase-order/pdf/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/receive/pdf/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+#Report MGT Section#
+        - { path: ^/project-spend-purchase-type-wise-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW,ROLE_MANAGER_REPORT_VIEW ] }
+        - { path: ^/project-spend-purchase-type-wise-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW,ROLE_MANAGER_REPORT_VIEW] }
+
+        - { path: ^/project-spend-sub-category-wise-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+        - { path: ^/project-spend-sub-category-wise-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+
+        - { path: ^/project-purchase-type-wise-count-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+        - { path: ^/project-purchase-type-wise-count-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+
+        - { path: ^/supplier-payment-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+        - { path: ^/supplier-payment-report-pdf, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+
+        - { path: ^/payment-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+        - { path: ^/payment-company-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/payment-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+
+        - { path: ^/vendor-status-two-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+        - { path: ^/vendor-status-two-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+
+        - { path: ^/vendor-status-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+        - { path: ^/vendor-status-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+
+        - { path: ^/receive-item-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+        - { path: ^/receive-item-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+
+        - { path: ^/receive-report, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+        - { path: ^/receive-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_MGT_REPORT_VIEW, ROLE_REPORT_VIEW] }
+
+#Report Section#
+        - { path: ^/account-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/account-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/report/get/ccn/id, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/budget-vs-spend-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/budget-vs-spend-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/daily-purchase-order-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/daily-purchase-order-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/requisition-daily-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/requisition-daily-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/item-over-view-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/item-over-view-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/item-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/item-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/purchase-officer-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/purchase-officer-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/purchase-order-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/purchase-order-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/purchase-price-directory-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/purchase-price-directory-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/requisition-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/requisition-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/user-activities-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/user-activities-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/purchase-price-directory-old-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/purchase-price-directory-old-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/compare-price-directory-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/compare-price-directory-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/requisition-activities-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/requisition-vs-order-saving-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/requisition-vs-order-saving-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/system-usages-summary-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/user-activities-claim-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/user-activities-claim-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/user-activities-gate-pass-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/user-activities-gate-pass-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/user-activities-po-creator-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/user-activities-po-creator-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/user-activities-pr-creator-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/user-activities-pr-creator-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/user-activities-receive-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/user-activities-receive-report-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/vendor-payment-one-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/vendor-payment-two-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/vendor-payment-status-one-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/vendor-payment-status-two-excel, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/trend-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/budget-report-yearly, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/budget-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+        - { path: ^/purchase-lowest-price-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/lowest-two-month-price-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+        - { path: ^/price-compare-report, roles: [ROLE_SUPER_ADMIN, ROLE_REPORT_VIEW] }
+
+#Petty Cash Section#
+        - { path: ^/bank/amount, role: [ROLE_BANK_VIEW, ROLE_SUPER_ADMIN] }
+        - { path: ^/bank/add, role: [ROLE_BANK_VIEW, ROLE_SUPER_ADMIN] }
+        - { path: ^/transaction/history, role: [ROLE_BANK_TRANSACTION_VIEW, ROLE_SUPER_ADMIN] }
+        - { path: ^/transaction/add, role: [ROLE_BANK_TRANSACTION_ADD, ROLE_SUPER_ADMIN] }
+        - { path: ^/report/history, role: [ROLE_BANK_REPORT_VIEW, ROLE_REPORT_VIEW, ROLE_SUPER_ADMIN] }
+
+#Inventory Section#
+        - { path: ^/delivery/list, role: [ROLE_INVENTORY_DELIVERY_VIEW, ROLE_SUPER_ADMIN] }
+        - { path: ^/delivery/projectList, role: [ROLE_INVENTORY_DELIVERY_ADD, ROLE_SUPER_ADMIN] }
+        - { path: ^/stock/list, role: [ROLE_INVENTORY_STOCK_VIEW, ROLE_SUPER_ADMIN] }
+        - { path: ^/stock/item, role: [ROLE_INVENTORY_STOCK_ADD, ROLE_SUPER_ADMIN] }
+        - { path: ^/stock/report, role: [ROLE_INVENTORY_STOCK_REPORT_VIEW, ROLE_REPORT_VIEW, ROLE_SUPER_ADMIN] }
+        - { path: ^/delivery/project-to-project-list, role: [ROLE_PROJECT_TO_PROJECT_DELIVERY,ROLE_SUPER_ADMIN] }
+
+#setting Section#
+        - { path: ^/item, roles: [ROLE_SUPER_ADMIN, ROLE_ITEM_VIEW, ] }
+        - { path: ^/item-type, roles: [ROLE_SUPER_ADMIN, ROLE_ITEM_TYPE_VIEW] }
+        - { path: ^/project, roles: [ROLE_SUPER_ADMIN, ROLE_PROJECT_VIEW] }
+        - { path: ^/company-type, roles: [ROLE_SUPER_ADMIN, ROLE_PROJECT_TYPE_VIEW] }
+        - { path: ^/category, roles: [ROLE_SUPER_ADMIN, ROLE_CATEGORY_VIEW] }
+        - { path: ^/sub-category, roles: [ROLE_SUPER_ADMIN, ROLE_SUB_CATEGORY_VIEW] }
+        - { path: ^/area, roles: [ROLE_SUPER_ADMIN, ROLE_AREA_VIEW] }
+        - { path: ^/vendor, roles: [ROLE_SUPER_ADMIN, ROLE_VENDOR_VIEW] }
+        - { path: ^/cost-header, roles: [ROLE_SUPER_ADMIN, ROLE_COST_HEADER_VIEW] }
+        - { path: ^/terms-and-conditions, roles: [ROLE_SUPER_ADMIN, ROLE_TERMS_AND_CONDITIONS_VIEW] }
+        - { path: ^/purchase-type, roles: [ROLE_SUPER_ADMIN, ROLE_PURCHASE_TYPE_VIEW] }
+        - { path: ^/company, roles: [ROLE_SUPER_ADMIN, ROLE_PURCHASE_COMPANY_VIEW] }
+        - { path: ^/relatedbank, roles: [ROLE_SUPER_ADMIN, ROLE_PURCHASE_COMPANY_VIEW] }
+
+        - { path: ^/receive/advance-payment-detail/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+#all#
+        - { path: ^/my-task, roles: [ROLE_SUPER_ADMIN] }
+        - { path: ^/supplier, roles: [ROLE_SUPER_ADMIN] }
+        - { path: ^/, role: ROLE_USER }

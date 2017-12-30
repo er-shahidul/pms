@@ -1,0 +1,5 @@
+PmsCoreBundle_budget:
+    resource: "@PmsBudgetBundle/Resources/config/routing/budget.yml"
+
+PmsCoreBundle_budget_report:
+    resource: "@PmsBudgetBundle/Resources/config/routing/budgetReport.yml"

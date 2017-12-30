@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .form-group ul li {
+            list-style: none;
+            margin-left: -39px;
+        }
+        table tr td ul li {
+            list-style: none;
+            margin-left: -41px;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+               Bank
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('relatedbank') }}" style="color: #333 !important;">Related Bank</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="modal-dialog bodyWidth">
+        <div class="modal-content backgroundWhite">
+            <div class="modal-header backGroundLightGrey">
+                <h4 class="modal-title bold text-center"> Bank Information</h4>
+            </div>
+<br/>
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'item-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'item-form', 'novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            {{ form_label(form.name, 'Name :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.name, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.name) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.branch, 'Branch :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.branch, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.branch) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.address, 'Address:', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.address, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.address) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.status, 'Status :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.status, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="background: lightgrey;">
+                <div class="btn-group">
+                    <a href="{{ path('relatedbank') }}" class="btn" style="width: 100px;background: #0353D6; color: white !important;">
+                        <i class="fa fa-ban"> Cancel</i>
+                    </a>
+                </div>
+                {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width', 'style': 'width: 100px;background: #0353D6; color: white !important;'} }) }}
+            </div>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+{% endblock %}

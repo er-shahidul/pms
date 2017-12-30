@@ -1,0 +1,9 @@
+report_three_sixty_degree:
+    pattern: /three-sixty-degree-report
+    defaults: { _controller: PmsReportBundle:ThreeSixtyDegreeReport:threeSixtyDegreeReport }
+
+report_three_sixty_degree_excel:
+    pattern: /three-sixty-degree-report-excel
+    defaults: { _controller: PmsReportBundle:ThreeSixtyDegreeReport:threeSixtyDegreeReportExcel }
+    options:
+            expose: true

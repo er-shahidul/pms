@@ -1,0 +1,290 @@
+<table style="width: 1000px;margin-top: 150px;">
+    <tr>
+        <td style="width:100%;font-weight:bold;height: 30px;background-color: lightgrey;text-align: center;">
+            Purchase Requisition Details
+        </td>
+    </tr>
+</table>
+
+    <table style="width:1000px;margin-left: 10px;">
+    <tr>
+        <td style="width: 500px;">
+
+            <table style="font-size:15px;width: 500px;height:280px;margin-top: 10px;padding:0;">
+                <tr>
+                    <td style="width: 115px;">
+                        Project :
+                    </td>
+                    <td>
+                        {{ pr.project.projectName | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Area :
+                    </td>
+                    <td>
+                        {{ pr.project.projectArea.areaName | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Company Type :
+                    </td>
+                    <td>
+                        {{ pr.project.projectCategory.projectCategoryName | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        CCN :
+                    </td>
+                    <td>
+                        {{ pr.project.costCenterNumber | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Project Head :
+                    </td>
+                    <td>
+                        {{ pr.project.projectHead.username | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Address :
+                    </td>
+                    <td>
+                        {{ pr.project.address | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Cost Header :
+                    </td>
+                    <td>
+                        {{ pr.costHeader.title | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Category :
+                    </td>
+                    <td>
+                        {{ pr.category.categoryName | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Sub Category :
+                    </td>
+                    <td>
+                        {{ pr.subCategory.subCategoryName | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Priority :
+                    </td>
+                    <td>
+                        {{ pr.priority }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;height: 50px;">
+                        {% if pr.approvedDateCategoryHeadTwo != null and pr.closedDate != null and pr.status == 0 %}
+                            Closed
+                        {% endif %}
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <td style="width: 500px;">
+
+            <table style="font-size:15px;width: 500px;height:280px;margin-top: 10px;padding:0;">
+                <tr>
+                    <td style="width: 115px;">
+                        Requisition No :
+                    </td>
+                    <td>
+                        <span style="font-weight: bold;">{{ pr.id | default() }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Issued by :
+                    </td>
+                    <td>
+                        {{ pr.createdby.username | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+                        Issue Date :
+                    </td>
+                    <td>
+                        {{ pr.createdDate | date('d M Y') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px;">
+
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 90px;">
+                        <span style="font-weight: bold;"><u>Approval Info</u></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px">
+                        Created :
+                    </td>
+                    <td>
+                        <span style="font-weight: bold;">{{ pr.createdBy.username | default() }}</span>
+                        {% if  pr.createdDate != null %}
+                            on <span style="font-weight: bold;">{{ pr.createdDate | date('d M Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px">
+                        Verified :
+                    </td>
+                    <td>
+                        <span style="font-weight: bold;">{{ pr.approvedByProjectHead.username | default('not approved') }}</span>
+                        {% if  pr.approvedDateProjectHead != null %}
+                            on <span style="font-weight: bold;">{{ pr.approvedDateProjectHead | date('d M Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px">
+                        Validated :
+                    </td>
+                    <td>
+                        <span style="font-weight: bold;">{{ pr.approvedByCategoryHeadTwo.username | default('not validated') }}</span>
+                        {% if  pr.approvedDateCategoryHeadTwo != null %}
+                            on <span style="font-weight: bold;">{{ pr.approvedDateCategoryHeadTwo | date('d M Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 115px">
+                        Approved :
+                    </td>
+                    <td>
+                        <span style="font-weight: bold;">{{ pr.approvedByCategoryHeadOne.username | default('not verified') }}</span>
+                        {% if  pr.approvedDateCategoryHeadOne != null %}
+                            on <span style="font-weight: bold;">{{ pr.approvedDateCategoryHeadOne | date('d M Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
+
+{% if is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_ONE") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_TWO") or is_granted("ROLE_PURCHASE_REQUISITION_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+    <div>
+        {{ lastItemHistory | raw }}
+    </div>
+{% endif %}
+
+    <table id="table_requisition" class="col-md-12" style="margin-right:10px;margin-left:10px;font-size:15px;padding-bottom: 100px;width:1000px;">
+        <thead style="background-color:#4b8df8;">
+        <tr>
+            <th class="col-md-2">Item</th>
+            <th class="col-md-1">ItemType</th>
+            <th class="col-md-1">Quantity</th>
+            <th class="col-md-1">CancelQty</th>
+            <th class="col-md-1">Unit</th>
+            <th class="col-md-1">Claimed</th>
+            <th class="col-md-1">Local/Head</th>
+            <th class="col-md-1">status</th>
+            <th class="col-md-2">Required By</th>
+            <th class="col-md-1"></th>
+            <th class="col-md-1">Remarks/Specification</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for requisitionItem in pr.purchaseRequisitionItems %}
+            <tr style="padding-top:20px;">
+                <td style="width: 120px;padding-left: 10px! important;">
+                    {{ requisitionItem.item.itemName }}
+                </td>
+                <td style="width: 100px;padding-left: 10px! important;">
+                    {{ requisitionItem.item.itemType.itemType }}
+                </td>
+                <td style="width: 100px;padding-left: 10px! important;">
+                    {{ requisitionItem.quantity }}
+                </td>
+                <td style="width: 100px;padding-left: 10px! important;">
+                    {% if requisitionItem.purchaseRequisitionItemCloseInfo.quantity is defined %}
+                        {{ requisitionItem.purchaseRequisitionItemCloseInfo.quantity }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                <td style="width: 50px;padding-left: 10px! important;">
+                    {{ requisitionItem.item.itemUnit }}
+                </td>
+                <td>
+                    {% if requisitionItem.claimedBy != null %}
+                        {{ requisitionItem.claimedBy.username }}
+                    {% endif %}
+                    {% if requisitionItem.claimedBy == null %}
+                        None
+                    {% endif %}
+                </td>
+                <td style="width: 100px;padding-left: 10px! important;">
+                    {% if requisitionItem.claimedBy != null %}
+                        <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                            Claimed
+                        </div>
+                    {% endif %}
+                    {% if requisitionItem.claimedBy == null %}
+                        <div style="text-align:center;background: #4b8df8; color: #ffffff; width: 62px; height: 20px;">
+                            Open
+                        </div>
+                    {% endif %}
+                </td>
+                <td style="width: 100px;padding-left: 10px! important;">{{ requisitionItem.isHeadOrLocal ~ 'office' |default('') }}</td>
+
+                <td style="width: 100px;padding-left: 10px! important;">
+                    {{ requisitionItem.dateOfRequired | date('d M Y') }}
+                </td>
+
+                <td>
+                    {% if requisitionItem.purchaseRequisition.approvedByCategoryHeadTwo != null %}
+                        {% if requisitionItem.claimedBy == null %}
+                            {% if is_granted("ROLE_PURCHASE_REQUISITION_CLAIM") %}
+                                <a href="/purchase-requisition/item/claim/{{ requisitionItem.id }}"
+                                   class="btn blue btn-xs" style="width: 65px; color:#ffffff !important;">Claim</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td style="width: 180px;max-width: 180px;padding-left: 10px! important;">
+                    {{ requisitionItem.comment }}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+<table style="width: 1000px;">
+    <tr>
+        <td style="width:100%;height: 10px;background: lightgrey;">
+        </td>
+    </tr>
+</table>

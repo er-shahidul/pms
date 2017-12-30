@@ -1,0 +1,216 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Item Type
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Item Type</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="itemTypeMessege"></span>
+
+    {% if is_granted("ROLE_ITEM_TYPE_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+    <div class="modal-dialog" style="width: 1000px;padding-top: 15px !important;">
+        <div class="modal-content" style="background: white;">
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'item-type-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            {{ form_label(form.itemType, 'Item Type :', {'label_attr': {'class': 'control-label col-md-2', 'style' : 'margin-right:-60px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.itemType, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                            </div>
+                            <input type="button" name="ajaxSaveItemType" value="Save" id="ajaxSaveItemType" class="btn button-width" style="width: 100px;background: #0353D6; color: white !important;margin-top:2px;margin-left:10px;height:32px;">
+                            <span class="userMessege" style="margin-left: 185px;"></span>
+                            <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.itemType) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+    <ul class="nav nav-tabs">
+        <li class="{% if status == 'active' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('item_type',{status:'active'} ) }}">All</a></li>
+        <li class="{% if status == 'delete' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('item_type',{status:'delete'} ) }}">Deleted</a></li>
+    </ul>
+    <div class="tab-content" style="height: auto;background: #eee;">
+    <div class="tab-pane active">
+        <div data-always-visible="1" data-rail-visible="0">
+
+            <div class="fluid" id="item-type-refresh">
+                <div class="form-group">
+                    <div class="col-md-12" style="margin-top: 30px;">
+
+                        <table class="table bold" style="border: 1px solid ghostwhite;">
+                            <thead style="background: #4b8df8;color: #fff;">
+                            <tr>
+                                <th>Sl</th>
+                                <th class="sorted col-md-3">Item Type</th>
+                                <th class="col-md-3"></th>
+                                <th class="col-md-4"></th>
+                                <th class="col-md-2"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% set offset = itemTypes.getItemNumberPerPage * (itemTypes.currentPageNumber - 1) %}
+
+                            {% for itemType in itemTypes %}
+
+                                <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                                    <td>{{ loop.index + offset }}.</td>
+                                    <td>{{ itemType.itemType }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        {% if itemType.status == 1 %}
+                                            <a href="/item-type/delete/{{ itemType.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                        class="fa fa-trash-o"></i> Delete</a>
+
+                                            <a href="/item-type/update/{{ itemType.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                                        class="fa fa-edit"></i> Update</a>
+                                        {% endif %}
+                                        {% if itemType.status == 0 %}
+                                            <a href="#" style="width: 65px;" class="btn default btn-xs">Deleted</a>
+
+                                            <a href="/item-type/active/{{ itemType.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                                        class="fa fa-repeat"></i> Restore</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="navigation" style="text-align: right">
+                            {{ knp_pagination_render(itemTypes) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+            $("#ajaxSaveItemType").click(function () {
+                var sPageURL = window.location.pathname;
+                var sURLVariables = sPageURL.split('/');
+                var itemType = $("#itemtype_itemType").val();
+
+                var itemTypeArray = new Array(itemType, sURLVariables[3]);
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('item_type_ajax_add'),
+                    data: "itemTypeArray=" + itemTypeArray,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if(msg.responseCode == 200) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Item type already exist</span></div>');
+                            $('.itemTypeMessege').css('color', 'red').html(msg.item_type_name).fadeIn(1000).append($addLink);
+                            $(':input','#item-type-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('')
+                                    .removeAttr('checked')
+                                    .removeAttr('selected');
+                        } else if(msg.responseCode == 204) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Please Insert Item type</span></div>');
+                            $('.itemTypeMessege').css('color', 'red').html(msg.item_type_name).fadeIn(1000).append($addLink);
+                            $(':input','#item-type-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('')
+                                    .removeAttr('checked')
+                                    .removeAttr('selected');
+                        } else if(msg.responseCode == 202) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Item type Update Successfully</span></div>');
+                            $('.itemTypeMessege').css('color', 'green').html(msg.item_type_name).fadeIn(1000).append($addLink);
+                            $(':input','#item-type-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('')
+                                    .removeAttr('checked')
+                                    .removeAttr('selected');
+                            window.location.pathname = 'item-type';
+                        } else {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Item type Add Successfully</span></div>');
+                            $('.itemTypeMessege').css('color', 'green').html(msg.item_type_name).fadeIn(1000).append($addLink);
+                            $(':input','#item-type-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('')
+                                    .removeAttr('checked')
+                                    .removeAttr('selected');
+                        }
+
+                        $('.userMessege').fadeOut();
+                        $("#item-type-refresh").load("/item-type/refresh")
+                    }
+                });
+            });
+
+            $("#itemtype_itemType").keyup(function () {
+                var itemType = $(this).val();
+
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('item_type_check'),
+                    data: "itemType=" + itemType,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if (msg.responseCode == 200) {
+                            $('.userMessege').css('color', 'red').html(msg.item_type_name).fadeIn(1000);
+                        }
+                        else {
+                            $('.userMessege').css('color', 'green').html(msg.item_type_name).fadeIn(1000);
+                        }
+                    }
+                });
+            });
+
+{% endblock %}

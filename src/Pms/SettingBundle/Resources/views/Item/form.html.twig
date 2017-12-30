@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .form-group ul li {
+            list-style: none;
+            margin-left: -96px;
+        }
+        table tr td ul li {
+            list-style: none;
+            margin-left: -41px;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+               Item
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="/item" style="color: #333 !important;">Item</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="modal-dialog bodyWidth">
+        <div class="modal-content backgroundWhite">
+            <div class="modal-header backGroundLightGrey">
+                <h4 class="modal-title bold text-center"> Item</h4>
+            </div>
+<br/>
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'item-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'item-form', 'novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            {{ form_label(form.itemName, 'Item Name :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.itemName, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.itemName) }}</span>
+                            </div>
+                            <span class="userMessege" style="margin-left: 185px;"></span>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.price, 'Price :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.price, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.price) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2" style="margin-right:-50px;">Category</label>
+                            <div class="col-md-8">
+                                <div class="input-icon right">
+                                    <div class="controls">
+                                        {{ form_widget(form.category, {'attr': {
+                                        'class': 'form-control span6 m-wrap',
+                                        'data-placeholder': 'Select Category',
+                                        'data-required': '1' }}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="help-block" style="color:darkred;">{{ form_errors(form.category) }}</span>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.itemType, 'Item Type:', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.itemType, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.itemType) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.itemUnit, 'Unit Name:', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    {{ form_widget(form.itemUnit, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;' } }) }}
+                                </div>
+                                <span class="help-block" style="color:darkred;margin-left:55px;">{{ form_errors(form.itemUnit) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% set Route1 = app.request.uri %}
+                    {% set Url = Route1|split('?') %}
+                    {% set Url1 = Route1|split('/') %}
+                    <input type="hidden" value="{{ url('homepage') }}{{ Url1[3] }}?{{ Url[1] | default('1') }}" name="urlRef">
+                </div>
+            </div>
+
+            <div class="modal-footer" style="background: lightgrey;">
+                <div class="btn-group">
+                    <a href="/item" class="btn" style="width: 100px;background: #0353D6; color: white !important;">
+                        <i class="fa fa-ban"> Cancel</i>
+                    </a>
+                </div>
+                {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width', 'style': 'width: 100px;background: #0353D6; color: white !important;'} }) }}
+            </div>
+            {{ form_end(form) }}
+
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $("#item_itemName").keyup(function () {
+        var itemName = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('item_check'),
+            data: "itemName=" + itemName,
+            dataType: 'json',
+            success: function (msg) {
+                if (msg.responseCode == 200) {
+                    $('.userMessege').css('color', 'red').html(msg.item_name).fadeIn(1000);
+                }
+                else {
+                    $('.userMessege').css('color', 'green').html(msg.item_name).fadeIn(1000);
+                }
+            }
+        });
+    });
+
+{% endblock %}

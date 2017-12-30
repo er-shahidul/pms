@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .pagination > li > a, .pagination > li > span
+        {
+            background-color: #eee !important;
+            color: #000000 !important;
+        }
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+            background-color: #428bca !important;
+        }
+
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Payment
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('receive') }}" style="color: #333 !important;">Receive</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="receiveMessege"></span>
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+    <ul class="nav nav-tabs">
+        <li class="{% if status == 'request-for-payment' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('receive_payment',{status:'request-for-payment'} ) }}">Request for payment</a></li>
+        <li class="{% if status == 'archive' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('receive_payment',{status:'archive'} ) }}">Payment Archive</a></li>
+        <li class="{% if status == 'advance-payment' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('receive_advance',{status:'advance-payment'} ) }}">Advance Payment</a></li>
+        <li class="{% if status == 'advance-archive-payment' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('receive_advance_archive',{status:'advance-archive-payment'} ) }}">Advance Archive</a></li>
+    </ul>
+    <div class="tab-content style-content">
+    <div class="tab-pane active">
+        <div data-always-visible="1" data-rail-visible="0">
+
+            <div class="fluid" id="project-list-div">
+                <div class="form-group">
+                    <div class="portlet-body flip-scroll">
+                        <table class="table-bordered table-striped table-condensed flip-content">
+                            <thead class="flip-content"  style="background: #4b8df8">
+                            <tr>
+                                <th class="numeric">Sl</th>
+                                <th class="numeric">PO Date</th>
+                                <th class="numeric">PO NO</th>
+                                <th class="numeric">Vendor/Buyer</th>
+                                <th class="numeric">Status</th>
+                                <th class="numeric">POAmount</th>
+                                <th class="numeric">Advance Amount</th>
+                                <th class="numeric">CreatedBy</th>
+                                <th class="numeric">DeliveryDate</th>
+                                <th class="numeric"></th>
+                                <th class="numeric"></th>
+                                {% if status == 'advance-payment' %}
+                                <th class="numeric"></th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% set offset = purchaseOrders.getItemNumberPerPage * (purchaseOrders.currentPageNumber - 1) %}
+
+                            {% for purchaseOrder in purchaseOrders %}
+                                <tr style="height: 62px;background: #fff;border-top: 3px solid #eee !important;">
+                                    <td class="numeric">{{ loop.index + offset }}.</td>
+                                    <td class="numeric">{{ purchaseOrder.createdDate|date('d M Y') }}</td>
+                                    <td class="numeric">{{ purchaseOrder.id }}</td>
+                                    <td class="numeric">{{ purchaseOrder.vendorOrBuyer|default() }}</td>
+                                    <td class="numeric">
+                                        {% if purchaseOrder.approveStatus == 0 %}
+                                            <div style="text-align:center;background: #35aa47; color: #ffffff; width: 62px; height: 20px;">
+                                                created
+                                            </div>
+                                        {% endif %}
+                                        {% if purchaseOrder.approveStatus == 1 %}
+                                            <div style="text-align:center;background: #ffb848; color: #ffffff; width: 62px; height: 20px;">
+                                                Verified
+                                            </div>
+                                        {% endif %}
+                                        {% if purchaseOrder.approveStatus == 2 %}
+                                            <div style="text-align:center;background: #852b99; color: #ffffff; width: 62px; height: 20px;">
+                                                Validated
+                                            </div>
+                                        {% endif %}
+                                        {% if purchaseOrder.approveStatus == 3 %}
+                                            <div style="text-align:center;background: #555555; color: #ffffff; width: 62px; height: 20px;">
+                                                Approved
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric">{{ purchaseOrder.netTotal }} tk</td>
+                                    <td class="numeric">{{ purchaseOrder.advancePaymentAmount }} tk</td>
+                                    <td class="numeric">
+                                        {{ purchaseOrder.createdBy.username | default() }}
+                                    </td>
+                                    <td class="numeric">
+                                        {{ purchaseOrder.dateOfDelivered|date('d M Y') }}
+                                    </td>
+
+                                    <td class="numeric">
+                                        {% if purchaseOrder.path is not null %}
+                                            <a class="btn btn-xs" href="#" onclick="javascript: window.open('/purchase-order/attachment-view/{{ purchaseOrder.id }}/1')">
+                                                <i class="fa fa-cloud-upload"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="numeric">
+                                        {% if status == 'advance-payment' %}
+                                        <a href="{{ path('advance_payment_detail',{id:purchaseOrder.id, status: status}) }}" data-target="#ajax" data-toggle="modal"
+                                           class="btn blue btn-xs" style="margin-top:3px;width: 106px;">
+                                            Advance Payment
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="13" align="center"> No data available!</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}

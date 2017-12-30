@@ -1,0 +1,75 @@
+pms_document:
+    resource: "@PmsPettyCashBundle/Resources/config/transactionHistory/transactionHistory.yml"
+    prefix:   /
+
+pms_petty_cash_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: PmsPettyCashBundle:Default:index }
+
+bank_amount:
+    path:     /bank/amount
+    defaults: { _controller: PmsPettyCashBundle:Petty:index }
+
+transaction_history:
+    path:     /transaction/history
+    defaults: { _controller: PmsPettyCashBundle:Petty:transactionHistory }
+
+report_history:
+    path:     /report/history
+    defaults: { _controller: PmsPettyCashBundle:Petty:reportHistory }
+
+bank_add:
+    path:     /bank/add
+    defaults: { _controller: PmsPettyCashBundle:Petty:bankAdd }
+
+transaction_add:
+    path:     /transaction/add
+    defaults: { _controller: PmsPettyCashBundle:Petty:transactionAdd }
+
+petty_cash_transaction_attachment_view:
+    pattern: /transaction/attachment-view/{id}/{index}
+    defaults: { _controller: PmsPettyCashBundle:Petty:attachmentView }
+
+transaction_update:
+    pattern: /transaction/update/{id}
+    defaults: { _controller: PmsPettyCashBundle:Petty:transactionupdate }
+    requirements:
+          id:  \d+
+
+transaction_delete:
+    pattern: /transaction/delete/{id}
+    defaults: { _controller: PmsPettyCashBundle:Petty:transactionDelete }
+    requirements:
+          id:  \d+
+
+bank_update:
+    pattern: /bank/delete/{id}
+    defaults: { _controller: PmsPettyCashBundle:Petty:bankDelete }
+    requirements:
+          id:  \d+
+
+bank_transaction_status_update:
+    pattern: /transaction/status/{id}
+    defaults: { _controller: PmsPettyCashBundle:Petty:transactionStatusUpdate }
+    requirements:
+          id:  \d+
+
+remaining_balance_transaction:
+    pattern: /bank/
+    defaults: { _controller: PmsPettyCashBundle:Petty:bankDelete }
+    options:
+            expose: true
+petty_cash_bank_report_excel:
+    pattern: /petty-cash-bank-report-excel
+    defaults: { _controller: PmsPettyCashBundle:Petty:pettyCashBankExcelReport }
+    options:
+            expose: true
+
+petty_transaction_excel:
+    pattern: /petty-transaction-excel
+    defaults: { _controller: PmsPettyCashBundle:Petty:pettyTransactionExcel }
+    options:
+            expose: true
+
+PmsInventoryBundle_report:
+    resource: "@PmsPettyCashBundle/Resources/config/pettyReport.yml"

@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .pagination > li > a, .pagination > li > span
+        {
+            background-color: #eee !important;
+            color: #000000 !important;
+        }
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+            background-color: #428bca !important;
+        }
+
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('delivery_list') }}" style="color: #333 !important;">Delivery</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+    <form action="" method="get" style="margin-bottom:10px;" id="inventoryStockFrm">
+
+        <div class="form-group">
+            <div class="form-group">
+                <div class="col-md-2">
+                    <div class="input-icon">
+                        <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.start_date, { 'attr': {'class': 'form-control datepicker', 'style': 'width: 150px;'} }) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-2">
+                    <div class="input-icon">
+                        <div class="input-group input-small date date-picker" data-date-format="yyyy-mm-dd" data-date-minviewmode="months" data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.end_date, { 'attr': {'class': 'form-control datepicker', 'style': 'width: 150px;'} }) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group input-medium">
+                    {{ form_widget(form.item, { 'attr': {'class': 'col-md-3 form-control select2me fontColorBlack', 'placeholder': ' Select Item'} }) }}
+                </div>
+            </div>
+        </div>
+        <input type="submit" value="Search" style="margin-left:120px;" name="submit" class="btn blue">
+    </form>
+    <span class="buyerMessege"></span>
+    <!--BEGIN TABS-->
+    <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+        <input type="button" value="Export in excel" name="inventoryStockReportExcel" id="inventoryStockReportExcel" class="btn blue">
+    </div>
+
+    <div class="tabbable tabbable-custom">
+       {# <ul class="nav nav-tabs">
+            <li class="active"><a class="tabForTable" rel="#tab_1_1" href="#tab_1_1" style="color: black !important;" data-toggle="tab">All</a></li>
+        </ul>#}
+        <div class="tab-content style-content">
+            <div class="tab-pane active" id="tab_1_1">
+                <div class="" data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="project-list-div">
+                        <div class="form-group">
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content">
+                                    <thead class="flip-content"  style="background: #4b8df8">
+
+                                    <tr>
+                                        <th class="numeric">Sl</th>
+                                        <th class="numeric">Date</th>
+                                        <th class="numeric">Project Name</th>
+                                        <th class="numeric">Stock In Hand Qty</th>
+                                        <th class="numeric">Price</th>
+                                        <th class="numeric">Total Amount</th>
+                                    </tr>
+
+                                    </thead>
+                                    <tbody>
+
+                                {% for index, stockList in stockLists %}
+
+                                    <tr>
+                                        <td> {{ index + 1 }}</td>
+                                        <td>{{stockList['createdDate']|date('d M Y')}}</td>
+                                        <td>{{ stockList['projectName'] }}</td>
+                                        <td>{{ stockList['stockInHandQty'] }}</td>
+                                        <td>{{ stockList['price'] }}</td>
+                                        <td>{{ stockList['stockInHandQty'] * stockList['price'] }}</td>
+
+                                    </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="navigation text-right">
+                                    {#{{ knp_pagination_render(deliveryLists) }}#}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+
+    {#<script>#}
+        {{ parent() }}
+            $('select').select2();
+
+            {#$(".datepicker").datepicker( {#}
+            {#format: "yyyy-mm-01",#}
+            {#viewMode: "months",#}
+            {#minViewMode: "months"#}
+            {#});#}
+
+        $('#inventoryStockReportExcel').click(function () {
+
+            setTimeout(function(){
+                $('#inventoryStockFrm').attr('action', '{{ path('stock_report') }}');
+            }, 1000);
+
+            $.ajax({
+                form: 'inventoryStockFrm',
+                url: Routing.generate('inventory_stock_report_bundle_excel'),
+                dataType: 'form html'
+            });
+        });
+
+
+{% endblock %}

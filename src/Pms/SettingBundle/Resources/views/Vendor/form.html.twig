@@ -1,0 +1,433 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .form-group ul li {
+            list-style: none;
+            margin-left: -96px;
+        }
+        table tr td ul li {
+            list-style: none;
+            margin-left: -41px;
+        }
+        .validation{
+            margin-left: 58px;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('vendor') }}" style="color: #333 !important;">Vendor</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <div class="modal-dialog bodyWidth">
+        <div class="modal-content backgroundWhite">
+            <div class="modal-header backGroundLightGrey">
+                <h4 class="modal-title bold text-center"> Vendor</h4>
+            </div>
+<br/>
+            {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'vendor-form', 'novalidate': 'novalidate'} }) }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            {{ form_label(form.vendorName, 'Vendor Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.vendorName, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.vendorName) }}</span>
+                            </div>
+
+                            <span class="userMessege" style="margin-left: 266px;"></span>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.contractPerson, 'Contact Person :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.contractPerson, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.contractPerson) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.contractNo, 'Contact No :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.contractNo, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.contractNo) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.email, 'Email :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.email, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.email) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.tradeLicenseNo, 'Trade License No :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.tradeLicenseNo, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.tradeLicenseNo) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.tinCertificateNo, 'Tin Certificate No :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.tinCertificateNo, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.tinCertificateNo) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.vatCertificateNo, 'VAT Certificate No :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.vatCertificateNo, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.vatCertificateNo) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.bankAccountNo, 'Bank Account No :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.bankAccountNo, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.bankAccountNo) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.bankAccountName, 'Bank Account Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.bankAccountName, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.bankAccountName) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.branchName, 'Branch Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.branchName, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.branchName) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.vendorAddress, 'Address :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.vendorAddress, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.vendorAddress) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.paymentType, 'Payment Type :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.paymentType, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.paymentType) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.area, 'Area :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon">
+                                    <i class="fa"></i>
+                                    {{ form_widget(form.area, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.area) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.itemTypes, 'Item Type :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon right">
+                                    <div class="controls">
+                                        {{ form_widget(form.itemTypes, {'attr': {
+                                            'class': 'form-control span6 m-wrap',
+                                            'data-placeholder': 'Select Item Type',
+                                            'data-required': '1' }}) }}
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.itemTypes) }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.vat_file.fileName, 'Vat File Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon right">
+                                    <div class="controls">
+                                        {{ form_widget(form.vat_file.fileName, {'attr': {
+                                            'class': 'form-control span6 m-wrap',
+                                            'data-placeholder': 'Select Item Type',
+                                            'data-required': '1' }}) }}
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.vat_file.fileName) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.vat_file.description, 'Vat Description :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon right">
+                                    <div class="controls">
+                                        {{ form_widget(form.vat_file.description, {'attr': {
+                                            'class': 'form-control span6 m-wrap',
+                                            'data-placeholder': 'Select Item Type',
+                                            'data-required': '1' }}) }}
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.vat_file.description) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.vat_file.file, 'Vat File Attach :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } } ) }}
+                            <div class="col-md-8">
+                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.vat_file.file, { 'attr': {'class': 'default'} }) }}
+													</span>
+                                        <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.vat_file.file) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.tax_file.fileName, 'Tax File Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon right">
+                                    <div class="controls">
+                                        {{ form_widget(form.tax_file.fileName, {'attr': {
+                                            'class': 'form-control span6 m-wrap',
+                                            'data-placeholder': 'Select Item Type',
+                                            'data-required': '1' }}) }}
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.tax_file.fileName) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.tax_file.description, 'Tax Description :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon right">
+                                    <div class="controls">
+                                        {{ form_widget(form.tax_file.description, {'attr': {
+                                            'class': 'form-control span6 m-wrap',
+                                            'data-placeholder': 'Select Item Type',
+                                            'data-required': '1' }}) }}
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.tax_file.description) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.tax_file.file, 'Tax File Attach :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } } ) }}
+                            <div class="col-md-8">
+                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.tax_file.file, { 'attr': {'class': 'default'} }) }}
+													</span>
+                                        <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.tax_file.file) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.trade_file.fileName, 'Trade File Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon right">
+                                    <div class="controls">
+                                        {{ form_widget(form.trade_file.fileName, {'attr': {
+                                            'class': 'form-control span6 m-wrap',
+                                            'data-placeholder': 'Select Item Type',
+                                            'data-required': '1' }}) }}
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.trade_file.fileName) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.trade_file.description, 'Trade Description :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+                            ) }}
+                            <div class="col-md-8">
+                                <div class="input-icon right">
+                                    <div class="controls">
+                                        {{ form_widget(form.trade_file.description, {'attr': {
+                                            'class': 'form-control span6 m-wrap',
+                                            'data-placeholder': 'Select Item Type',
+                                            'data-required': '1' }}) }}
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;">{{ form_errors(form.trade_file.description) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.trade_file.file, 'Trade File Attach :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } } ) }}
+                            <div class="col-md-8">
+                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                    <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.trade_file.file, { 'attr': {'class': 'default'} }) }}
+													</span>
+                                        <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                                    </div>
+                                </div>
+                                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.trade_file.file) }}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer" style="background: lightgrey;">
+                <div class="btn-group">
+                    <a href="/vendor" class="btn" style="width: 100px;background: #0353D6; color: white !important;">
+                        <i class="fa fa-ban"> Cancel</i>
+                    </a>
+                </div>
+                {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width', 'style': 'width: 100px;background: #0353D6; color: white !important;'} }) }}
+            </div>
+            {{ form_end(form) }}
+
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+    $("#vendor_vendorName").keyup(function () {
+        var vendorName = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: Routing.generate('vendor_check'),
+            data: "vendorName=" + vendorName,
+            dataType: 'json',
+            success: function (msg) {
+                if (msg.responseCode == 200) {
+                    $('.userMessege').css('color', 'red').html(msg.vendor_name).fadeIn(1000);
+                }
+                else {
+                    $('.userMessege').css('color', 'green').html(msg.vendor_name).fadeIn(1000);
+                }
+            }
+        });
+    });
+
+{% endblock %}

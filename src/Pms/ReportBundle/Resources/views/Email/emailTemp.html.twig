@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Nourish purchase management system
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('email_temp') }}" style="color: #333 !important;">Email</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    <!--BEGIN TABS-->
+    <div>
+        <div class="form-group">
+            <div class="col-md-2">
+                <div class="input-icon">
+                    <a href="{{ path('email_send') }}" class="btn blue btn-xs" style="width: 100px;color:#ffffff !important;">Email Send</a>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-2">
+                <div class="input-icon">
+                    <a href="{{ path('email_view') }}" class="btn blue btn-xs" style="width: 100px;color:#ffffff !important;">Email View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}

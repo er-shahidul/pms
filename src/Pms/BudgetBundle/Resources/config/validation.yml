@@ -1,0 +1,12 @@
+Pms\BudgetBundle\Entity\Budget:
+    properties:
+        month:
+            - NotBlank: { message: "Month should not be blank" }
+
+Pms\BudgetBundle\Entity\BudgetForSubCategory:
+    properties:
+        amount:
+            - NotBlank: { message: "Amount should not be blank" }
+            - Regex:
+                  pattern: "/^[\d]+$/i"
+                  message: "Amount should be number"

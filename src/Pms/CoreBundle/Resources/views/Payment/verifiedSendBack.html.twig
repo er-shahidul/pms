@@ -1,0 +1,354 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{% set totalAdjustmentAmount =0 %}
+{% for history in paymentHistory %}
+    {% set totalAdjustmentAmount = totalAdjustmentAmount + history.adjustmentAmount %}
+{% endfor %}
+    {%  set dueAdjust =  payment.purchaseOrder.advancePaymentAmount-totalAdjustmentAmount %}
+
+
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Payment
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('payment') }}" style="color: #333 !important;">Payment</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    {% set currentPath = path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')) %}
+    {% set currentUrl = currentPath | split('/')  %}
+    <!-- END PAGE HEADER-->
+    <div id="reload-all-receive">
+        <div class="portlet-title">
+            <ul class="nav nav-tabs">
+                <li ><a class="tabForTable" style="color: black !important;" href="{{ path('payment') }}">Payment request </a></li>
+                <li {% if currentUrl[2] == 'verify' %}class="active"{% endif %}><a class="tabForTable" style="color: black !important;" href="{{ path('approved_payment') }}">Payment verified</a></li>
+                <li class=""><a class="tabForTable" style="color: black !important;" href="{{ path('payment_archive' ) }}">Payment archive</a></li>
+            </ul>
+        </div>
+
+        <form action="{{ path('payment_approved') }}" method="post" id="verifiedSubmitAction">
+
+            <div class="modal-dialog" style="width: 1000px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background: lightgrey;">
+                        <button type="button" class="close close-modal-refresh closeBack" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title bold" style="text-align: center;">Payment verified</h4>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="col-md-6" >
+                            <table class="table table-hover">
+                                <tr>
+                                    <td class="label-td"> Order Number:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.id }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td"> Ref. No:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.refNo| default() }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">Company Type:</td>
+                                    <td class="value-td">
+                                        {{ payment.purchaseOrder.companyType | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td"> Issue Date:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.createdDate | date('d M Y') }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="label-td"> Payment Type:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.poNonpo.name | default() }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td"> Payment Method:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.paymentMethod|default("N/A") }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td"> Payment From:</td>
+                                    <td class="value-td">
+                                        {% if payment.purchaseOrder.paymentFrom == 2 %}
+                                            Head Office
+                                        {% else %}
+                                            Local Office
+                                        {% endif  %}
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+                        <div class="col-md-6" >
+                            <table class="table table-hover">
+                                {% if  payment.purchaseOrder.buyer is not null %}
+                                <tr>
+                                    <td class="label-td">Buyer :</td>
+                                    <td class="value-td" >{{ payment.purchaseOrder.buyer.username | default() }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if  payment.purchaseOrder.vendor is not null %}
+                                <tr>
+                                    <td class="label-td">Vendor:</td>
+                                    <td class="value-td" >{{ payment.purchaseOrder.vendor.vendorName | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">Contact Person:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.vendor.contractPerson | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td"> Mobile:</td>
+                                    <td>{{ payment.purchaseOrder.vendor.contractNo | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">Address:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.vendor.vendorAddress | default() }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="label-td">Bank name:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.vendor.bankAccountName | default() }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">Account no:</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.vendor.bankAccountNo | default() }}</td>
+                                </tr>
+                                    <tr>
+                                        <td class="label-td">Branch name :</td>
+                                    <td class="value-td">{{ payment.purchaseOrder.vendor.branchName | default() }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="portlet box green">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-cogs"></i>Payment Request</div>
+                            </div>
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content">
+                                    <thead class="flip-content" style="background: #4b8df8">
+                                    <tr>
+                                        <th class="numeric">Payment ID</th>
+                                        <th class="numeric">Payment Requested By</th>
+                                        <th  class="numeric">Bill number</th>
+                                        <th class="numeric">GRN</th>
+                                        <th class="numeric">Amount</th>
+                                        <th class="numeric">Payment Type</th>
+                                        <th class="numeric">Invoice</th>
+                                        <th class="numeric">Challan</th>
+                                        <th class="numeric">GRN</th>
+                                        <th class="numeric">PO</th>
+                                        <th class="numeric">Po No</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{ readyForPayment|raw }}
+
+                                    </tbody>
+                                    <tfoot>
+
+                                     <tr>
+                                        <td colspan="4">Total Request Amount :</td>
+                                        <td colspan="2">{{ total_request_amount|number_format(2, '.', ',') }}</td>
+                                    </tr>
+
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-cogs"></i>Verified</div>
+                            </div>
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content">
+                          <tr>
+                            <td colspan="2">Total PO Amount :</td>
+                            <td colspan="2">{{ payment.purchaseOrder.netTotal|number_format(2, '.', ',') }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Total Request Amount :</td>
+                            <td colspan="2">{{ total_request_amount|number_format(2, '.', ',') }}</td>
+                        </tr>
+                        {% if payment.purchaseOrder.isAdvancePayment == 1 %}
+                            <tr>
+                                <td colspan="2">Advance Paid  Amount :</td>
+                                <td colspan="2">{{ payment.purchaseOrder.advancePaymentAmount|number_format(2, '.', ',') }}</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2">Adjustment Amount :</td>
+                                <td colspan="2">
+                                    <input type="text" style="border: 1px seashell solid" id="adjustmentAmount" name="adjustmentAmount" placeholder="{{ dueAdjust }}" value="">
+                                   </td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td colspan="2">Send Back Status</td>
+                            <td colspan="2">
+                                <textarea class="sendBackComments" cols="50" rows="10" name="sendBackComments"
+                                          placeholder="Enter Comments"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                            <td colspan="2">
+                                <input type="hidden" name="paymentID" value="{{ payment.id }}">
+                                <input type="hidden" name="purchaseOrderId" value="{{ payment.purchaseOrder.id }}">
+                                <input type="hidden" name="paymentAmount" class="paymentAmount" value="{{ total_request_amount }}">
+                                {#<input type="hidden" name="paymentRequest" class="paymentRequest" value="{{ total_request_amount }}">#}
+                                {% if payment.purchaseOrder.isAdvancePayment == 1 %}
+                                    <input type="button" name="button" id="verifiedPaymentButton" class="btn blue" value="Verified">
+                                {% else %}
+                                    <input type="submit" name="button" class="btn blue" value="Verified">
+                                {% endif %}
+                                <input type="submit" onclick="return confirm('Are You Sure You Want To Send Back This Request?')"  name="send-back" class="btn blue"  value="SendBack">
+                            </td>
+                        </tr>
+                     </table>
+
+                            </div>
+                            </div>
+
+                        <div class="clearfix"></div>
+                        <div class="portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-cogs"></i>Payment History</div>
+                            </div>
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content">
+                                    <thead class="flip-content" style="background: #35aa47">
+                                    <tr>
+                                        <th class="numeric">Approved Date</th>
+                                        <th class="numeric">Payment Date</th>
+                                        <th class="numeric">Bill Number</th>
+                                        <th class="numeric">GRN Number</th>
+                                        <th class="numeric">Requested Amount</th>
+                                        <th class="numeric">Payment Amount</th>
+
+                                        <th class="numeric">Adjustment Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% set totalPaymentAmount =0 %}
+                                    {% set totalAdjustmentAmount =0 %}
+
+                                    {% for history in paymentHistory %}
+                                        <tr>
+                                        {% set totalPaymentAmount = totalPaymentAmount + history.paymentAmount %}
+                                        {% set totalAdjustmentAmount = totalAdjustmentAmount + history.adjustmentAmount %}
+                                        <td>{{ history.requestDate|date('d-m-Y') }}</td>
+                                        <td>{{ history.paymentDate|date('d-m-Y') }}</td>
+                                        <td> {{ history.billNumber}} </td>
+                                        <td>
+                                            {% for readtPayment in history.readyForPayments %}
+
+                                                {{ readtPayment.grn.id|default('ADV') }},
+
+                                            {% endfor %}
+                                        </td>
+
+                                        <td> {{ history.requestAmount|number_format(2, '.', ',') }} </td>
+                                        <td> {{ history.paymentAmount|number_format(2, '.', ',') }} </td>
+                                        <td> {{ history.adjustmentAmount|number_format(2, '.', ',') }} </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="2">Total PO Amount :</td>
+                                        <td colspan="2">{{ payment.purchaseOrder.netTotal|number_format(2, '.', ',') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">Total Payment Amount :</td>
+                                        <td colspan="2">{{ totalPaymentAmount|number_format(2, '.', ',') }}</td>
+                                    </tr>
+                                    {% if payment.purchaseOrder.isAdvancePayment == 1 %}
+                                    <tr>
+                                        <td colspan="2">Total Advance Amount :</td>
+                                        <td colspan="2">{{ payment.purchaseOrder.advancePaymentAmount|number_format(2, '.', ',') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">Total Adjustment Amount :</td>
+                                        <td colspan="2">{{ totalAdjustmentAmount|number_format(2, '.', ',')|default(0) }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                                      <div class="modal-footer" style="width: 100%;background: lightgrey;">
+                        {#<div class="btn-group">
+                            <a href="{{ path('payment_delete',{id:payment.id}) }}" class="btn" style="font-family: 'Open Sans', sans-serif;width: 100px;background: #0353D6; color: white !important;">
+                                << Previous
+                            </a>
+                        </div>#}
+
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+{#<script>#}
+    {{ parent() }}
+
+        $(".closeBack").click( function (){
+        window.history.back();
+        });
+
+        $('#verifiedPaymentButton').click( function (){
+
+            {#var advancePaymentAmount = {{ payment.purchaseOrder.advancePaymentAmount }}#}
+             var adjustmentAmount = parseFloat($('#adjustmentAmount').val());
+            var placeAdjustmentAmount = document.getElementById("adjustmentAmount").getAttribute("placeholder");
+
+            checkMaxAmount(adjustmentAmount,placeAdjustmentAmount);
+        });
+
+        function checkMaxAmount(adjustmentAmount,placeAdjustmentAmount){
+
+            if(adjustmentAmount > placeAdjustmentAmount ){
+                alert('Adjustment amount can'+"'"+'t'+ ' more than  '+ placeAdjustmentAmount+ " BDT amount");
+                $('#adjustmentAmount').val('');
+                return false;
+            } else {
+
+              $('#verifiedSubmitAction').submit();
+            }
+        }
+
+{% endblock %}

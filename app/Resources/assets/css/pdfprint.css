@@ -1,0 +1,153 @@
+table , table tr , table tr td{
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    font-family:tahoma, geneva, sans-serif;
+
+}
+table{
+    width: 100%;
+}
+
+.table{
+    width: 100%;
+
+}
+.main-table{
+    /*min-height: 28.7cm !important;*/
+    width: 100%;
+    display: inline-block;
+}
+.main-table .table-head{
+    width: 100%;
+    min-height: 5cm;
+    margin-top: 2cm!important;
+}
+.main-table .table-head .title{
+    width:100%;
+    font-weight:bold;
+    height: 30px;
+    background-color: lightgrey;
+    text-align: center;
+    font-size: 18px;
+}
+
+.table .table-body-first{
+    width: 100%;
+    margin-bottom: 5cm!important;
+    height: 15cm;
+}
+.table .table-body{
+    width: 100%;
+    margin-top: 2cm!important;
+    margin-bottom: 6cm!important;
+}
+
+.table .table-body-last{
+    width: 100%;
+    margin-top: 2cm!important;
+    margin-bottom: 2cm!important;
+    height: 22cm;
+}
+
+
+.header-td{
+    vertical-align:top;
+    height: 150px
+}
+
+.header-td .table-left{
+    font-size: 20px !important;
+    width:50%;
+    margin-top: 10px;
+    padding-top:20px;
+    float: left;
+}
+.header-td .table-left .label-td{
+    text-align: right;
+    padding-right: 20px;
+    width: 30%;
+
+}
+.header-td .table-left .value-td{
+    text-align: left;
+
+}
+.header-td .table-left .value-td span{
+    text-align: left;
+    font-weight: normal;
+    padding-left: 3px;
+    padding-right: 3px;
+    display: inline-block;
+}
+
+.body-td{
+    vertical-align:top;
+    height: 20px;
+    line-height: 20px;
+}
+
+.body-td h2 , .body-td h2{
+    font-size: 16px;
+}
+
+table.table_order, table.table_order tr, .table_order tr th, .table_order tr td{
+    border: 1px solid #ccc!important;
+    border-collapse: collapse; padding: 0; margin: 0
+
+}
+.table_order{
+    font-size: 20px !important;
+    border: 0 solid #4b8df8;
+    width: 100%;
+
+}
+
+
+
+.table_order thead {
+    background-color: #4b8df8;
+}
+.table_order thead tr{
+    height: 30px;
+}
+.table_order thead th{
+    text-align: left;
+    padding-left: 5px;
+    line-height: 30px;
+
+}
+
+.table_order tr td.col-md-3{
+    text-align: left;
+    padding-left: 5px;
+    line-height: 20px;
+    border-bottom: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+}
+
+.delivery-address{
+    height:70px;
+    margin-top: 5px;
+    padding: 7px;
+    float: left;
+    margin-right: 5px;
+    width:30%;
+    overflow: hidden;
+    border: 1px solid #cccccc;
+
+}
+.delivery-address h3{
+    font-size:10px;
+    margin: 0;
+    padding: 0;
+}
+.delivery-address p{
+    line-height: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+

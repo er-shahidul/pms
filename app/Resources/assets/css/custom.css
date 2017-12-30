@@ -1,0 +1,349 @@
+/* here you can put your own css to customize and override the theme */
+
+.form-inline input {
+    border: 1px solid #ccc !important;
+}
+.verifiedButton {
+    background: #4b8df8;
+    height: 40px;
+    color:#ffffff;
+    padding: 9px 14px !important;
+    position: absolute;
+    top: -69px;
+    right: 10%;
+}
+.pagination > li > a, .pagination > li > span
+{
+    background-color: #eee !important;
+    color: #000000 !important;
+}
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+    background-color: #428bca !important;
+}
+.dataTables_filter{
+    float: right;
+}
+div.fontColorBlack{
+    color: #000000!important;
+}
+#s2id_search_item{
+    color: #000000!important;
+}
+a.select2-choice{
+    color: #000000!important;
+}
+span.select2-chosen{
+    color: #000000!important;
+}
+abbr.select2-search-choice-close{
+    color: #000000!important;
+}
+span.select2-arrow{
+    color: #000000!important;
+}
+input#s2id_autogen1{
+    color: #000000!important;
+}
+select#search_item{
+    color: #000000!important;
+}
+option{
+    color: #000000!important;
+}
+.margin-left-39{
+    margin-left: -39px;
+}
+.form-group ul li{
+    list-style: none;
+    /*margin-left: -39px;*/
+}
+.width100{
+    width: 100px;
+}
+
+.background0353D6{
+    background: #0353D6;
+}
+
+.height400{
+    height:400px;
+}
+
+.paddingLeft15{
+    padding-left: 15px !important;
+}
+
+.paddingLeft10{
+    padding-left: 10px !important;
+}
+
+.margin-top10{
+    margin-top: 10px !important;
+}
+
+.marginLeft-30{
+    margin-left: -30px !important;
+}
+
+.marginLeft30{
+    margin-left: 30px !important;
+}
+
+.marginLeft15{
+    margin-left: 15px !important;
+}
+
+.marginLeft-10{
+    margin-left: -10px !important;
+}
+
+.height300{
+    height:300px;
+}
+
+.height70{
+    height:70px;
+}
+
+.height50{
+    height:50px;
+}
+
+.height100{
+    height:100px;
+}
+
+.bodyWidth{
+    width: 1000px;
+}
+
+.backgroundWhite{
+    background: #ffffff;
+}
+
+.backGroundLightGrey{
+    background: lightgrey;
+}
+
+.colorWhite{
+    color: white ;
+}
+
+.style-content{
+    height: auto;
+    background: #eee !important;
+}
+
+.backgroundTableHeader{
+    background: #4b8df8;
+}
+
+.margin-top-30{
+    margin-top: 30px !important;
+}
+
+.margin-top100{
+    margin-top: 100px !important;
+}
+
+.border-1-ghostwhite{
+    border: 1px solid ghostwhite !important;
+}
+
+.paddind-top-18{
+    padding-top: 18px !important;
+}
+
+.paddind-top-11{
+    padding-top: 11px !important;
+}
+
+.btnColor{
+    font-family: 'Open Sans', sans-serif;
+    color: black !important;
+}
+
+.btn{
+    font-family: 'Open Sans', sans-serif;
+    color: black !important;
+}
+
+thead, tr, th, a{
+    font-family: 'Open Sans', sans-serif;
+    color: #fff !important;
+}
+
+table, tr, td{
+    font-family: 'Open Sans', sans-serif;
+    color: black !important;
+    font-weight: normal !important;
+}
+
+[tooltip]:before {
+    position : absolute;
+    content : attr(tooltip);
+    opacity : 0;
+}
+
+[tooltip]:hover:before {
+    margin-top: -30px;
+    opacity : 1;
+    width: auto;
+    background: #4b8df8;
+    color: #fff;
+    text-align: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+[tooltip]:not([tooltip-persistent]):before {
+    pointer-events: none;
+}
+
+.left_top {
+    margin-left: 14px !important;
+    margin-top: 12px !important;
+}
+
+textarea {
+    height: 100px;
+}
+
+.border_cat {
+    border: 1px solid lightgray;
+}
+
+.margin_cat_top {
+    margin: 10px;
+}
+
+.control-label {
+    text-align: left !important;
+    margin-left: 60px;
+}
+
+.height-div {
+    height: 50px;
+}
+
+.form-actions {
+    margin-top: 10px !important;
+}
+
+.col-md-6 .label-td{
+    text-align: right;
+    padding-right: 20px;
+    width: 35%;
+
+}
+.col-md-6 .value-td{
+    text-align: left;
+}
+.post-comment{
+    width: 100%;
+    border: 1px solid #000033;
+    padding: 5px;
+}
+
+.ui-dialog {
+    font-size: 11px;
+    width: 350px!important;
+}
+
+.ui-widget-overlay {
+    background: #a6a6a6;
+    opacity: 0.4;
+}
+.ui-widget-overlay {
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    border-bottom-right-radius: 6px;
+}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    border-bottom-left-radius: 6px;
+}
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+    border-top-right-radius: 6px;
+}
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+    border-top-left-radius: 6px;
+}
+.ui-widget-content {
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    color: #333333;
+    width: 350px!important;
+}
+
+.ui-widget-header {
+    background: #cc0000;
+    border: 1px solid #e3a1a1;
+    color: #ffffff;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+}
+.ui-dialog .ui-dialog-title {
+    float: left;
+    margin: 0.1em 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 90%;
+    padding-left: 10px;
+}
+
+.ui-dialog-titlebar-close {
+    background-color: #4d90fe;
+    background-image: url("../../assets/img/portlet-remove-icon-white.png");
+    background-position: 5px center;
+    background-repeat: no-repeat;
+    background-size: 10px auto;
+    border: 1px solid #ffffff;
+    height: 20px;
+    margin: -10px 0 0;
+    padding: 1px;
+    position: absolute;
+    right: 0.3em;
+    top: 15%;
+    width: 21px;
+}
+
+
+.ui-dialog .ui-dialog-content {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 0 none;
+    overflow: auto;
+    padding: 0.5em 1em;
+    position: relative;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    background-image: none;
+    border-width: 1px 0 0;
+    margin-top: 0.5em;
+    padding: 0.3em 1em 0.5em 0.4em;
+    text-align: right;
+}
+.ui-dialog .ui-dialog-buttonpane button {
+    cursor: pointer;
+    margin: 0.5em 0.4em 0.5em 0;
+    border: 1px solid #000000;
+    background-color: #4d90fe;
+    color: white;
+
+}
+.tableHeadColor{
+    background: #4b8df8;
+    color: #fff;
+}
+.displayForMob{
+    display: none;
+}

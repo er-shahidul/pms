@@ -1,0 +1,467 @@
+{#{% extends 'base.html.twig' %}#}
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('assets/css/pdfprint.css',null,true) }}">
+    <style>
+        .table-body-last .delivery-address h3,p{
+            font-size: 18px;
+        }
+    </style>
+    <table class="table">
+    <tr valign="top">
+        <td valign="top" class="main-table">
+            <div class="table-head">
+                <table>
+                    <tr>
+                        <td colspan="2" class="title">Purchase Order</td>
+                    </tr>
+                    <tr>
+                        <td class="header-td">
+                            <table class="table-left">
+                                <tr>
+                                    <td class="label-td">
+                                        Order Number :
+                                    </td>
+                                    <td class="value-td">
+                                        {{ po.id }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Ref. No :
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ po.refNo | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Company Type :
+                                    </td>
+                                    <td class="value-td">
+                                      <strong>  {{ po.companyType | default() }} </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Purchase Type :
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ po.poNonpo.name | default() }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Issue Date :
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ po.createdDate | date('d M Y') }}
+                                    </td>
+                                </tr>
+                                {% if  po.buyer is not null %}
+                                    <tr>
+                                        <td class="value-td" colspan="2">
+                                            <span style="font-weight: bold;"><u>Buyer Info</u></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td">
+                                            Buyer :
+                                        </td>
+                                        <td class="value-td" >
+                                            {{ po.buyer.username | default() }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% if  po.vendor is not null %}
+                                    <tr>
+                                        <td class="value-td" colspan="2">
+                                            <span style="font-weight: bold;"><u>Vendor Info</u></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td">
+                                            Vendor :
+                                        </td>
+                                        <td class="value-td" >
+                                       <strong>     {{ po.vendor.vendorName | default() }} </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td">
+                                            Contact Person :
+                                        </td>
+                                        <td class="value-td">
+                                            {{ po.vendor.contractPerson | default() }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td">
+                                            Mobile :
+                                        </td>
+                                        <td>
+                                            {{ po.vendor.contractNo | default() }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-td">
+                                            Address :
+                                        </td>
+                                        <td class="value-td">
+                                            {{ po.vendor.vendorAddress | default() }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% if po.vendorQuotationReferenceNumber is not null %}
+                                    <tr>
+                                        <td class="label-td">
+                                            Vendor Quotation:
+                                        </td>
+                                        <td class="value-td">
+                                            {{ po.vendorQuotationReferenceNumber|default("N/A") }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </table>
+
+                            <table class="table-left">
+                                <tr>
+                                    <td class="label-td">
+                                        Payment Type :
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ po.paymentType|default("N/A") }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Payment Method:
+                                    </td>
+                                    <td class="value-td" >
+                                        {{ po.paymentMethod|default("N/A") }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Payment From:
+                                    </td>
+                                    <td class="value-td" >
+                                        {% if po.paymentFrom == 2 %}
+                                            Head Office
+                                        {% else %}
+                                            Local Office
+                                        {% endif  %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Computation :
+                                    </td>
+                                    <td class="value-td" >
+                                        {% set computationStatus = po.computationStatus|default("") %}
+                                        {% if computationStatus == 1 %} Yes
+                                        {% elseif computationStatus == 2 %} No
+                                        {% else %} N/A {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="value-td" colspan="2">
+                                        <span style="font-weight: bold;"><u>Approval Info</u></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Created :
+                                    </td>
+                                    <td class="value-td">
+                                        <span style="font-weight: bold;">{{ po.createdBy.username | default() }}</span>
+                                        {% if  po.createdDate != null %}
+                                            on <span style="font-weight: bold;">{{ po.createdDate | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Verified :
+                                    </td>
+                                    <td class="value-td" >
+                                        <span style="font-weight: bold;">{{ po.approvedOne.username | default('not Approved') }}</span>
+                                        {% if  po.approvedOneDate != null %}
+                                            on <span style="font-weight: bold;">{{ po.approvedOneDate | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td">
+                                        Validated :
+                                    </td>
+                                    <td class="value-td">
+                                        <span style="font-weight: bold;">{{ po.approvedTwo.username | default('not validated') }}</span>
+                                        {% if  po.approvedTwoDate != null %}
+                                            on <span style="font-weight: bold;">{{ po.approvedTwoDate | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" >
+                                        Approved :
+                                    </td>
+                                    <td class="value-td" >
+                                        <span style="font-weight: bold;">{{ po.approvedThree.username | default('not verified') }}</span>
+                                        {% if  po.approvedThreeDate != null %}
+                                            on <span style="font-weight: bold;">{{ po.approvedThreeDate | date('d M Y') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td valign="top">
+            <div class="table-body" style="min-height:580px">
+                <table class="table_order col-md-12"  >
+                    <thead>
+                    <tr>
+                        <th class="col-md-1">Sl</th>
+                        <th class="col-md-1">PR-No</th>
+                        <th class="col-md-2">Particulars</th>
+                        <th class="col-md-2">Project</th>
+                        <th class="col-md-1">Qty</th>
+                        <th class="col-md-2">Brand</th>
+                        <th class="col-md-1">UnitPrice</th>
+                        <th class="col-md-2">TotalAmount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% set i = 1 %}
+                    {% set count = po.purchaseOrderItems|length %}
+                    {% for prItem in po.purchaseOrderItems|slice(0,25) %}
+                        <tr>
+                            <td class="col-md-3">
+                                {{ i }}.
+                            </td>
+                            <td class="col-md-3">
+                                {{ prItem.purchaseRequisitionItem.purchaseRequisition.id }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ prItem.item.itemName }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ prItem.purchaseRequisitionItem.purchaseRequisition.project.projectName|default }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ prItem.quantity |number_format(2, '.', ',') }}
+                                {{ prItem.item.itemUnit }}
+                            </td>
+                            <td class="col-md-3" >
+                                {{ prItem.brand | default('') }}
+                            </td>
+                            <td class="col-md-3" >
+                                {{ prItem.price |number_format(2, '.', ',') }}
+                            </td>
+                            <td class="col-md-3" >
+                                {{ (prItem.quantity * prItem.price) |number_format(2, '.', ',') }}
+                            </td>
+                            {#<td class="col-md-3">#}
+                                {#{{ prItem.amount |number_format(2, '.', ',') }}#}
+                            {#</td>#}
+                        </tr>
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                    </tbody>
+                    {% if po.purchaseOrderItems|length == 25 or po.purchaseOrderItems|length < 25 %}
+                        <tfoot>
+                        <tr>
+                            <td colspan="5" style="border-top: 5px solid #ddd;"></td>
+                            <td colspan="2" style="text-align: right;border-top: 5px solid #ddd;">Sub Total :</td>
+                            <td  style="border-top: 5px solid #ddd;" class="tax col-md-3">
+                                {#<strong>{{ po.subTotal |number_format(2, '.', ',') }}</strong>#}
+                                <strong> {{ po.purchaseOrderTotalAmount |number_format(2, '.', ',') }}</strong>
+                            </td>
+                        </tr>
+                        {% if (po.tax) %}
+                            <tr>
+                                <td colspan="5" style="border-top: 0 solid #ddd;"></td>
+                                <td colspan="2" style="text-align: right;border-top: 0 solid #ddd;">
+                                    VAT & Tax Amount :
+                                </td>
+                                <td class="col-md-3" style="border-top: 0 solid #ddd;width: 120px;text-align: left;" class="tax">
+                                    {{ po.tax |number_format(2, '.', ',') }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if (po.advancePaymentAmount) %}
+                            <tr>
+                                <td colspan="5" style="border-top: 0 solid #ddd;"></td>
+                                <td colspan="2" style="text-align: right;border-top: 0 solid #ddd;">
+                                    Advance Payment :
+                                </td>
+                                <td style="border-top: 0 solid #ddd;width: 120px;text-align: left;" class="netTotal col-md-3">
+                                    <strong> {{ po.advancePaymentAmount |number_format(2, '.', ',') }} </strong>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr style="border-bottom: 5px solid lightgrey;">
+                            <td colspan="5" style="border-top: 0 solid #ddd;"></td>
+                            <td colspan="2" style="text-align: right;border-top: 0 solid #ddd;">PO Amount :</td>
+                            <td style="border-top: 0 solid #ddd;width: 120px;text-align: left;" class="netTotal col-md-3">
+                                {#<strong> {{ po.netTotal |number_format(2, '.', ',') }}</strong>#}
+                                <strong> {{ po.purchaseOrderTotalAmount |number_format(2, '.', ',') }}</strong>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    {% endif %}
+                </table>
+            </div>
+        </td>
+    </tr>
+    {% if po.purchaseOrderItems|length > 25 %}
+
+    <tr valign="top">
+        <td valign="top"  >
+            <div class="table-body" style="min-height: 1100px">
+                <table class="table_order col-md-12">
+                    <thead>
+                    <tr>
+                        <th class="col-md-1">Sl</th>
+                        <th class="col-md-1">PR-No</th>
+                        <th class="col-md-2">Particulars</th>
+                        <th class="col-md-2">Project</th>
+                        <th class="col-md-1">Qty</th>
+                        <th class="col-md-2">Brand</th>
+                        <th class="col-md-1">UnitPrice</th>
+                        <th class="col-md-2">TotalAmount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% set i = 26 %}
+                    {% set limit = po.purchaseOrderItems|length %}
+                    {% for prItem in po.purchaseOrderItems|slice(25,limit) %}
+                        <tr>
+                            <td class="col-md-3">
+                                {{ i }}.
+                            </td>
+                            <td class="col-md-3">
+                                {{ prItem.purchaseRequisitionItem.purchaseRequisition.id }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ prItem.item.itemName }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ prItem.project.projectName }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ prItem.quantity |number_format(2, '.', ',') }}
+                                {{ prItem.item.itemUnit }}
+                            </td>
+                            <td class="col-md-3" >
+                                {{ prItem.brand | default('') }}
+                            </td>
+                            <td class="col-md-3" >
+                                {{ prItem.price |number_format(2, '.', ',') }}
+                            </td>
+                            <td class="col-md-3" >
+                                {{ (prItem.quantity * prItem.price) |number_format(2, '.', ',') }}
+                            </td>
+                            {#<td class="col-md-3">#}
+                                {#{{ prItem.amount |number_format(2, '.', ',') }}#}
+                            {#</td>#}
+                        </tr>
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5" style="border-top: 5px solid #ddd;"></td>
+                        <td colspan="2" style="text-align: right;border-top: 5px solid #ddd;">Sub Total :</td>
+                        <td  style="border-top: 5px solid #ddd;" class="tax col-md-3">
+                            {#<strong>{{ po.subTotal |number_format(2, '.', ',') }}</strong>#}
+                            <strong> {{ po.purchaseOrderTotalAmount |number_format(2, '.', ',') }}</strong>
+                        </td>
+                    </tr>
+                    {% if (po.tax) %}
+                        <tr>
+                            <td colspan="5" style="border-top: 0 solid #ddd;"></td>
+                            <td colspan="2" style="text-align: right;border-top: 0 solid #ddd;">
+                                VAT & Tax Amount :
+                            </td>
+                            <td class="col-md-3" style="border-top: 0 solid #ddd;width: 120px;text-align: left;" class="tax">
+                                {{ po.tax |number_format(2, '.', ',') }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if (po.advancePaymentAmount) %}
+                    <tr>
+                        <td colspan="5" style="border-top: 0 solid #ddd;"></td>
+                        <td colspan="2" style="text-align: right;border-top: 0 solid #ddd;">
+                            Advance Payment :
+                        </td>
+                        <td style="border-top: 0 solid #ddd;width: 120px;text-align: left;" class="netTotal col-md-3">
+                            <strong> {{ po.advancePaymentAmount |number_format(2, '.', ',') }} </strong>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    <tr style="border-bottom: 5px solid lightgrey;">
+                        <td colspan="5" style="border-top: 0 solid #ddd;"></td>
+                        <td colspan="2" style="text-align: right;border-top: 0 solid #ddd;">PO Amount :</td>
+                        <td style="border-top: 0 solid #ddd;width: 120px;text-align: left;" class="netTotal col-md-3">
+                            {#<strong> {{ po.netTotal |number_format(2, '.', ',') }}</strong>#}
+                            <strong> {{ po.purchaseOrderTotalAmount |number_format(2, '.', ',') }}</strong>
+
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </td>
+    </tr>
+
+    {% endif %}
+
+    </table>
+    <table>
+        <tr>
+            <td class="main-table">
+                <div class="table-body-last">
+                    {% if po.customTermCondition %}
+                        <h2>Custom Terms & Conditions:</h2>
+                        {{ po.customTermCondition|raw }}
+                    {% else  %}
+                        <h2>Terms & Conditions:</h2>
+                        {% set k = 1 %}
+                        {% for termsAndCondition in termsAndConditions %}
+                            <p>{{ k }}. {{ termsAndCondition.condition }}</p>
+                            {% set k = k + 1 %}
+                        {% endfor %}
+
+                    {% endif %}
+                    <p>Remarks: {{ po.comment | default() }}</p>
+                    <p> Date Of Delivery: {{ po.dateOfDelivered | date('d M Y') }}</p>
+                    <h2>Delivery Address :</h2>
+                    {% set i = 0 %}
+                    {% set project = '' %}
+                    {% for orderItem in po.purchaseOrderItems %}
+
+                        {% if project != orderItem.project.projectName %}
+                            <div class="delivery-address" style="height:150px;width:300px;">
+                                <h3>{{ i+1 }}. Project: <span style="font-weight: bold">{{ orderItem.project.projectName | default()}}</h3>
+                                <p>Delivery Address : {{ orderItem.project.address | default() }}</p>
+                                <p>Contact Person cell Phone : {{ orderItem.project.projectContactPerson.profile.cellphone | default() }}</p>
+                            </div>
+                            {% set project = orderItem.project.projectName %}
+                        {% endif %}
+
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}

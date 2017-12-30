@@ -1,0 +1,26 @@
+Pms\UserBundle\Entity\User:
+    properties:
+        fullName:
+            - NotBlank: { message: "FullName should not be blank" }
+        projects:
+            - NotBlank: { message: "Projects should not be blank" }
+        groups:
+            - NotBlank: { message: "Groups Status should not be blank" }
+        email:
+            - NotBlank: { message: "Email should not be blank" }
+
+Pms\UserBundle\Entity\Profile:
+    properties:
+        cellphone:
+            - NotBlank: { message: "Cellphone should not be blank" }
+        designation:
+            - NotBlank: { message: "Designation should not be blank" }
+
+Pms\UserBundle\Entity\Group:
+    properties:
+        name:
+            - NotBlank: { message: "Group Name should not be blank" }
+        description:
+            - NotBlank: { message: "Description should not be blank" }
+        roles:
+            - NotBlank: { message: "Roles should not be blank" }

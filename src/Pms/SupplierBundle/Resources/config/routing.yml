@@ -1,0 +1,31 @@
+pms_supplier_homepage:
+    path:     /supplier
+    defaults: { _controller: PmsSupplierBundle:Supplier:index }
+
+pms_supplier_add:
+    path:     /create
+    defaults: { _controller: PmsSupplierBundle:Supplier:create }
+
+pms_supplier_edit:
+    pattern: /edit/{id}
+    defaults: { _controller: PmsSupplierBundle:Supplier:updateSupplier }
+    requirements:
+          id: \d+
+
+supplier_details:
+    pattern: /details/{id}
+    defaults: { _controller: PmsSupplierBundle:Supplier:details }
+
+vendor_sourcing_attachment_view:
+    pattern: /vendor-sourcing/attachment-view/{path}
+    defaults: { _controller: PmsSupplierBundle:Supplier:vendorSourcingAttachmentView }
+
+supplier_details_for_mobile:
+    pattern: /details-for-mobile/{id}
+    defaults: { _controller: PmsSupplierBundle:Supplier:detailsForMobile }
+
+supplier_excel:
+    pattern: /supplier/excel/
+    defaults: { _controller: PmsSupplierBundle:Supplier:supplierExcel }
+    options:
+          expose: true

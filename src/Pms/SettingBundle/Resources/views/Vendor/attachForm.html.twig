@@ -1,0 +1,60 @@
+<div class="row">
+    <div class="col-md-12" style="margin-top: 25px;">
+        <div class="form-group">
+            {{ form_label(form.fileType, 'File Type :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+            ) }}
+            <div class="col-md-8">
+                <div class="input-icon">
+                    <i class="fa"></i>
+                    {{ form_widget(form.fileType, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                </div>
+                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.fileType) }}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form_label(form.fileName, 'File Name :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+            ) }}
+            <div class="col-md-8">
+                <div class="input-icon">
+                    <i class="fa"></i>
+                    {{ form_widget(form.fileName, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                </div>
+                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.fileName) }}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form_label(form.description, 'Description :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } }
+            ) }}
+            <div class="col-md-8">
+                <div class="input-icon">
+                    <i class="fa"></i>
+                    {{ form_widget(form.description, { 'attr': {'class': 'form-control', 'style': 'padding-left: 10px !important;'} }) }}
+                </div>
+                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.description) }}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form_label(form.file, 'File Attach :', {'label_attr': {'class': 'control-label col-md-3', 'style' : 'margin-right:-50px;' } } ) }}
+            <div class="col-md-8">
+                <div class="fileupload fileupload-new" data-provides="fileupload">
+                    <div class="input-group">
+													<span class="input-group-btn">
+													<span class="uneditable-input">
+													<i class="fa fa-file fileupload-exists"></i>
+													<span class="fileupload-preview"></span>
+													</span>
+													</span>
+													<span class="btn default btn-file">
+													<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+													<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                        {{ form_widget(form.file, { 'attr': {'class': 'default'} }) }}
+													</span>
+                        <a href="form_component.html#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                    </div>
+                </div>
+                <span class="help-block validation" style="color:darkred;margin-left:55px;">{{ form_errors(form.file) }}</span>
+            </div>
+        </div>
+        {#<input type="hidden" value="{{ id }}" name="vendorId">#}
+    </div>
+</div>

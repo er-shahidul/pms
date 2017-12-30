@@ -1,0 +1,37 @@
+terms_and_conditions_refresh:
+    pattern: /terms-and-conditions/refresh
+    defaults: { _controller: PmsSettingBundle:TermsAndConditions:refresh }
+
+terms_and_conditions_active:
+    pattern: /terms-and-conditions/active/{id}
+    defaults: { _controller: PmsSettingBundle:TermsAndConditions:active }
+    requirements:
+          id: \d+
+
+terms_and_conditions_delete:
+    pattern: /terms-and-conditions/delete/{id}
+    defaults: { _controller: PmsSettingBundle:TermsAndConditions:delete }
+    requirements:
+          id: \d+
+
+terms_and_conditions_update:
+    pattern: /terms-and-conditions/update/{id}
+    defaults: { _controller: PmsSettingBundle:TermsAndConditions:update }
+    requirements:
+          id:  \d+
+
+terms_and_conditions_check:
+    pattern: /terms-and-conditions/check
+    defaults: { _controller: PmsSettingBundle:TermsAndConditions:check }
+    options:
+            expose: true
+
+terms_and_conditions_ajax_add:
+    pattern: /terms-and-conditions/add
+    defaults: { _controller: PmsSettingBundle:TermsAndConditions:add }
+    options:
+            expose: true
+
+terms_and_conditions:
+    pattern: /terms-and-conditions/{status}
+    defaults: { _controller: PmsSettingBundle:TermsAndConditions:index, status:active }

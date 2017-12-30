@@ -1,0 +1,7 @@
+PmsInventoryBundle_delivery:
+    resource: "@PmsInventoryBundle/Resources/config/routing/delivery.yml"
+
+PmsInventoryBundle_stock:
+    resource: "@PmsInventoryBundle/Resources/config/routing/stock.yml"
+PmsInventoryBundle_report:
+    resource: "@PmsInventoryBundle/Resources/config/routing/report/report.yml"

@@ -1,0 +1,14 @@
+services:
+    pms_core.form.type.entity_hidden:
+        class: Pms\CoreBundle\Form\Type\EntityHiddenType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: form.type, alias: entity_hidden }
+
+    pms_core.service.query_service:
+            class: Pms\CoreBundle\Services\QueryService
+            arguments: [ @doctrine]
+
+    pms_core.database_backup:
+            class: Pms\CoreBundle\Services\DatabaseBackup
+            arguments: [%database_user%, %database_password% , %database_name%]

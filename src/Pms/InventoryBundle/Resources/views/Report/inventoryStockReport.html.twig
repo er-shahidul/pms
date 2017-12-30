@@ -1,0 +1,248 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .pagination > li > a, .pagination > li > span
+        {
+            background-color: #eee !important;
+            color: #000000 !important;
+        }
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+            background-color: #428bca !important;
+        }
+
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Inventory Valuation Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('delivery_list') }}" style="color: #333 !important;">Delivery</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+    <div class="span12">
+
+        <form action="" method="get" style="margin-bottom:10px;" id="inventoryStockFrm">
+            <div class="portlet-body flip-scroll">
+                <table id="table_project_cost" class="table-striped table-condensed flip-content">
+                    <tbody>
+                    <tr class="numeric">
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                            </div>
+                        </td>
+                        {#<td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                            </div>
+                        </td>#}
+                        <td>
+                           {# <div class="input-group input-medium">
+                                {{ form_widget(form.item, { 'attr': {'class': 'form-control fontColorBlack select2AutoComplete', 'placeholder': ' Select Item'} }) }}
+                            </div>#}
+                            <div class="input-group input-medium">
+                                <input type="hidden" value="{{ app.request.query.get('item') }}" class="form-control  fontColorBlack
+ select2AutoComplete" placeholder="Select Item" name="item">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group input-medium">
+                                {{ form_widget(form.project, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <span class="buyerMessege"></span>
+    <!--BEGIN TABS-->
+    <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+        <input type="button" value="Export in excel" name="inventoryStockReportExcel" id="inventoryStockReportExcel" class="btn blue">
+    </div>
+    <div class="dashboard-stat blue" style="margin-left:80%;">
+        <div class="visual">
+            <i>&#2547;</i>
+        </div>
+        <div class="details">
+            <div class="number" style="font-size: 22px;">
+
+                {{ totalStock|number_format(2, '.', ',') }}
+            </div>
+            <div class="desc">
+                 Amount
+            </div>
+        </div>
+    </div>
+    <div class="tabbable tabbable-custom">
+       {# <ul class="nav nav-tabs">
+            <li class="active"><a class="tabForTable" rel="#tab_1_1" href="#tab_1_1" style="color: black !important;" data-toggle="tab">All</a></li>
+        </ul>#}
+
+        <div class="tab-content style-content">
+            <div class="tab-pane active" id="tab_1_1">
+                <div class="" data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="project-list-div">
+                        <div class="form-group">
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content" id="listInventory">
+                                    <thead class="flip-content"  style="background: #4b8df8">
+                                    <tr>
+                                        <th class="numeric">Sl</th>
+                                        <th class="numeric">Open Date</th>
+                                        <th class="numeric">Receive Date</th>
+                                        <th class="numeric">Item</th>
+                                        <th class="numeric">Unit</th>
+                                        <th class="numeric">Opening</th>
+                                        <th class="numeric">Receiving</th>
+                                        <th class="numeric">Total Stock</th>
+                                        <th class="numeric">Issues</th>
+                                        <th class="numeric">Closing</th>
+                                        <th class="numeric">Unit Price</th>
+                                        <th class="numeric">Total Amount</th>
+
+
+                                    </tr>
+
+                                    </thead>
+                                    <tbody>
+                                    {% set offset = stockLists.getItemNumberPerPage * (stockLists.currentPageNumber - 1) %}
+
+                                    {% for stockList in stockLists %}
+
+                                    <tr>
+                                        <td> {{ loop.index + offset }}</td>
+                                        <td>{{ stockList.openDate|date('Y-m-d') }}</td>
+                                        <td>{{ stockList.receivedDate|date('Y-m-d') }}</td>
+                                        <td>{{ stockList.item }}</td>
+                                        <td>{{ stockList.unit }}</td>
+                                        <td>{{ stockList.openItem }}</td>
+                                        <td>{{ stockList.receivingItem }}</td>
+                                        <td>{{ stockList.totalStock }}</td>
+                                        <td>{{ stockList.issuingItem|number_format(2, '.', ',') }}</td>
+                                        <td>{{ stockList.closingItem }}</td>
+                                        <td>{{ stockList.unitPrice|number_format(2, '.', ',') }}</td>
+                                        <td>{{ (stockList.unitPrice * stockList.closingItem)|number_format(2, '.', ',') }}</td>
+
+                                    </tr>
+
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                                <div class="navigation text-right">
+                                    {{ knp_pagination_render(stockLists) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+
+    {#<script>#}
+        {{ parent() }}
+
+            $('select').select2();
+
+        var $url = Routing.generate('item_auto_delivery_complete');
+        var selectedItemId = {{ app.request.query.get('item')}}
+
+                $(".select2AutoComplete").select2({
+
+                    ajax: {
+
+                        url: $url,
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params, page) {
+                            return {
+                                q: params,
+                                page_limit: 100
+                            };
+                        },
+                        results: function (data, page) {
+                            return {
+                                results: data
+                            };
+                        },
+                        cache: true
+                    },
+                    escapeMarkup: function (m) {
+
+                        return m;
+                    },
+                    formatResult: function (item) {
+                        return item.text
+                    }, // omitted for brevity, see the source of this page
+                    formatSelection: function (item) {
+                        return item.text
+                    }, // omitted for brevity, see the source of this page
+                    initSelection: function (element, callback) {
+
+                        $.ajax({
+                            url: $url,
+                            data: 'item=' + selectedItemId,
+                            dataType: 'json'
+                        }).done(function (data) {
+                            callback(data);
+                        });
+                    },
+                    allowClear: true,
+                    minimumInputLength: 1
+                });
+
+        $('#inventoryStockReportExcel').click(function () {
+
+            setTimeout(function(){
+                $('#inventoryStockFrm').attr('action', '{{ path('stock_report') }}');
+            }, 1000);
+
+            $.ajax({
+                form: 'inventoryStockFrm',
+                url: Routing.generate('inventory_stock_report_bundle_excel'),
+                dataType: 'form html'
+            });
+        });
+
+
+{% endblock %}

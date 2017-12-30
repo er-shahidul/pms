@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div id="reload-all">
+        <div class="modal-dialog " style="width:70%;" >
+            <div class="modal-content">
+                <div class="modal-header" style="background: lightgrey;">
+                    <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title bold" style="text-align: center;">Vendor Sourcing Details</h4>
+                </div>
+
+                <div class="col-md-12">
+
+                    <div class="col-md-6" >
+                        <table class="table table-hover">
+                            <tr>
+                                <td class="label-td">
+                                    Supplier Name :
+                                </td>
+                                <td class="value-td">
+                                    {{ supplierDetail.name | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Specification :
+                                </td>
+                                <td class="value-td" >
+                                    {{ supplierDetail.specification | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Brand :
+                                </td>
+                                <td class="value-td" >
+                                    {{ supplierDetail.brand | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Item :
+                                </td>
+                                <td class="value-td" >
+                                    {{ supplierDetail.item | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Documents :
+                                </td>
+                                <td class="value-td" >
+                                    {% for document in supplierDetail.documents %}
+
+                                        <a class="btn btn-xs" href="{{ path('homepage') }}uploads/file/{{ document.path  }}" target="_blank">
+                                            <i class="fa fa-cloud-upload"></i>
+                                        </a>
+
+                                    {% endfor %}
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <div class="col-md-6" >
+                        <table class="table table-hover">
+                            <tr>
+                                <td class="label-td">
+                                    Contact Person :
+                                </td>
+                                <td class="value-td" >
+                                    <span style="font-weight: bold;">{{ supplierDetail.contactPerson | default() }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Contact No :
+                                </td>
+                                <td class="value-td" >
+                                    <span style="font-weight: bold;">{{ supplierDetail.contactNo | default() }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Email :
+                                </td>
+                                <td class="value-td" >
+                                    <span style="font-weight: bold;">{{ supplierDetail.email | default() }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Created By :
+                                </td>
+                                <td class="value-td" >
+                                    {{ supplierDetail.createdby.username | default() }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    Created Date :
+                                </td>
+                                <td class="value-td" >
+                                    {{ supplierDetail.createdDate | date('d M Y H:i:s') }}
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

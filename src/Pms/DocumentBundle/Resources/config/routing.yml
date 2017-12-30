@@ -1,0 +1,2 @@
+PmsCoreBundle_document:
+    resource: "@PmsDocumentBundle/Resources/config/routing/document.yml"

@@ -1,0 +1,23 @@
+stock_report:
+    path:     /stock/report
+    defaults: { _controller: PmsInventoryBundle:Report:index }
+
+delivery_report:
+    path:     /delivery/report
+    defaults: { _controller: PmsInventoryBundle:Report:deliveryReport }
+
+item_wise_report:
+    path:     /item-wise/report
+    defaults: { _controller: PmsInventoryBundle:Report:itemWiseReport }
+
+inventory_stock_report_bundle_excel:
+    pattern: /inventory-stock-report-excel
+    defaults: { _controller: PmsInventoryBundle:Report:inventoryStockExcelReport }
+    options:
+            expose: true
+
+delivery_report_bundle_excel:
+    pattern: /delivery-report-excel
+    defaults: { _controller: PmsInventoryBundle:Report:deliveryExcelReport }
+    options:
+            expose: true

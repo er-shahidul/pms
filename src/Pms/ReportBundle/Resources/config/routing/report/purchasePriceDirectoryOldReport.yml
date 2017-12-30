@@ -1,0 +1,12 @@
+report_purchase_price_directory_old:
+    pattern: /purchase-price-directory-old-report
+    defaults: { _controller: PmsReportBundle:PurchasePriceDirectoryReportOld:purchasePriceDirectoryOld }
+
+report_purchase_price_directory_old_excel:
+    pattern: /purchase-price-directory-old-report-excel
+    defaults: { _controller: PmsReportBundle:PurchasePriceDirectoryReportOld:purchasePriceDirectoryOldExcel }
+    options:
+           expose: true
+
+
+

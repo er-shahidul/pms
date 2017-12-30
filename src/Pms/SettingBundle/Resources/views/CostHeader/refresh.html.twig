@@ -1,0 +1,48 @@
+<div class="form-group">
+    <div class="col-md-12" style="margin-top: 30px;">
+
+        <table class="table bold" style="border: 1px solid ghostwhite;">
+            <thead style="background: #4b8df8;color: #fff;">
+            <tr>
+                <th>Sl</th>
+                <th class="col-md-3">Title</th>
+                <th class="col-md-3"></th>
+                <th class="col-md-4">SubCategory</th>
+                <th class="col-md-2"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% set offset = costHeaders.getItemNumberPerPage * (costHeaders.currentPageNumber - 1) %}
+
+            {% for costHeader in costHeaders %}
+
+                <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                    <td>{{ loop.index + offset }}.</td>
+                    <td>{{ costHeader.title }}</td>
+                    <td></td>
+                    <td>{{ costHeader.subCategory.subCategoryName | default('') }}</td>
+                    <td>
+                        {% if costHeader.status == 1 %}
+                            <a href="/cost-header/delete/{{ costHeader.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-trash-o"></i> Delete</a>
+
+                            <a href="/cost-header/update/{{ costHeader.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-edit"></i> Update</a>
+                        {% endif %}
+                        {% if costHeader.status == 0 %}
+                            <a href="#" style="width: 65px;" class="btn default btn-xs">Deleted</a>
+                            <a href="/cost-header/active/{{ costHeader.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                        class="fa fa-repeat"></i> Restore</a>
+                        {% endif %}
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="navigation" style="text-align: right">
+            {{ knp_pagination_render(costHeaders) }}
+        </div>
+    </div>
+</div>

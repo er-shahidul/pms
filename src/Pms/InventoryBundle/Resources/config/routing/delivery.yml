@@ -1,0 +1,64 @@
+delivery_add:
+    path:     /delivery/{id}/project/add
+    defaults: { _controller: PmsInventoryBundle:Inventory:add }
+
+delivery_add_project_to_project:
+    path:     /delivery/{id}/project-to-project/add
+    defaults: { _controller: PmsInventoryBundle:Inventory:addProjectToProjectDelivery }
+
+delivery_list:
+    path:     /delivery/list
+    defaults: { _controller: PmsInventoryBundle:Inventory:index }
+
+delivery_project_to_project_list:
+    path:     /delivery/project-to-project-list
+    defaults: { _controller: PmsInventoryBundle:Inventory:projectToProjectDeliveryList }
+
+delivery_project_list:
+    path:     /delivery/projectList/{status}
+    defaults: { _controller: PmsInventoryBundle:Inventory:projectList }
+
+inventory_Delivery_attachment_view:
+    pattern: /delivery/attachment-view/{id}/{index}
+    defaults: { _controller: PmsInventoryBundle:Inventory:attachmentView }
+
+delivery_item:
+    pattern: /delivery/item
+    defaults: { _controller: PmsInventoryBundle:Inventory:getItemQuantity }
+    options:
+            expose: true
+
+gatePass_check:
+    pattern: /gatePass/check
+    defaults: { _controller: PmsInventoryBundle:Inventory:gatePassNoCheck }
+    options:
+            expose: true
+
+item_auto_delivery_complete:
+    pattern: /delivery-item/delivery-item-auto-complete
+    defaults: { _controller: PmsInventoryBundle:Inventory:deliveryAutoItemComplete }
+    options:
+          expose: true
+
+delivery_delete:
+    pattern: /delivery/delete/{id}
+    defaults: { _controller: PmsInventoryBundle:Inventory:deleteDelivery }
+    requirements:
+          id:  \d+
+
+delivery_update:
+    pattern: /delivery/update/{id}
+    defaults: { _controller: PmsInventoryBundle:Inventory:updateDelivery }
+    requirements:
+          id:  \d+
+category_wise_item_inventory:
+    pattern: /delivery/category-wise-item-inventory
+    defaults: { _controller: PmsInventoryBundle:Inventory:categoryWiseItemInventory }
+    options:
+            expose: true
+
+load-user-from-project:
+    pattern: /delivery/load-user-from-project
+    defaults: { _controller: PmsInventoryBundle:Inventory:getUserFromProject }
+    options:
+            expose: true

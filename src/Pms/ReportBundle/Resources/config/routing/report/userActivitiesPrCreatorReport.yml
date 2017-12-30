@@ -1,0 +1,9 @@
+report_user_activities_pr_creator:
+    pattern: /user-activities-pr-creator-report
+    defaults: { _controller: PmsReportBundle:UserActivitiesPrCreator:userActivitiesPrCreator }
+
+report_user_activities_pr_creator_excel:
+    pattern: /user-activities-pr-creator-report-excel
+    defaults: { _controller: PmsReportBundle:UserActivitiesPrCreator:userActivitiesPrCreatorExcel }
+    options:
+            expose: true

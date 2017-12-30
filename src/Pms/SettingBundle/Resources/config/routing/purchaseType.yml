@@ -1,0 +1,27 @@
+purchase_type_active:
+    pattern: /purchase-type/active/{id}
+    defaults: { _controller: PmsSettingBundle:PurchaseType:active }
+    requirements:
+          id: \d+
+
+purchase_type_delete:
+    pattern: /purchase-type/delete/{id}
+    defaults: { _controller: PmsSettingBundle:PurchaseType:delete }
+    requirements:
+          id: \d+
+
+purchase_type_update:
+    pattern: /purchase-type/update/{id}
+    defaults: { _controller: PmsSettingBundle:PurchaseType:update }
+    requirements:
+          id:  \d+
+
+purchase_type_check:
+    pattern: /purchase-type/check
+    defaults: { _controller: PmsSettingBundle:PurchaseType:check }
+    options:
+            expose: true
+
+purchase_type:
+    pattern: /purchase-type/{status}
+    defaults: { _controller: PmsSettingBundle:PurchaseType:index, status:active }

@@ -1,0 +1,9 @@
+report_project_purchase_type_wise_count:
+    pattern: /project-purchase-type-wise-count-report
+    defaults: { _controller: PmsReportBundle:ProjectPurchaseTypeWiseCount:projectPurchaseTypeWiseCount }
+
+report_project_purchase_type_wise_count_excel:
+    pattern: /project-purchase-type-wise-count-report-excel
+    defaults: { _controller: PmsReportBundle:ProjectPurchaseTypeWiseCount:projectPurchaseTypeWiseCountExcel }
+    options:
+            expose: true

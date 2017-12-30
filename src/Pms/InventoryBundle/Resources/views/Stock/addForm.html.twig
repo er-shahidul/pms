@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+        <div class="modal-dialog" style="width: 1000px;">
+            <div class="modal-content" style="background: white;">
+                <div class="modal-header" style="background: lightgrey;">
+                    <h4 class="modal-title bold" style="text-align: center;">Stock Item</h4>
+                </div>
+                <br/>
+                {{ form_start(form, { 'attr': {'class': 'form-horizontal', 'id': 'Bank-form', 'novalidate': 'novalidate'} }) }}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                {{ form_label(form.project, 'Project Name :', {'label_attr': {'class': 'control-label col-md-4 marginLeft-10'} }
+                                ) }}
+                                <div class="col-md-6">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.project, { 'attr': {'class': 'select2 form-control paddingLeft10'} }) }}
+                                    </div>
+                                    <span class="help-block margin-left-39"
+                                    style="color:darkred;">{{ form_errors(form.project) }}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.item, 'Item :', {'label_attr': {'class': 'control-label col-md-4 marginLeft-10 itemName'} }
+                                ) }}
+                                <div class="col-md-6">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.item, { 'attr': {'class': 'select2AutoComplete form-control paddingLeft10'} }) }}
+                                    </div>
+                                    <span class="help-block margin-left-39"
+                                    style="color:darkred;">{{ form_errors(form.item) }}</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.openItem, 'Total Stock In Hand:', {'label_attr': {'class': 'control-label col-md-4 marginLeft-10'} }
+                                ) }}
+                                <div class="col-md-6">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.openItem, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                                    </div>
+                                    {#<span class="help-block margin-left-39"
+                                          style="color:darkred;">{{ form_errors(form.openItem) }}</span>#}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.price, 'Item Price:', {'label_attr': {'class': 'control-label col-md-4 marginLeft-10'} }
+                                ) }}
+                                <div class="col-md-6">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.price, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                                    </div>
+                                    {#<span class="help-block margin-left-39"
+                                          style="color:darkred;">{{ form_errors(form.openItem) }}</span>#}
+                                </div>
+                            </div>
+                            {#<div class="form-group">
+                                {{ form_label(form.extraAddedItemQuantity, 'Extra Added In Hand:', {'label_attr': {'class': 'control-label col-md-4 marginLeft-10'} }
+                                ) }}
+                                <div class="col-md-6">
+                                    <div class="input-icon">
+                                        {{ form_widget(form.extraAddedItemQuantity, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                                    </div>
+                                </div>
+                            </div>#}
+                        </div>
+                        <br/>
+                    </div>
+                </div>
+                <div class="modal-footer" style="background: lightgrey;">
+                    <div class="btn-group">
+                        {#<button type="button" class="btn close-modal-refresh " data-dismiss="modal">Close</button>#}
+                        <a href="{{ path('stock_list') }}" class="btn button-width btn-primary">Close</a>
+                    </div>
+                    {{ form_widget(form.submit, { 'attr': {'class': 'btn button-width btn-primary'} }) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+    {% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    {#<script>#}
+    $('select').select2();
+
+        $("#pms_inventorybundle_totalreceiveitem_item").change(function () {
+            var itemname = $(this).val();
+            var projectName = $('#pms_inventorybundle_totalreceiveitem_project').val();
+            if(!projectName){
+                alert('please at first Select Your Project Name');return  false;
+            }
+            $.ajax({
+                type: "post",
+                url: Routing.generate('check_stock_item_available'),
+                data: { itemName:itemname,projectName:projectName},
+                dataType: 'json',
+                success: function (msg) {
+                    if (msg.responseCode == 200) {
+
+                    $(this).val('');
+                     alert(msg.itemAndProject);
+                        return false;
+                    }
+                }
+            });
+        });
+
+
+    var $url = Routing.generate('item_auto_complete');
+    var queryStringObject = {{ app.request.query.all|json_encode|raw }};
+    if($('#pms_inventorybundle_totalreceiveitem_item').val()){
+    var selectedItemId = $('#pms_inventorybundle_totalreceiveitem_item').val();
+    } else {
+    var selectedItemId = (queryStringObject && queryStringObject.search && queryStringObject.search.item) ? queryStringObject.search.item : '';
+    }
+
+
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+
+            return m;
+        },
+        formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+            $.ajax({
+                url: $url,
+                data: 'item=' + selectedItemId,
+                dataType: 'json'
+            }).done(function(data){
+                callback(data);
+            });
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+
+    {#</script>#}
+
+{% endblock %}

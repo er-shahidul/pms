@@ -1,0 +1,238 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .popover-title {
+            color: #000000;
+        }
+        .popover-content{
+            color:#000000;
+        }
+        .modal-details{
+            background: #35aa47;padding: 1px 5px
+        }
+    </style>
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Advance Payment
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Advance Payment</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE TABLE PORTLET-->
+
+            <div class="portlet box">
+
+                <div class="portlet-title">
+                    <ul class="nav nav-tabs">
+                        <li class = {% if status == '' %}active{% endif %}><a class="tabForTable" style="color: black !important;" href="{{ path('payment_advance' ) }}">Advance Payment</a></li>
+                        <li class = {% if status == 'archive' %}active{% endif %}><a class="tabForTable" style="color: black !important;" href="{{ path('payment_advance_archive',{status:'archive'}) }}">Advance Archive</a></li>
+                        <li>
+                            <form action="{% if status =='archive' %}
+                            {{ path('payment_advance_archive',{status:'archive'}) }}
+                            {% else %}
+                            {{ path('payment_advance' ) }}
+                            {% endif %}" method="get" name="payment_verified_search"
+                                  id="payment_verified_search" style="margin-left: 0;">
+
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group input-small">
+                                                {{ form_widget(form.po, { 'attr': {'class': 'col-md-3 form-control  fontColorBlack select2AutoComplete', 'placeholder': ' Select PO'} }) }}
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="form-group input-medium">
+                                                {{ form_widget(form.vendor, { 'attr': {'class': 'col-md-3 form-control select2me  fontColorBlack ', 'placeholder': ' Select Vendor'} }) }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="submit" name="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </form>
+                        </li>
+
+                    </ul>
+                </div>
+
+                    <div class="portlet-body flip-scroll">
+                        <table class="table-bordered table-striped table-condensed flip-content responsiveDiv" id="listPo">
+                            <thead class="flip-content"  style="background: #4b8df8">
+                            <tr>
+                                {#<th class="numeric">&nbsp;</th>#}
+                                <th class="numeric">Sl</th>
+                                <th class="numeric">{{ knp_pagination_sortable( payments , 'Created', 'rfp.created') }}</th>
+                                <th class="numeric">{{ knp_pagination_sortable( payments , 'PONo', 'po.id') }}</th>
+                                <th class="numeric">GRN</th>
+                                <th class="numeric">Vendor</th>
+                                <th class="numeric">Po Amount</th>
+                                <th class="numeric">Advance Amount</th>
+                                <th class="numeric">Payment Type</th>
+                                {% if status == 'archive' %}
+                                <th class="numeric">Bank Name</th>
+                                <th class="numeric">cheque No</th>
+                                <th class="numeric">paymentDate</th>
+                                {% endif  %}
+                                {#<th class="numeric">
+                                    {% if status == '' %}Action{% else %}&nbsp;{% endif %}
+                                </th>#}
+                                {% if ((is_granted("ROLE_ADVANCE_PAYMENT_ALL") or is_granted("ROLE_SUPER_ADMIN"))
+                                or (is_granted("ROLE_ADVANCE_PAYMENT_LOCAL") and payment.purchaseOrder.paymentFrom == 1)
+                                or (is_granted("ROLE_ADVANCE_PAYMENT_HEAD") and payment.purchaseOrder.paymentFrom == 2)) %}
+                                    {% if status != 'archive' %}
+                                        <th class="numeric">Action</th>
+                                    {% else %}
+
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% set offset = payments.getItemNumberPerPage * (payments.currentPageNumber - 1) %}
+
+                            {% for payment in payments %}
+
+                                {% if payment.grn.id is defined %}
+                                    {% set grnValue = 1 %}
+                                {% else %}
+                                    {% set grnValue = 0 %}
+                                {% endif %}
+
+                                <tr>
+                                {#<tr class="po-tr-{{ payment.purchaseOrder.id | default('') }}-{{ grnValue }}">#}
+
+                                    {#<td><input  class="po-checkbox" data-po="{{ payment.purchaseOrder.id | default('') }}-{{ grnValue }}" type="checkbox" name="list[]" value="{{ payment.id }}"></td>#}
+                                    <td class="numeric">{{ loop.index + offset }}.</td>
+                                    <td class="numeric">{{ payment.created | date('d M Y') }}</td>
+                                    <td class="numeric">{{ payment.purchaseOrder.id | default('') }}</td>
+                                    <td class="numeric">{{ payment.grn.id | default('Adv') }}</td>
+                                    <td class="numeric">{{ payment.purchaseOrder.vendor.vendorName | default('') }}</td>
+                                    <td class="numeric">{{ payment.purchaseOrder.netTotal | default('') }}</td>
+                                    <td class="numeric">{{ payment.purchaseOrder.advancePaymentAmount|number_format(2, '.', ',')|default(0) }}</td>
+                                    <td class="numeric">{{ payment.purchaseOrder.paymentType | default('') }}</td>
+                                    {% if status == 'archive' %}
+                                        <td class="numeric">{{ payment.payment.relatedBank.name | default('') }}</td>
+                                        <td class="numeric">{{ payment.payment.cheque | default('') }}</td>
+                                        <td class="numeric">{{ payment.payment.paymentDate | date('d M Y') }}</td>
+                                    {% endif %}
+                                    {% if ((is_granted("ROLE_ADVANCE_PAYMENT_ALL") or is_granted("ROLE_SUPER_ADMIN"))
+                                    or (is_granted("ROLE_ADVANCE_PAYMENT_LOCAL") and payment.purchaseOrder.paymentFrom == 1)
+                                    or (is_granted("ROLE_ADVANCE_PAYMENT_HEAD") and payment.purchaseOrder.paymentFrom == 2)) %}
+                                        {% if status != 'archive' %}
+                                            <td class="numeric">
+                                                <a href="{{ path('payment_advance_verified',{'id':payment.id}) }}"  style="color:#ffffff !important;" class="btn blue btn-xs displayForDesktop" >Verified</a>
+                                                <a href="{{ path('payment_advance_verified',{'id':payment.id}) }}"  style="color:#ffffff !important;" class="btn blue btn-xs displayForMob" >Verified</a>
+                                            </td>
+                                        {% else %}
+
+                                        {% endif %}
+                                    {% endif %}
+
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <div class="navigation text-right">
+                            {{ knp_pagination_render(payments) }}
+                        </div>
+
+                    </div>
+                {#</form>#}
+            </div>
+        </div>
+
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    var $table = $("#listPo tbody");
+    $table.on("change", ".po-checkbox", function(){
+    var el = $(this);
+    var po = el.data("po");
+    var chosen = $table.find('tr.po-tr-'+po + " input:checked");
+
+    if(el.prop('checked')) {
+    $table.find('tr').hide();
+    $table.find('tr.po-tr-'+po).show();
+    }else if(chosen.length == 0){
+    $table.find('tr').show();
+    }
+    });
+
+    var $url = Routing.generate('payment_request_purchase_order_no_auto_complete',{status:'advance'});
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+            return m;
+        },
+        formatResult: function (item) {
+            return item.id
+        }, // omitted for brevity, see the source of this page
+        formatSelection: function (item) {
+            return item.id
+        }, // omitted for brevity, see the source of this page
+        initSelection: function (element, callback) {
+            return callback({id: element.val()});
+        },
+        allowClear: true,
+        minimumInputLength: 1
+    });
+
+{% endblock %}

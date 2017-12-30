@@ -1,0 +1,43 @@
+project_excel_excelProjectsList:
+    pattern: /project/excelProjectsList
+    defaults: { _controller: PmsSettingBundle:Project:excelProjectsList }
+    options:
+            expose: true
+
+project_add:
+    pattern: /project/add
+    defaults: { _controller: PmsSettingBundle:Project:add }
+
+project_active:
+    pattern: /project/active/{id}
+    defaults: { _controller: PmsSettingBundle:Project:active }
+    requirements:
+          id: \d+
+
+project_delete:
+    pattern: /project/delete/{id}
+    defaults: { _controller: PmsSettingBundle:Project:delete }
+    requirements:
+          id: \d+
+
+project_update:
+    pattern: /project/update/{id}
+    defaults: { _controller: PmsSettingBundle:Project:update }
+    requirements:
+          id:  \d+
+
+project_check:
+    pattern: /project/check
+    defaults: { _controller: PmsSettingBundle:Project:check }
+    options:
+            expose: true
+
+project_ajax_add:
+    pattern: /project/project/add
+    defaults: { _controller: PmsSettingBundle:Project:add }
+    options:
+            expose: true
+
+project:
+    pattern: /project/{status}
+    defaults: { _controller: PmsSettingBundle:Project:index, status:active }

@@ -1,0 +1,144 @@
+receive_new:
+    pattern: /receive/new/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:new }
+
+receive_verify:
+    pattern: /receive/verify
+    defaults: { _controller: PmsCoreBundle:Receive:verify }
+
+receive_bill_add:
+    pattern: /receive/bill/add
+    defaults: { _controller: PmsCoreBundle:Receive:billAdd }
+    methods: [POST]
+
+receive_save:
+    pattern: /receive/save
+    defaults: { _controller: PmsCoreBundle:Receive:save }
+    methods: [POST]
+
+receive_grn_no_auto_complete:
+    pattern: /receive/grn-auto-complete
+    defaults: { _controller: PmsCoreBundle:Receive:receiveGrnAutoComplete }
+    options:
+          expose: true
+
+purchase_order_amendment:
+    pattern: /receive/save-amendment
+    defaults: { _controller: PmsCoreBundle:Receive:saveAmendment }
+
+receive_details:
+    pattern: /receive/details/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:details }
+
+receive_grn_details:
+    pattern: /receive-grn/details/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:grnDetails }
+
+receive_details_for_mobile:
+    pattern: /receive/details-for-mobile/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:detailsForMobile }
+
+receive_project_list:
+    pattern: /receive/project-list
+    defaults: { _controller: PmsCoreBundle:Receive:projectList }
+
+receive_refresh:
+    pattern: /receive/refresh/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:refresh }
+    requirements:
+          id: \d+
+
+invoice_bill_add:
+    pattern: /receive/invoice-bill/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:invoiceBillUpdate }
+    requirements:
+          id: \d+
+
+receive_bill_number_add:
+    pattern: /receive/bill-number-add/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:billNumberAdd }
+    requirements:
+          id: \d+
+
+invoice_bill_update:
+    pattern: /receive/invoice-bill-update/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:invoiceReceiveBillUpdate }
+    methods:  [POST]
+
+receive_ready_for_payment:
+    pattern: /receive/ready-for-payment/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:readyForPayment }
+
+receive_details_for_payment:
+    pattern: /receive/details-for-payment/{id}/{status}
+    defaults: { _controller: PmsCoreBundle:Receive:detailsForPayment }
+
+receive_print:
+    pattern: /receive/print/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:print }
+
+receive_pdf:
+    pattern: /receive/pdf/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:pdf }
+
+receive_attachment_view:
+    pattern: /receive/attachment-view/{id}/{index}
+    defaults: { _controller: PmsCoreBundle:Receive:attachmentView }
+
+payment_approve_one_ajax:
+    pattern: /receive/approve-one
+    defaults: { _controller: PmsCoreBundle:Receive:approveOneAjax }
+    options:
+          expose: true
+
+receive_advance:
+    pattern: /advance-payment/{status}
+    defaults: { _controller: PmsCoreBundle:Receive:advancePayment}
+
+receive_advance_archive:
+    pattern: /advance-payment-archive/{status}
+    defaults: { _controller: PmsCoreBundle:Receive:advanceArchivePayment}
+
+advance_payment_detail:
+    pattern: /receive/advance-payment-detail/{id}/{status}
+    defaults: { _controller: PmsCoreBundle:Receive:advanceReceivePayment}
+
+receive_verified_bill_check:
+    pattern: /receive-verified-bill-check
+    defaults: { _controller: PmsCoreBundle:Receive:verifiedBillCheck }
+    options:
+            expose: true
+
+receive_item_close_complete:
+    pattern: /receive-item/poi-close/{id}
+    defaults: { _controller: PmsCoreBundle:Receive:poiItemClose }
+    options:
+          expose: true
+
+invoice_bill_auto_complete_for_receive:
+    pattern: /invoice-bill/receive-invoice-auto-complete
+    defaults: { _controller: PmsCoreBundle:Receive:invoiceBillAutoComplete }
+    options:
+          expose: true
+
+invoice_bill_auto_complete_for_modal_receive:
+    pattern: /invoice-bill/receive-invoice-modal-auto-complete
+    defaults: { _controller: PmsCoreBundle:Receive:invoiceBillAutoCompleteModal }
+    options:
+          expose: true
+
+challan_auto_complete_for_receive:
+    pattern: /challan/receive-challan-auto-complete
+    defaults: { _controller: PmsCoreBundle:Receive:challanAutoComplete }
+    options:
+          expose: true
+
+challan_auto_complete_for_modal_receive:
+    pattern: /challan/receive-challan-modal-auto-complete
+    defaults: { _controller: PmsCoreBundle:Receive:challanAutoCompleteModal }
+    options:
+          expose: true
+
+receive:
+    pattern: /receive/{status}
+    defaults: { _controller: PmsCoreBundle:Receive:index, status:received }

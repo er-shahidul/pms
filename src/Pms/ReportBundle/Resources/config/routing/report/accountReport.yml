@@ -1,0 +1,15 @@
+report_account:
+    pattern: /account-report
+    defaults: { _controller: PmsReportBundle:AccountReport:accountReport }
+
+report_account_excel:
+    pattern: /account-report-excel
+    defaults: { _controller: PmsReportBundle:AccountReport:accountReportExcel }
+    options:
+           expose: true
+
+get_ccn_by_project_id:
+    pattern: /report/get/ccn/id
+    defaults: { _controller: PmsReportBundle:AccountReport:getCcnByProjectId }
+    options:
+           expose: true

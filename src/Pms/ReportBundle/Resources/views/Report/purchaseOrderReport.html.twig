@@ -1,0 +1,215 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .parentTbl table {
+        border-spacing: 0;
+        border-collapse: collapse;
+        border: 0;
+
+    }
+    .childTbl table {
+        border-spacing: 0;
+        border-collapse: collapse;
+        border: 1px solid #d7d7d7;
+
+    }
+    .childTbl th,
+    .childTbl td {
+        border: 1px solid #d7d7d7;
+    }
+    .scrollData {
+
+        max-height: 450px;
+        overflow-x: auto;
+    }
+</style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                PO Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_purchase_order') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> PO Report</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            {{ include('::flash-message.html.twig') }}
+
+            <span class="dailyPoMessege"></span>
+
+            <form action="{{ url('report_purchase_order') }}" method="get" name="purchase_order_excel_search" id="purchase_order_excel_search">
+                <table id="table_project_cost" style="">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(formSearch.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class="col-md-1">
+                                    <div class="input-icon right">
+                                        <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                                <span class="input-group-btn"></span>
+                                {{ form_widget(formSearch.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                            </div>
+                        </td>
+
+                        <td style="width: 20%">
+                            <div class="form-group">
+                                {{ form_widget(formSearch.user, { 'attr': {'class': 'col-md-4 form-control select2me fontColorBlack'} }) }}
+                            </div>
+                        </td>
+
+                        <td style="width: 25%" >
+                            <div class="form-group">
+                                {{ form_widget(formSearch.project, { 'attr': {'class': 'col-md-4 form-control select2me fontColorBlack'} }) }}
+                            </div>
+                        </td>
+                        <td style="width: 20%" >
+                            <div class="form-group">
+                                {{ form_widget(formSearch.purchaseType, { 'attr': {'class': 'col-md-2 form-control select2me fontColorBlack'} }) }}
+                            </div>
+                        </td>
+                        <td>
+                            <input type="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+            <!--BEGIN TABS-->
+        <div class="col-md-12" style="float: left;">
+            <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+                <input type="button" value="Export in excel" name="purchaseOrderReportExcel" id="purchaseOrderReportExcel" class="btn blue">
+            </div>
+
+                <table class="table table-bordered table-striped table-condensed flip-content responsiveDiv">
+                    <thead class="flip-content" style="background: #4b8df8;color: #fff;">
+                    <tr>
+                        <td class="numeric"></td>
+                        <th class="numeric">Sl</th>
+                        <th class="numeric">Item</th>
+                        <th class="numeric">Project Name</th>
+                        <th class="numeric">Company Name</th>
+                        <th class="numeric">Project Area</th>
+                        <th class="numeric">Sub Category</th>
+                        <th class="numeric">PO Type</th>
+                        <th class="numeric">PO Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for index , budgetDaily in poReport %}
+
+                        <tr>
+                            <td class="numeric"><span id="{{ index + 1 }}" class="toggle  row-details row-details-close" style="cursor:pointer;"><span>[+]</span></span></td>
+                            <td class="numeric">{{ index+1 }}</td>
+                            <td class="numeric">{{ budgetDaily.itemName | default('') }}</td>
+                            <td class="numeric">{{ budgetDaily.projectName | default() }}</td>
+                            <td class="numeric">{{ budgetDaily.companyType | default() }}</td>
+                            <td class="numeric">{{ budgetDaily.areaName | default() }}</td>
+                            <td class="numeric">{{ budgetDaily.subCategoryName | default() }}</td>
+                            <td class="numeric">{{ budgetDaily.purchaseTypeName | default() }}</td>
+                            <td class="numeric">{{ budgetDaily.netTotal |number_format(2, '.', ',') }}</td>
+                        </tr>
+
+                        <tr class="showing-overview" id="show-{{ index + 1 }}" style="display: none;">
+                            <td colspan="9">
+                                <table class="inner-table" style="width: 100%">
+
+                                    <tr class="inner-numeric"><td>Unit</td><td>{{ budgetDaily.itemUnit | default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Item type</td><td>{{ budgetDaily.itemType | default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Category Name</td><td>{{ budgetDaily.categoryName | default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Sub Category Name</td><td>{{ budgetDaily.subCategoryName | default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Unit Price</td><td>{{ budgetDaily.purchaseOrderItem.price |number_format(2, '.', ',') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Po No</td><td>{{ budgetDaily.poId | default() }}</td></tr>
+                                    <tr class="inner-numeric"><td>Po Ref No</td><td>{{ budgetDaily.refNo | default() }}</td></tr>
+
+                                    <tr class="inner-numeric"><td>Po Qty</td><td>{{ budgetDaily.purchaseOrderItem.quantity | default('') }}</td></tr>
+
+
+                                    <tr class="inner-numeric"><td>Po Date</td><td>{{ budgetDaily.createdDate | date('Y-m-d') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Month</td><td>{{ budgetDaily.createdDate | date('Y-M') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Issued By</td><td>{{ budgetDaily.username | default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Buyer Name</td><td>{{ budgetDaily.buyerName | default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Vendor Name</td><td>{{ budgetDaily.vendorName | default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Purchase Type</td><td>{{ budgetDaily.purchaseTypeName | default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Close/Cancel Qty</td><td>{{ budgetDaily.closeQty| default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Close/Cancel By</td><td>{{ budgetDaily.closeBy| default('') }}</td></tr>
+                                    <tr class="inner-numeric"><td>Close/Cancel Remarks </td><td>{{ budgetDaily.remark| default('') }}</td></tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+    {#<script>#}
+
+    $(".toggle").click(function(){
+    var id = $(this).attr('id');
+    //$('.showing-overview').hide();
+    $("#show-"+id).slideToggle(100);
+    }).toggle( function() {
+    $(this).children("span").text("[-]");
+    }, function() {
+    $(this).children("span").text("[+]");
+    });
+
+    $('#purchaseOrderReportExcel').click(function () {
+
+        setTimeout(function(){
+            $('#purchase_order_excel_search').attr('action', '{{ path('report_purchase_order') }}');
+        }, 1000);
+
+    $.ajax({
+    form: 'purchase_order_excel_search',
+    url: Routing.generate('report_purchase_order_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock %}

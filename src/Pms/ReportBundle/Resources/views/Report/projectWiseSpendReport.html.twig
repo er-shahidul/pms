@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .highcharts-button{
+            display: none;
+        }
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Project Wise Spend Item Report
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('report_budget_vs_spend') }}" style="color: #333 !important;">Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;"> Project wise spend item report</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+<a href="{{ path('project_wise_spend_report_excel',{id:project.id,month:month,subcategory:subCategoryId}) }}"
+   class="btn btn-default blue">Spend Report Excel</a>
+    <div class="row-fluid">
+            <!--BEGIN TABS-->
+        <div class="span12">
+
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead style="background: #4b8df8;color: #fff;">
+                    <tr class="numeric">
+                        <th>Sl</th>
+                        <th>Item</th>
+                        <th>Po Number</th>
+                        <th>CreatedBy</th>
+                        <th>PR number</th>
+                        <th>Brand name</th>
+                        <th>vendor/buyer</th>
+                        <th>Po Date</th>
+                        <th>Unit</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Sub total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for index, spend in spends %}
+                            <tr>
+                                <td class="numeric">{{ index + 1 }}.</td>
+                                <td class="numeric">{{ spend['itemName']|default }}</td>
+                                <td class="numeric">{{ spend['poId']|default }}</td>
+                                <td class="numeric">{{ spend['username']|default }}</td>
+                                <td class="numeric">{{ spend['prId']|default }}</td>
+                                <td class="numeric">{{ spend['brand_name']|default }}</td>
+                                <td class="numeric">{{ spend['buyer_name'] ? 'Buyer: ' ~ spend['buyer_name'] : 'Vendor: ' ~ spend['vendor_name']|default }}</td>
+                                <td class="numeric">{{ spend['po_created_date']|date('Y-m-d') }}</td>
+                                <td class="numeric">{{ spend['itemUnit']|default }}</td>
+                                <td class="numeric">{{ spend['item_price']|default }}</td>
+                                <td class="numeric">{{ spend['quantity']|default }}</td>
+                                <td class="numeric">{{ spend['subTotal']|default }}</td>
+                            </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+
+    $('#itemOverViewReportExcel').click(function () {
+
+    $.ajax({
+    form: 'item_over_view_report',
+    url: Routing.generate('report_budget_vs_spend_excel'),
+    dataType: 'form html'
+    });
+    });
+
+
+{% endblock %}

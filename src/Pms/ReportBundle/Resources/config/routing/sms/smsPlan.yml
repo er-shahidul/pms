@@ -1,0 +1,11 @@
+sms_plan_for_director_md_fd:
+    pattern: /sms/plan-for-director-md-fd
+    defaults: { _controller: PmsReportBundle:Sms:smsPlanForDirectorMdFd }
+
+sms_plan_for_approver_requisition:
+    pattern: /sms/plan-for-approver-requisition
+    defaults: { _controller: PmsReportBundle:Sms:smsPlanForApproverRequisition }
+
+sms_pending_for_receiving_to_store_officer:
+    pattern: /sms/pending-for-receiving-to-store-officer
+    defaults: { _controller: PmsReportBundle:Sms:pendingForReceivingToStoreOfficer }

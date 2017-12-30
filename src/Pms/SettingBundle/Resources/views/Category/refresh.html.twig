@@ -1,0 +1,47 @@
+<div class="form-group">
+    <div class="col-md-12" style="margin-top: 30px;">
+
+        <table class="table bold" style="border: 1px solid ghostwhite;">
+            <thead style="background: #4b8df8;color: #fff;">
+            <tr>
+                <th>Sl</th>
+                <th class="sorted col-md-10">Category Name</th>
+                <th class="col-md-2"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% set offset = categories.getItemNumberPerPage * (categories.currentPageNumber - 1) %}
+
+            {% for category in categories %}
+
+                <tr style="height: 38px;background: #fff;border-top: 3px solid #eee !important;">
+                    <td>{{ loop.index + offset }}.</td>
+                    <td>{{ category.categoryName }}</td>
+                    <td>
+                        {% if category.status == 1 %}
+                            <a href="/category/delete/{{ category.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-trash-o"></i> Delete</a>
+
+                            <a href="/category/update/{{ category.id }}" style="width: 65px;" class="btn default btn-xs"><i
+                                        class="fa fa-edit"></i> Update</a>
+                        {% endif %}
+                        {% if category.status == 0 %}
+                            <a href="#" class="btn default btn-xs" style="width: 65px;"><i
+                                        class="fa fa-times"></i> Deleted</a>
+
+                            <a href="/category/active/{{ category.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                        class="fa fa-repeat"></i> Restore</a>
+                        {% endif %}
+
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+        <div class="navigation" style="text-align: right">
+            {{ knp_pagination_render(categories) }}
+        </div>
+    </div>
+</div>

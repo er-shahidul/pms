@@ -1,0 +1,17 @@
+report_item_over_view_report_bundle:
+    pattern: /item-over-view-report
+    defaults: { _controller: PmsReportBundle:ItemOverViewReport:overViewReport }
+
+report_item_over_view_wise_item_details:
+    pattern: /item-over-view-report-item-details
+    defaults: { _controller: PmsReportBundle:ItemOverViewReport:overViewReportItemDetails }
+    methods: GET
+
+report_item_over_view_report_bundle_excel:
+    pattern: /item-over-view-report-excel
+    defaults: { _controller: PmsReportBundle:ItemOverViewReport:overViewReportExcel }
+    options:
+            expose: true
+
+
+

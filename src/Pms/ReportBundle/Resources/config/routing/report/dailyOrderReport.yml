@@ -1,0 +1,9 @@
+report_daily_purchase_order:
+    pattern: /daily-purchase-order-report
+    defaults: { _controller: PmsReportBundle:DailyOrderReport:dailyOrder }
+
+report_daily_purchase_order_excel:
+    pattern: /daily-purchase-order-report-excel
+    defaults: { _controller: PmsReportBundle:DailyOrderReport:dailyOrderExcel }
+    options:
+           expose: true

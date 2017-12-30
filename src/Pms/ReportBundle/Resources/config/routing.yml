@@ -1,0 +1,116 @@
+# sms Routing
+sms_gate_way:
+    resource: "@PmsReportBundle/Resources/config/routing/sms/smsPlan.yml"
+
+PmsCoreBundle_email:
+    resource: "@PmsReportBundle/Resources/config/routing/email/email.yml"
+
+PmsReportBundle_project_spend_sub_category_wise_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/projectSpendSubCategoryWise.yml"
+
+PmsReportBundle_item_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/itemReport.yml"
+
+PmsReportBundle_pr_item_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/prItemReport.yml"
+
+PmsReportBundle_item_over_view_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/itemOverViewReport.yml"
+
+PmsReportBundle_user_activities_report_pr_creator:
+    resource: "@PmsReportBundle/Resources/config/routing/report/userActivitiesPrCreatorReport.yml"
+
+PmsReportBundle_user_activities_report_po_creator:
+    resource: "@PmsReportBundle/Resources/config/routing/report/userActivitiesPoCreatorReport.yml"
+
+PmsReportBundle_user_activities_report_claim:
+    resource: "@PmsReportBundle/Resources/config/routing/report/userActivitiesClaimReport.yml"
+
+PmsReportBundle_user_activities_report_receive:
+    resource: "@PmsReportBundle/Resources/config/routing/report/userActivitiesReceiveReport.yml"
+
+PmsReportBundle_user_activities_report_gate_pass:
+    resource: "@PmsReportBundle/Resources/config/routing/report/userActivitiesGatePassReport.yml"
+
+PmsReportBundle_project_purchase_type_wise_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/projectSpendPurchaseTypeWise.yml"
+
+PmsCoreBundle_purchase_requisition_activities_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/requisitionActivitiesReport.yml"
+
+PmsCoreBundle_purchase_activities_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/purchaseActivitiesReport.yml"
+
+PmsCoreBundle_purchase_price_directory_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/purchasePriceDirectoryReport.yml"
+
+PmsCoreBundle_purchase_price_directory_report_old:
+    resource: "@PmsReportBundle/Resources/config/routing/report/purchasePriceDirectoryOldReport.yml"
+
+PmsCoreBundle_purchase_order_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/purchaseOrderReport.yml"
+
+PmsCoreBundle_daily_purchase_order_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/dailyOrderReport.yml"
+
+PmsCoreBundle_purchase_officer_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/purchaseOfficerReport.yml"
+
+PmsCoreBundle_account_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/accountReport.yml"
+
+PmsCoreBundle_project_purchase_type_wise_count_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/projectPurchaseTypeWiseCount.yml"
+
+PmsCoreBundle_purchase_requisition_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/purchaseRequisitionReport.yml"
+
+PmsCoreBundle_my_task:
+    resource: "@PmsReportBundle/Resources/config/routing/myTask/myTask.yml"
+
+PmsCoreBundle_purchase_requisition_daily_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/dailyRequisitionReport.yml"
+
+PmsCoreBundle_system_usages_summery_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/systemUsagesSummaryReport.yml"
+
+PmsCoreBundle_vendor_status_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/vendorStatusReport.yml"
+
+PmsCoreBundle_requisition_vs_order_saving_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/requisitionVsOrderSavingReport.yml"
+
+PmsCoreBundle_budget_vs_spend_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/budgetVsSpendReport.yml"
+
+PmsCoreBundle_receive_item_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/receiveItemReport.yml"
+
+PmsCoreBundle_receive_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/receiveReport.yml"
+
+PmsCoreBundle_vendor_payment_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/paymentReport.yml"
+
+PmsCoreBundle_supplier_payment_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/supplierPaymentReport.yml"
+
+PmsCoreBundle_user_activities_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/userActivitiesReport.yml"
+
+PmsCoreBundle_compare_price_directory_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/comparePriceDirectoryReport.yml"
+
+PmsCoreBundle_lowest_two_month_price_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/lowestTwoMonthPriceReport.yml"
+
+PmsCoreBundle_lowest_compare_price_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/purchaseLowestPriceReport.yml"
+
+PmsCoreBundle_trend_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/trendReport.yml"
+
+PmsCoreBundle_price_compare_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/priceCompareReport.yml"
+PmsCoreBundle_three_sixty_degree_report:
+    resource: "@PmsReportBundle/Resources/config/routing/report/threeSixtyDegreeReport.yml"

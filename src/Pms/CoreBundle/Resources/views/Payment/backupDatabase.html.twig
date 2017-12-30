@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{% set totalAdjustmentAmount =0 %}
+{% for history in paymentHistory %}
+    {% set totalAdjustmentAmount = totalAdjustmentAmount + history.adjustmentAmount %}
+{% endfor %}
+    {%  set dueAdjust =  payment.purchaseOrder.advancePaymentAmount-totalAdjustmentAmount %}
+
+
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Payment
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('payment') }}" style="color: #333 !important;">Payment</a>
+                </li>
+                <li class="pull-right" style="margin-right: -5px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+{% endblock %}
+
+{% block documentready %}
+{#<script>#}
+    {{ parent() }}
+
+        $(".closeBack").click( function (){
+        window.history.back();
+        });
+
+        $('#verifiedPaymentButton').click( function (){
+
+            {#var advancePaymentAmount = {{ payment.purchaseOrder.advancePaymentAmount }}#}
+             var adjustmentAmount = parseFloat($('#adjustmentAmount').val());
+            var placeAdjustmentAmount = document.getElementById("adjustmentAmount").getAttribute("placeholder");
+
+            checkMaxAmount(adjustmentAmount,placeAdjustmentAmount);
+        });
+
+        function checkMaxAmount(adjustmentAmount,placeAdjustmentAmount){
+
+            if(adjustmentAmount > placeAdjustmentAmount ){
+                alert('Adjustment amount can'+"'"+'t'+ ' more than  '+ placeAdjustmentAmount+ " BDT amount");
+                $('#adjustmentAmount').val('');
+                return false;
+            } else {
+
+              $('#verifiedSubmitAction').submit();
+            }
+        }
+
+{% endblock %}

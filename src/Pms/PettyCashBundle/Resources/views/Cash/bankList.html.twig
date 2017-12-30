@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .pagination > li > a, .pagination > li > span
+        {
+            background-color: #eee !important;
+            color: #000000 !important;
+        }
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+            background-color: #428bca !important;
+        }
+        .addBtn{
+            float: right;
+            margin-right: 15px;
+        }
+        .addBtnLink{
+            background: #4b8df8;
+            float: right;
+            height: 40px;
+            color:#ffffff;
+            padding: 9px 14px !important;
+            text-decoration: none!important;
+        }
+        .totalBankBalance{
+            margin-left: -15px;
+        }
+
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Bank
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Petty Cash</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">BankAmount</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    {{ include('::flash-message.html.twig') }}
+
+    <div class="totalBankBalance">
+        <strong style="margin-left: 15px;">Total Bank Balance:{{ totalBalance }}</strong>
+    </div>
+    {% if is_granted("ROLE_BANK_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+        <div class="col-md-offset-3 addBtn">
+            <a href="/bank/add" class="addBtnLink">Bank</a>
+        </div>
+    {% endif %}
+    <div class="col-md-12">
+
+        <form method="get" name="petty_bank_report" id="petty_bank_report">
+
+            <table id="table_project_cost">
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="input-group input-small date date-picker totalBankBalance"
+                             data-date-format="yyyy-mm-dd" data-date-minviewmode="months"
+                             data-date-viewmode="years">
+                            <span class="input-group-btn"></span>
+                            {{ form_widget(form.start_date, { 'attr': {'class': 'form-control start_date'} }) }}
+                        </div>
+                    </td>
+                    {#<td>
+                        <div class="form-group">
+                            <div class="col-md-1">
+                                <div class="input-icon right">
+                                    <span style="font-size: 15px;font-weight: bolder;line-height: 30px;">To</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>#}
+                    {# <td>
+                         <div class="input-group input-small date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                             <span class="input-group-btn"></span>
+                             {{ form_widget(form.end_date, { 'attr': {'class': 'form-control end_date'} }) }}
+                         </div>
+                     </td>#}
+                    <td>
+                        <input type="submit" value="Search" class="btn blue" style="margin-left:25px;">
+                    </td>
+                    <td>
+                        <a  class="btn blue" href="{{ path('bank_amount') }}"style="margin-left:25px;cursor: pointer;">All</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div><br/>
+    <input type="button" value="Export in excel" name="PettyCashBankReportExcel"
+           id="PettyCashBankReportExcel" class="btn blue">
+    <div class="tab-pane active" id="tab_1_1">
+        <div class="" data-always-visible="1" data-rail-visible="0">
+
+            <div class="fluid" id="cost-header-list-div">
+                <div class="form-group">
+                    <div class="col-md-12" style="margin-top: 30px;">
+
+                        <table class="table bold" >
+                            <thead style="background: #4b8df8;color: #fff;">
+                            <tr>
+                                <th>SL/NO</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Created By</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody style="border: 2px solid ghostwhite;">
+                            {% for index, bankList in bankLists %}
+                            <tr>
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ bankList['createdDate'] | date('d M Y') }}</td>
+                                <td>{{ bankList['amount'] }}</td>
+                                <td>{{ bankList['username'] }}</td>
+                                <td>{{ bankList['status'] }}</td>
+                                <td>{{ bankList['notes'] }}</td>
+                                <td>
+                                {% if is_granted("ROLE_BANK_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                                    <a href="/bank/delete/{{ bankList['bankId'] }}" onclick="return confirm('Do You Want To Delete This  Bank?')" style="width: 65px;" class="btn default btn-xs"><i class="fa fa-trash-o"></i> Delete</a>
+                                {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".start_date").datepicker( {
+    format: "yyyy-mm-01",
+    viewMode: "months",
+    minViewMode: "months"
+    });
+
+    $('#PettyCashBankReportExcel').click(function () {
+
+    setTimeout(function(){
+    $('#petty_bank_report').attr('action', '{{ path('bank_amount') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'petty_bank_report',
+    url: Routing.generate('petty_cash_bank_report_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock documentready %}

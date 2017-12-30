@@ -1,0 +1,298 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        table tr td ul li{
+            list-style: none;
+            margin-left: -41px;
+        }
+    </style>
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Receive Item
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('receive') }}" style="color: #333 !important;">Receive</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#" style="color: #333 !important;">Item List</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li><a href="#" style="color: #333 !important;">Form</a></li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="modal-dialog" style="width: 100%; padding: 0;">
+        <div class="modal-content backgroundWhite">
+            <div class="modal-header backGroundLightGrey">
+                <h4 class="modal-title bold text-center">Goods Received Note</h4>
+            </div>
+
+            {{ form_start(form, {'action': path('receive_save'), 'attr': {'class': 'form-horizontal', 'id': 'purchase-form', 'novalidate': 'novalidate'} } ) }}
+            <div class="modal-body">
+
+                    <div class="col-md-12" style="height: 245px;">
+                        <div class="col-md-6 text-left left height100">
+                            <div class="col-md-12" style="height:35px;float:left;">
+                                <div class="form-group">
+                                    <label  class="col-md-4 control-label" style="margin-left:-30px;">Project :</label>
+                                    <div class="col-md-6">
+                                        <div class="input-icon right">
+                                            <i class="fa fa-home"></i>
+                                            <input type="text" class="form-control" placeholder="{{ project[0] }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-md-4 control-label" style="margin-left: -30px;">Received From :</label>
+                                    <div class="col-md-6">
+                                        <div class="input-icon right">
+                                            {{ form_widget(form.receiveForm, { 'attr': {'class': 'form-control', 'id': 'receive'} }) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="vendor-group">
+                                    {{ form_label(form.vendor, 'Vendor :', {'label_attr': {'class': 'control-label col-md-4 marginLeft-30'} }
+                                    ) }}
+                                    <div class="col-md-6">
+                                        <div class="input-icon">
+                                            {{ form_widget(form.vendor, { 'attr': {'class': 'form-control', 'style': 'width: 190px;'} }) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="buyer-group">
+                                    {{ form_label(form.buyer, 'Buyer :', {'label_attr': {'class': 'control-label col-md-4 marginLeft-30'} }
+                                    ) }}
+                                    <div class="col-md-6">
+                                        <div class="input-icon">
+                                            {{ form_widget(form.buyer, { 'attr': {'class': 'form-control', 'style': 'width: 190px;'} }) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="direct-group">
+                                    {{ form_label(form.contactNumber, 'Contact Number :', {'label_attr': {'class': 'control-label col-md-4 marginLeft-30'} }
+                                    ) }}
+                                    <div class="col-md-6">
+                                        <div class="input-icon">
+                                            {{ form_widget(form.contactNumber, { 'attr': {'class': 'form-control', 'style': 'width: 190px;'} }) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 right" style="height: 150px;">
+                            <div class="col-md-12 left height50">
+
+                                <div class="form-group">
+                                    {{ form_label(form.refGrn, 'Ref. no :', {'label_attr': {'class': 'control-label col-md-4', 'style': 'margin-left:15px;' } }
+                                    ) }}
+                                    <div class="col-md-6">
+                                        <div class="input-icon">
+                                            {{ form_widget(form.refGrn, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                                        </div>
+                                        <span class="help-block" style="color:darkred;margin-left:-40px;">{{ form_errors(form.refGrn) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 left height50">
+                                <div class="form-group">
+                                    {{ form_label(form.invoice, 'Invoice/Bill:', {'label_attr': {'class': 'control-label col-md-4 marginLeft15'} }
+                                    ) }}
+                                    <div class="col-md-6">
+                                        <div class="input-icon">
+                                            {{ form_widget(form.invoice, { 'attr': {'class': 'form-control select2InvoiceBillAutoComplete paddingLeft10'} }) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 left height50">
+                                <div class="form-group">
+                                    {{ form_label(form.calan, 'Challan:', {'label_attr': {'class': 'control-label  col-md-4 marginLeft15'} }
+                                    ) }}
+                                    <div class="col-md-6">
+                                        <div class="input-icon">
+                                            {{ form_widget(form.calan, { 'attr': {'class': 'form-control select2CalanAutoComplete paddingLeft10'} }) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 left height50">
+                                <div class="form-group">
+                                    <label  class="col-md-4 control-label" style="margin-left:15px;">Created :</label>
+                                    <div class="col-md-6">
+                                        <div class="input-icon right">
+                                            <i class="fa fa-user"></i>
+                                            <input type="text" class="form-control" placeholder="{{ app.user.username }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-md-4 control-label" style="margin-left:15px;">Contact No :</label>
+                                    <div class="col-md-6">
+                                        <div class="input-icon right">
+                                            <i class="fa fa-user"></i>
+                                            <input type="text" class="form-control" placeholder="{{ app.user.profile.cellphone | default() }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.file, 'GRN File Attach :', {'label_attr': {'class': 'control-label col-md-2', 'style': 'margin-left: 15px;' } } ) }}
+                        <div class="col-md-9">
+                            <div class="fileupload fileupload-new" data-provides="fileupload" style="margin-left: -20px;">
+                                <div class="input-group">
+                                                        <span class="input-group-btn">
+                                                        <span class="uneditable-input">
+                                                        <i class="fa fa-file fileupload-exists"></i>
+                                                        <span class="fileupload-preview"></span>
+                                                        </span>
+                                                        </span>
+                                                        <span class="btn default btn-file">
+                                                        <span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+                                                        <span class="fileupload-exists"><i
+                                                                    class="fa fa-undo"></i> Change</span>
+                                                            {{ form_widget(form.file, { 'attr': {'class': 'default'} }) }}
+                                                        </span>
+                                    <a href="form_component.html#" class="btn red fileupload-exists"
+                                       data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table border-1-ghostwhite " style="margin-top: 20px;">
+                        <thead class="backgroundTableHeader">
+                        <tr>
+                            <th>Sl</th>
+                            <th class="col-md-2">Particulars</th>
+                            <th class="col-md-2">RemainQuantity</th>
+                            <th class="col-md-1">Unit</th>
+                            <th class="col-md-2">ProjectName</th>
+                            <th class="col-md-1">PO No</th>
+                            <th class="col-md-1">PR No</th>
+                            <th class="col-md-3">Remarks</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set i = 0 %}
+                        {% set j = 1 %}
+                        {% for orderItem in form.receiveItems %}
+                            <tr>
+                                <td class="">
+                                    {{ j }}.
+                                </td>
+                                <td class="">
+                                    {{ form_widget(orderItem.purchaseOrderItem, { 'attr': {'class': 'form-control paddingLeft10'} }) }}
+                                    <span>{{ item[i] }}</span>
+                                </td>
+                                <td class="">
+                                    {{ form_widget(orderItem.quantity, { 'attr': {'class': 'form-control paddingLeft10', 'placeholder': quantityArr[i] } }) }}
+                                    <span class="help-block" style="color:darkred;">{{ form_errors(orderItem.quantity) }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ itemUnit[i] }}</span>
+                                </td>
+                                <td class="">
+                                    <span>{{ project[i] }}</span>
+                                </td>
+                                <td class="">
+                                    <span>{{ purchaseOrder[i] }}</span>
+                                </td>
+                                <td class="">
+                                    <span>{{ purchaseRequisition[i] }}</span>
+                                </td>
+                                <td class="">
+                                    {{ form_widget(orderItem.comment, { 'attr': {'class': 'form-control paddingLeft10', 'style': 'width: 250px;max-height: 54px;max-width: 250px;'} }) }}
+                                </td>
+                            </tr>
+                            {% set i = i + 1 %}
+                            {% set j = j + 1 %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <input type="hidden" value="{{ receiveItems }}" name="receiveItems"/>
+                </div>
+            </div>
+            <div class="modal-footer backGroundLightGrey">
+                <div class="btn-group">
+                    <a href="javascript:history.back()" class="btn" style="font-family: 'Open Sans', sans-serif;width: 100px;background: #0353D6; color: white !important;" onclick="window.history.back();">
+                        << Previous
+                    </a>
+                </div>
+                <div class="btn-group">
+                    <a href="{{ path('receive') }}" class="btn" style="font-family: 'Open Sans', sans-serif;width: 100px;background: #0353D6; color: white !important;">
+                        <i class="fa fa-ban"> Cancel</i>
+                    </a>
+                </div>
+                {{ form_widget(form.save, { 'attr': {'class': 'btn button-width confirm', 'style': 'width: 100px;background: #0353D6; color: white !important;', 'title': 'Do You Want To Create It?' } }) }}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+{#<script>#}
+{#{% block documentready %}
+    {{ parent() }}
+
+    $(".confirm").easyconfirm();
+
+    var vendorId = {{ poVendorId|json_encode|raw }};
+    var buyerId = {{ poBuyerId|json_encode|raw }};
+
+    if(vendorId > 0){
+        $('#vendor-group').show();
+        $('#buyer-group').hide();
+        $('#direct-group').hide();
+    var receiveForm = $("#receive_receiveForm").val('Vendor');
+    }else if(buyerId > 0 && vendorId == 0){
+        $('#vendor-group').hide();
+        $('#buyer-group').show();
+        $('#direct-group').show();
+    var receiveForm = $("#receive_receiveForm").val('Buyer');
+    }else{
+    var receiveForm = $("#receive_receiveForm").val('None');
+    }
+
+{% endblock %}#}
+
+<script>
+    var vendorId = {{ poVendorId|json_encode|raw }};
+    var buyerId = {{ poBuyerId|json_encode|raw }};
+</script>
+{% endblock %}
+
+{% block javascriptBlock %}
+    {{ parent() }}
+
+    {% javascripts
+    '@PmsCoreBundle/Resources/public/js/receive.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascriptBlock %}

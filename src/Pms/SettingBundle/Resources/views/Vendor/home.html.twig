@@ -1,0 +1,275 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .popover-title {
+            color: #000000;
+        }
+        .popover-content{
+            color:#000000;
+        }
+        .modal-details{
+            background: #35aa47;padding: 1px 5px
+        }
+    </style>
+
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Vendor
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="{{ path('homepage') }}" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <i class="fa fa-cogs"></i>
+                    <a href="#" style="color: #333 !important;">Setting</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('vendor') }}" style="color: #333 !important;">Vendor</a>
+                </li>
+                <li class="pull-right" style="margin-right: -7px;">
+                    <div data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+<div class="row-fluid">
+    <div class="span12">
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="vendorMessege"></span>
+
+    <form method="get" style="margin-bottom: 20px;margin-left: -15px;margin-top: -20px;" id="vendor" name="vendor">
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="input-icon right">
+                    {{ form_widget(formSearch.vendor, { 'attr': {'class': 'form-control select2AutoComplete fontColorBlack','placeholder':'Select Vendor'} }) }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="input-icon right">
+                    {{ form_widget(formSearch.itemType, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="input-icon right">
+                    {{ form_widget(formSearch.area, { 'attr': {'class': 'form-control select2me fontColorBlack'} }) }}
+                </div>
+            </div>
+        </div>
+
+        <input type="submit" value="Search" class="btn blue">
+    </form>
+</div>
+    <div class="span12">
+    <div class="modal-footer" style="border-top:none;text-align:left;margin-bottom:10px;width: 100%;">
+        <input type="button" value="Export in excel" name="vendorsListExcel" id="vendorsListExcel" class="btn blue">
+    </div>
+
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            <li class="{% if status == 'active' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('vendor',{status:'active'} ) }}">All</a></li>
+            <li class="{% if status == 'delete' %}active{% endif %}"><a class="tabForTable" style="color: black !important;" href="{{ path('vendor',{status:'delete'} ) }}">Deleted</a></li>
+            {% if is_granted("ROLE_VENDOR_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                <li style="float: right;margin-right: -1px;">
+                    <a href="{{ path('vendor_add') }}" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                        Add vendor
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="tab-content" style="height: auto;background: #eee;">
+            <div class="tab-pane active">
+                <div class="" data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="vendor-list-div">
+                        <div class="form-group">
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                                    <thead class="flip-content"  style="background: #4b8df8">
+                                    <tr>
+                                        {#<th class="numeric"></th>#}
+                                            <th class="numeric">Sl</th>
+                                            <th class="numeric">Created Date</th>
+                                            <th class="numeric">Created By</th>
+                                            <th class="numeric">VendorName</th>
+                                            <th class="numeric">ContactPerson</th>
+                                            <th class="numeric">ContactNo</th>
+                                            <th class="numeric">Attach</th>
+                                            <th class="numeric">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% set offset = vendors.getItemNumberPerPage * (vendors.currentPageNumber - 1) %}
+
+                                    {% for vendor in vendors %}
+
+                                        <tr>
+                                            <td>{{ loop.index + offset }}.</td>
+                                            <td>{{ vendor.createdDate|date('Y-m-d') }}</td>
+                                            <td>{{ vendor.createdBy|default('N/A') }}</td>
+                                            <td>{{ vendor.vendorName }}</td>
+                                            <td>{{ vendor.contractPerson }}</td>
+                                            <td>{{ vendor.contractNo }}</td>
+                                            <td class="numeric">
+                                                {% if vendor.vendorAttach is not null %}
+
+                                                    {% for document in vendor.vendorAttach %}
+                                                        {#<a class="btn btn-xs" href="{{ path('homepage') }}uploads/vendor/{{ document.path }}" target="_blank">
+                                                            <i class="fa fa-cloud-upload"></i>
+                                                        </a>#}
+                                                        <a class="btn btn-xs" href="#" onclick="javascript: window.open('/vendor/attachment-view/{{ document.path }}')">
+                                                            <i class="fa fa-cloud-upload"></i>
+                                                        </a>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    &ensp;
+                                                {% endif %}
+                                            </td>
+
+                                            {% if vendor.status == 1 %}
+                                            {#<td>#}
+                                                {#<a href="/vendor/attach/{{ vendor.id }}" class="btn default btn-xs" style="width: 65px;">Attach</a>#}
+                                            {#</td>#}
+                                            <td>
+                                                <a href="/vendor/delete/{{ vendor.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                                            class="fa fa-trash-o"></i> Delete</a>
+                                                <a href="/vendor/update/{{ vendor.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                                            class="fa fa-edit"></i> Update</a>
+                                                <a href="{{ path('vendor_details', {'id': vendor.id}) }}" data-target="#ajax" data-toggle="modal"  class="mini modal-details displayForDesktop" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                                <a href="{{ path('vendor_details', {'id': vendor.id}) }}" class="mini modal-details displayForMob" href="#" style="display: none;"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                            </td>
+                                            {% endif %}
+
+                                            {% if vendor.status == 0 %}
+                                            {#<td>#}
+                                                {#<a href="/vendor/attach/{{ vendor.id }}" class="btn default btn-xs" style="width: 65px;">Attach</a>#}
+                                            {#</td>#}
+                                            <td>
+                                                <a href="#" class="btn blue btn-xs" style="width: 65px;"><i
+                                                            class="fa fa-times"></i> Deleted</a>
+                                                <a href="/vendor/active/{{ vendor.id }}" class="btn default btn-xs" style="width: 65px;"><i
+                                                            class="fa fa-repeat"></i> Restore</a>
+                                                <a href="{{ path('vendor_details', {'id': vendor.id}) }}" data-target="#ajax" data-toggle="modal"  class="mini modal-details displayForDesktop" href="#"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                                <a href="{{ path('vendor_details_for_mobile', {'id': vendor.id}) }}" class="mini modal-details displayForMob" href="#" style="display: none;"> <i class="m-icon-swapright m-icon-white"></i></a>
+                                            </td>
+                                            {% endif %}
+                                        </tr>
+
+
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                <div class="navigation" style="text-align: right">
+                                    {{ knp_pagination_render(vendors) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {#<script>#}
+    {{ parent() }}
+
+    $(".toggle").click(function(){
+        var id = $(this).attr('id');
+        //$('.showing-overview').hide();
+        $("#show-"+id).slideToggle(100);
+    }).toggle( function() {
+        $(this).children("span").text("[-]");
+    }, function() {
+        $(this).children("span").text("[+]");
+    });
+
+
+    var $url = Routing.generate('vendor_auto_complete');
+    var queryStringObject = {{ app.request.query.all|json_encode|raw }};
+    var selectedVendorId = (queryStringObject && queryStringObject.search && queryStringObject.search.vendor) ? queryStringObject.search.vendor : '';
+
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+
+            return m;
+        },
+        formatResult: function(vendor){ return vendor.text}, // omitted for brevity, see the source of this page
+        formatSelection: function(vendor){return vendor.text}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+            $.ajax({
+                url: $url,
+                data: 'vendor=' + selectedVendorId,
+                dataType: 'json'
+            }).done(function(data){
+                callback(data);
+            });
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+    $('#vendorsListExcel').click(function () {
+
+    setTimeout(function(){
+    $('#vendor').attr('action', '{{ path('vendor') }}');
+    }, 1000);
+
+    $.ajax({
+    form: 'vendor',
+    url: Routing.generate('vendor_vendors_list_excel'),
+    dataType: 'form html'
+    });
+    });
+
+{% endblock %}
+

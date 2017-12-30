@@ -1,0 +1,702 @@
+{% block body %}
+<div id="reload-all-po">
+    <div class="modal-dialog " style="width:70%;" >
+    <div class="modal-content">
+        <div class="modal-header" style="background: lightgrey;">
+            <button type="button" class="close close-modal-refresh" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title bold" style="text-align: center;">Purchase Order Details</h4>
+        </div>
+
+    <div class="col-md-14">
+        <div class="col-md-7" >
+            <table class="table table-hover">
+                <tr>
+                    <td class="label-td">
+                        Order Number :
+                    </td>
+                    <td class="value-td">
+                        {{ po.id }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Ref. No :
+                    </td>
+                    <td class="value-td" >
+                        {{ po.refNo | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Company Type :
+                    </td>
+                    <td class="value-td">
+                        {{ po.companyType | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Purchase Type :
+                    </td>
+                    <td class="value-td" >
+                        {{ po.poNonpo.name | default() }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Issue Date :
+                    </td>
+                    <td class="value-td" >
+                        {{ po.createdDate | date('d M Y') }}
+                    </td>
+                </tr>
+                {% if  po.buyer is not null %}
+                    <tr>
+                        <td class="value-td" colspan="2">
+                            <span style="font-weight: bold;"><u>Buyer Info</u></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-td">
+                            Buyer :
+                        </td>
+                        <td class="value-td" >
+                            {{ po.buyer.username | default() }}
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if  po.vendor is not null %}
+                    <tr>
+                        <td class="value-td" colspan="2">
+                            <span style="font-weight: bold;"><u>Vendor Info</u></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-td">
+                            Vendor :
+                        </td>
+                        <td class="value-td" >
+                            {{ po.vendor.vendorName | default() }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-td">
+                            Contact Person :
+                        </td>
+                        <td class="value-td">
+                            {{ po.vendor.contractPerson | default() }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-td">
+                            Mobile :
+                        </td>
+                        <td>
+                            {{ po.vendor.contractNo | default() }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-td">
+                            Address :
+                        </td>
+                        <td class="value-td">
+                            {{ po.vendor.vendorAddress | default() }}
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if po.vendorQuotationReferenceNumber is not null %}
+                    <tr>
+                        <td class="label-td">
+                            Vendor Quotation:
+                        </td>
+                        <td class="value-td">
+                            {{ po.vendorQuotationReferenceNumber|default("N/A") }}
+                        </td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+        <div class="col-md-7" >
+            <table class="table table-hover">
+                <tr>
+                    <td class="label-td">
+                        Payment Type :
+                    </td>
+                    <td class="value-td" >
+                        {{ po.paymentType|default("N/A") }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Payment Method:
+                    </td>
+                    <td class="value-td" >
+                        {{ po.paymentMethod|default("N/A") }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Payment From:
+                    </td>
+                    <td class="value-td" >
+                        {% if po.paymentFrom == 2 %}
+                            Head Office
+                        {% else %}
+                            Local Office
+                        {% endif  %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Computation :
+                    </td>
+                    <td class="value-td" >
+                        {% set computationStatus = po.computationStatus|default("") %}
+                        {% if computationStatus == 1 %} Yes
+                        {% elseif computationStatus == 2 %} No
+                        {% else %} N/A {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="value-td" colspan="2">
+                        <span style="font-weight: bold;"><u>Approval Info</u></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Created :
+                    </td>
+                    <td class="value-td">
+                        <span style="font-weight: bold;">{{ po.createdBy.username | default() }}</span>
+                        {% if  po.createdDate != null %}
+                            on <span style="font-weight: bold;">{{ po.createdDate | date('d M Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Verified :
+                    </td>
+                    <td class="value-td" >
+                        <span style="font-weight: bold;">{{ po.approvedOne.username | default('not Approved') }}</span>
+                        {% if  po.approvedOneDate != null %}
+                            on <span style="font-weight: bold;">{{ po.approvedOneDate | date('d M Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td">
+                        Validated :
+                    </td>
+                    <td class="value-td">
+                        <span style="font-weight: bold;">{{ po.approvedTwo.username | default('not validated') }}</span>
+                        {% if  po.approvedTwoDate != null %}
+                            on <span style="font-weight: bold;">{{ po.approvedTwoDate | date('d M Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label-td" >
+                        Approved :
+                    </td>
+                    <td class="value-td" >
+                        <span style="font-weight: bold;">{{ po.approvedThree.username | default('not verified') }}</span>
+                        {% if  po.approvedThreeDate != null %}
+                            on <span style="font-weight: bold;">{{ po.approvedThreeDate | date('d M Y') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="label-td">
+                        {% if po.path is not null %}
+                            <a style="color:#ffffff !important;" class="btn blue btn-xs" onclick="javascript: window.open('/purchase-order/attachment-view/{{ po.id }}/1')" >Vendor Quotation Attach</a>
+                        {% endif %}
+                        {% if po.pathTwo is not null %}
+                            <a style="color:#ffffff !important;" class="btn blue btn-xs" onclick="javascript: window.open('/purchase-order/attachment-view/{{ po.id }}/2')" >Comparison Attach</a>
+                        {% endif %}
+                        {% if po.pathAmendment is not null %}
+                            <a style="color:#ffffff !important;" class="btn blue btn-xs" onclick="javascript: window.open('/purchase-order/attachment-view/{{ po.id }}/4')" >Amendment Attachment</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="portlet box green">
+            <div class="portlet-title">
+                <div class="caption"><i class="icon-cogs"></i>Purchase Order Item</div>
+            </div>
+            <div class="portlet-body flip-scroll">
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-content" style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Sl</th>
+                        <th class="numeric">PR No</th>
+                        <th class="numeric">Particulars</th>
+                        <th class="numeric">Project</th>
+                        <th class="numeric">Qty</th>
+                        <th class="numeric">Brand</th>
+                        <th class="numeric">UnitPrice</th>
+                        <th class="numeric">TotalAmount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set subTotal = 0 %}
+                    {% for index, prItem in po.purchaseOrderItems %}
+                        {% set subTotal = subTotal + (prItem.price * prItem.quantity) %}
+                        <tr>
+                            <td class="numeric">
+                                {{ index + 1 }}.
+                            </td>
+                            <td class="numeric">
+                                <span>
+                                    <a style="float:left;color: black !important;" onclick="javascript: window.open('/purchase-requisition/details-others/{{ prItem.purchaseRequisitionItem.purchaseRequisition.id }}')">
+                                    {{ prItem.purchaseRequisitionItem.purchaseRequisition.id }}
+                                    </a>
+                                </span>
+                            </td>
+                            <td class="numeric">
+                                <span>{{ prItem.purchaseRequisitionItem.item.itemName }}</span>
+                            </td>
+                            <td class="numeric">
+                                <span>{{ prItem.purchaseRequisitionItem.purchaseRequisition.project.projectName }}</span>
+                            </td>
+                            <td class="numeric">
+                                <span> {{ prItem.quantity|number_format(2, '.', ',') }} {{ prItem.purchaseRequisitionItem.item.itemUnit }}</span>
+                            </td>
+                            <td class="numeric">
+                                {{ prItem.brand | default('') }}
+                            </td>
+                            <td class="numeric">
+                                {{ prItem.price|number_format(2, '.', ',') }}
+                            </td>
+                            {#<td class="numeric">
+                                {{ prItem.amount|number_format(2, '.', ',') }}
+                            </td>#}
+                            <td class="numeric">
+                                {{ (prItem.price * prItem.quantity)|number_format(2, '.', ',') }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="6" class="numeric" style="border-top: 5px solid #ddd;"></td>
+                        <td colspan="1" class="numeric" style="text-align: right;border-top: 5px solid #ddd;font-size: 14px;">Sub Total :</td>
+                        <td colspan="1" class="numeric tax" style="border-top: 5px solid #ddd;width: 120px;padding-left: 10px! important;">
+                            {{ subTotal |number_format(2, '.', ',') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="numeric" style="border-top: 0 solid #ddd;"></td>
+                        <td colspan="1" class="numeric" style="text-align: right;border-top: 0 solid #ddd;font-size: 14px;">
+                            {% if  po.tax is not null %}
+                                VAT & Tax Amount :
+                            {% endif %}
+                        </td>
+                        <td colspan="1" class="numeric tax" style="border-top: 0 solid #ddd;width: 120px;padding-left: 10px! important;">
+                            {% if  po.tax is not null %}
+                                {{ po.tax |number_format(2, '.', ',') }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="numeric" style="border-top: 0 solid #ddd;"></td>
+                        <td class="numeric" style="text-align: right;border-top: 0 solid #ddd;font-size: 14px;">Advance Payment :</td>
+                        <td class="numeric netTotal bold" style="border-top: 0 solid #ddd;width: 120px;padding-left: 10px! important;">
+                            {{ po.advancePaymentAmount |number_format(2, '.', ',') }}
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 5px solid lightgrey;">
+                        <td class="numeric" colspan="6" style="border-top: 0 solid #ddd;"></td>
+                        <td class="numeric" style="text-align: right;border-top: 0 solid #ddd;font-size: 14px;">PO Amount :</td>
+                        <td class="netTotal bold" style="border-top: 0 solid #ddd;width: 120px;padding-left: 10px! important;">
+                            {{ subTotal |number_format(2, '.', ',') }}
+                        </td>
+                    </tr>
+
+
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="portlet box green">
+            <div class="portlet-title">
+                <div class="caption"><i class="icon-cogs"></i>Purchase Lowest & Last Price</div>
+            </div>
+            <div class="portlet-body flip-scroll">
+                <table id="table_requisition2" class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Item Name</th>
+                        <th class="numeric">Purchase Type</th>
+                        <th class="numeric">PO Ref/ ProjectName</th>
+                        <th class="numeric">Lowest Price</th>
+
+                        <th class="numeric">Last Purchase Type</th>
+                        <th class="numeric">Last Po Ref/ ProjectName</th>
+                        <th class="numeric">Last Price </th>
+                    </tr>
+                    </thead>
+                    {% for poItem in poi %}
+
+                        <tr>
+                            <td>{{ poItem['itemName'] }}</td>
+                            <td>{{ poItem['lowestPurchaseType'] }}</td>
+                            <td>{{ poItem['poRef'] }}/ {{ poItem['lowestProjectName'] }}</td>
+                            <td>{{ poItem['lowestPrice'] }}</td>
+                            <td>{{ poItem['lastPurchaseType'] }}</td>
+                            <td>{{ poItem['lastPoRef'] }}/ {{ poItem['lastProjectName'] }}</td>
+                            <td>{{ poItem['LastPrice'] }}</td>
+                        </tr>
+                        {% endfor %}
+                </table>
+            </div>
+        </div>
+        <hr/>
+        <table>
+            {% if po.customTermCondition %}
+                <tr>
+                    <td class="numeric" colspan ="8" style="border-top: 0 solid #ddd;">
+                        Terms & Conditions :
+                        <div class="numeric customTermAndCondition" style="width: 100%;height: auto;">
+                            {{ po.customTermCondition|raw }}
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="numeric"  colspan ="8" style="border-top: 0 solid #ddd;">
+                        Terms & Conditions :
+                        <div class="tocD" style="width: 100%;height: auto;">
+
+                        </div>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr style="border-bottom: 0 solid lightgrey;">
+                <td class="numeric" colspan="8" style="border-top: 0 solid #ddd;">
+                    <div class=""
+                         style="width: 100%; max-width: 920px; max-height: 54px; padding-left: 10px! important;">Remarks
+                        : {{ po.comment | default() }}</div>
+                </td>
+            </tr>
+            <tr style="border-bottom: 0 solid lightgrey;">
+                <td class="numeric" colspan="8" style="border-top: 0 solid #ddd;">
+                    {% if po.amendmentComment is not null %}
+                        <div class=""
+                             style="width: 100%; max-width: 920px; max-height: 54px; padding-left: 10px! important;">Amendment Comments
+                            : {{ po.amendmentComment | default() }}</div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr style="border-bottom: 0 solid lightgrey;">
+                <td class="numeric" colspan="8" style="border-top: 0 solid #ddd;">
+                    <div style="width: 100%; max-width: 920px; max-height: 54px; padding-left: 10px! important;">Date Of Delivery
+                        : <span style="font-weight: bold;">{{ po.dateOfDelivered | date('d M Y') }}</span></div>
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" id="poNonpo" value="{{ po.poNonpo.id }}">
+
+        {% if is_granted("ROLE_COMMENTS_USERS") or is_granted("ROLE_PURCHASE_ORDER_APPROVE_ONE") or is_granted("ROLE_PURCHASE_ORDER_APPROVE_TWO") or is_granted("ROLE_PURCHASE_ORDER_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+        <div>
+            <div class="portlet-body flip-scroll">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-cogs"></i></div>
+                </div>
+                <table class="table-bordered table-striped table-condensed flip-content">
+                    <thead class="flip-content"  style="background: #4b8df8">
+                    <tr>
+                        <th class="numeric">Date</th>
+                        <th class="numeric">Commented By</th>
+                        <th class="numeric">Comments</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for poc in po.purchaseOrderComment %}
+                        <tr>
+                            <td class="numeric">{{ poc.createdDate | date('d M Y') }}</td>
+                            <td class="numeric">{{ poc.createdBy.username | default() }}</td>
+                            <td class="numeric">{{ poc.comment | default() }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td class="numeric" colspan="3"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+            <hr/>
+        <div class="clearfix"></div>
+        <div>
+            <form method="get" id="po-comment-form">
+                <div class="col-md-12">
+                    <div class="col-md-2" >Remarks: </div>
+                    <div class="col-md-6"> <textarea class="post-comment" name="comment" id="commentPo"></textarea></div>
+                    <div class="col-md-2"><input type="button" name="commentAdd" id="commentAdd" value="Comment" class="btn blue" ></div>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+        {% endif %}
+        <div class="clearfix"></div>
+
+
+
+        <div>
+            {% if is_granted("ROLE_PO_HISTORY_USERS") or is_granted("ROLE_SUPER_ADMIN") %}
+                {% if po.approveStatus == 3 %}
+                    <div class="portlet box green">
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-cogs"></i></div>
+                        </div>
+                        <div class="portlet-body flip-scroll">
+                            <table id="table_requisition2" class="table-bordered table-striped table-condensed flip-content">
+                                <thead class="flip-content"  style="background: #4b8df8">
+                                <tr>
+                                    <th class="numeric">Sl</th>
+                                    <th class="numeric">ItemName</th>
+                                    <th class="numeric">ProjectName</th>
+                                    <th class="numeric">PO No</th>
+                                    <th class="numeric">PO Qty</th>
+                                    <th class="numeric">GRN#</th>
+                                    <th class="numeric">ReceiveQty</th>
+                                    <th class="numeric">ReceiveBy</th>
+                                    <th class="numeric">ReceiveDate</th>
+                                </tr>
+                                </thead>
+                                {% for index,poItem in pri %}
+                                    <tr>
+                                        <td class="numeric">{{ index + 1 }}</td>
+                                        <td class="numeric">{{ poItem.itemName }}</td>
+                                        <td class="numeric">{{ poItem.projectName }}</td>
+                                        <td class="numeric">{{ poItem.id }}</td>
+                                        <td class="numeric">{{ poItem.poiQty |number_format(2, '.', ',') }}</td>
+                                        <td class="numeric">{{ poItem.receiveId }}</td>
+                                        <td class="numeric">{{ poItem.riQty |number_format(2, '.', ',') }}</td>
+                                        <td class="numeric">{{ poItem.username }}</td>
+                                        <td class="numeric">{{ poItem.receivedDate | date('Y-M-d') }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td class="numeric" colspan="9"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="clearfix"></div>
+        <div class="modal-footer col-md-12" style="width: 100%;background: lightgrey;">
+            <div class="col-md-6">
+
+                {% if po.status < 5 %}
+                    {% if is_granted("ROLE_PURCHASE_ORDER_APPROVE_ONE") or is_granted("ROLE_SUPER_ADMIN") %}
+                        {% if po.approveStatus == 0 %}
+                            <a class="btn blue btn-xs approveOne" rel="{{ po.id }}" style="font: initial;float:left;background: #0353D6; color: white !important;">Verify</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if is_granted("ROLE_PURCHASE_ORDER_APPROVE_TWO") or is_granted("ROLE_SUPER_ADMIN") %}
+                        {% if po.approveStatus == 1 %}
+                            <a class="btn blue btn-xs approveTwo" rel="{{ po.id }}" style="font: initial;float:left;background: #0353D6; color: white !important;">Validate</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if is_granted("ROLE_PURCHASE_ORDER_APPROVE_THREE") or is_granted("ROLE_SUPER_ADMIN") %}
+                        {% if po.approveStatus == 2 %}
+                            <a class="btn blue btn-xs approveThree" rel="{{ po.id }}" style="font: initial;float:left;background: #0353D6; color: white !important;">Approve</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if po.approveStatus == 3 %}
+                        <a class="btn blue btn-xs" style="background:#C0D08E; float:left;color: white !important;">Approved</a>
+                    {% endif %}
+                {% endif %}
+
+                {% if is_granted("ROLE_SUPER_ADMIN") %}
+
+                    {% if po.totalOrderItemQuantity > po.totalOrderReceiveQuantity %}
+
+                        {% if po.status < 5 %}
+                            <a href="/purchase-order/hold/{{ po.id }}"
+                               onclick="return confirm('Do You Want To Inactive It?')" style="color: white !important;background: darkred;" class="btn blue btn-xs">Inactive</a>
+                        {% endif %}
+                        {% if po.status == 5 %}
+                            <a href="/purchase-order/open/{{ po.id }}"
+                               onclick="return confirm('Do You Want To Active It?')" style="color: white !important;background: darkred;" class="btn blue btn-xs">Active</a>
+                        {% endif %}
+                        {% if po.status < 6 %}
+                            <a href="/purchase-order/cancel/{{ po.id }}"
+                               onclick="return confirm('Do You Want To Cancel It?')" style="color: white !important;background: darkred;float:left;" class="btn blue btn-xs">Cancel</a>
+                        {% endif %}
+
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <a style="color:#ffffff !important;" class="btn blue btn-xs"
+                   onclick="javascript: window.open('/purchase-order/pdf/{{ po.id }}')">Pdf <i
+                            class="fa fa-file"></i></a>
+                <a style="color:#ffffff !important;" class="btn blue btn-xs"
+                   onclick="javascript: window.open('/purchase-order/print/{{ po.id }}').print();">Print <i
+                            class="fa fa-print"></i></a>
+                <button type="button" class="btn blue btn-xs close-modal-refresh" style="color:#ffffff !important;"
+                        data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+        <input type="hidden" value="" class="verifiedStatus">
+    </div>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+
+            $(".close-modal-refresh").click(function(){
+                location.reload();
+            });
+
+            var poNonpo = $("#poNonpo").val();
+
+            if(poNonpo != ''){
+
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('find_terms_and_conditions'),
+                    data: "poNonpo=" + poNonpo,
+                    success: function (response, status) {
+                        $('.tocD').html( response );
+                    }
+                });
+            }
+
+            $("#commentAdd").click(function () {
+                var requisitionComment = $("#commentPo").val();
+                var reqId = {{ po.id|json_encode|raw }}
+
+                var requisitionCommentArray = new Array(requisitionComment, reqId);
+                var answer = confirm('Do You Want To Add comment');
+                if(answer) {
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_order_comment'),
+                    data: "requisitionCommentArray=" + requisitionCommentArray,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if(msg.responseCode == 202) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Comment Add Successfully</span></div>');
+                            $('.orderCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $(':input','#po-comment-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('');
+                            $("#reload-all-po").load("/purchase-order/refresh/"+reqId)
+                        }else{
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Comment Not Add</span></div>');
+                            $('.orderCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $("#reload-all-po").load("/purchase-order/refresh/"+reqId)
+                        }
+                    }
+                });
+                }else{
+                    return false;
+                }
+            });
+
+            $(".approveOne").click(function () {
+                var reqId = $(this).attr('rel');
+
+                var answer = confirm('Do You Want To Approve It');
+                if(answer) {
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_order_approve_one_ajax'),
+                    data: "reqId=" + reqId,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if(msg.responseCode == 202) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Successfully</span></div>');
+                            $('.orderCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $(':input','#po-comment-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('');
+                            $("#reload-all-po").load("/purchase-order/refresh/"+reqId)
+                        }else{
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Not Add</span></div>');
+                            $('.orderCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $("#reload-all-po").load("/purchase-order/refresh/"+reqId)
+                        }
+                    }
+                });
+                }else{
+                    return false;
+                }
+            });
+
+            $(".approveTwo").click(function () {
+                var reqId = $(this).attr('rel');
+
+                var answer = confirm('Do You Want To Approve It');
+                if(answer) {
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_order_approve_two_ajax'),
+                    data: "reqId=" + reqId,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if(msg.responseCode == 202) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Successfully</span></div>');
+                            $('.orderCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $(':input','#po-comment-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('');
+                            $("#reload-all-po").load("/purchase-order/refresh/"+reqId)
+                        }else{
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Not Add</span></div>');
+                            $('.orderCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $("#reload-all-po").load("/purchase-order/refresh/"+reqId)
+                        }
+                    }
+                });
+            }else{
+                return false;
+            }
+            });
+
+            $(".approveThree").click(function () {
+                var reqId = $(this).attr('rel');
+
+                var answer = confirm('Do You Want To Approve It');
+                if(answer) {
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('purchase_order_approve_three_ajax'),
+                    data: "reqId=" + reqId,
+                    dataType: 'json',
+                    success: function (msg) {
+                        if(msg.responseCode == 202) {
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Successfully</span></div>');
+                            $('.orderCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $(':input','#po-comment-form')
+                                    .not(':button, :submit, :reset, :hidden')
+                                    .val('');
+                            $("#reload-all-po").load("/purchase-order/refresh/"+reqId)
+                        }else{
+                            var $addLink = $('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="false"></button><span>Claim Not Add</span></div>');
+                            $('.orderCommentMessege').css('color', 'red').html(msg.comment_add).fadeIn(1000).append($addLink);
+                            $("#reload-all-po").load("/purchase-order/refresh/"+reqId)
+                        }
+                    }
+                });
+                }else{
+                    return false;
+                }
+            });
+
+        });
+    </script>
+</div>
+{% endblock %}

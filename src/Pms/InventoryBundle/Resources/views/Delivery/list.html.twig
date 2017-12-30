@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        .pagination > li > a, .pagination > li > span
+        {
+            background-color: #eee !important;
+            color: #000000 !important;
+        }
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+            background-color: #428bca !important;
+        }
+
+    </style>
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Delivery Item
+                <small></small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb" style="height: 36px;">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/" style="color: #333 !important;">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="{{ path('delivery_list') }}" style="color: #333 !important;">Delivery</a>
+                </li>
+                <li class="pull-right">
+                    <div id="" class="" data-placement="" style="font-family: 'Open Sans', sans-serif; color: #f5f5f5; padding-top: 8px;text-align: center;margin-top: -8px;width: 124%;background: #e02222;height: 36px;">
+                        <i class="fa fa-calendar"></i>
+                        {{ "now"|date("d-F-Y") }}
+                    </div>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+
+    {{ include('::flash-message.html.twig') }}
+
+    <span class="buyerMessege"></span>
+
+    <form action="" method="get" style="margin-bottom:10px;">
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="input-icon right">
+                    <select class="select2 form-control" name="project" style="margin-left: -13px;">
+                        <option value="">Select project</option>
+                        {%  set projectID = app.request.query.get('project') %}
+                        {% for pro in projects %}
+                            <option {% if(projectID == pro.id ) %} selected {% endif %} value="{{ pro.id }}">{{ pro.projectName }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="input-icon right">
+                    <input type="hidden" value="{{ app.request.query.get('item') }}" class="form-control  fontColorBlack
+                     select2AutoComplete" placeholder="Select Item" name="item">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-2">
+                <div class="input-icon right">
+                    <input type="text" name="gatePass" placeholder="Gate Pass No" value="{{ app.request.query.get('gatePass') }}"
+                           class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-2">
+                <div class="input-icon right">
+                    <input type="text"  name="deliveryDate" placeholder="YYYY-MM-DD"
+                           value="{{ app.request.query.get('deliveryDate') }}"
+                           class="form-control date date-picker" id="datepicker">
+                </div>
+            </div>
+        </div>
+        <input type="submit" value="Search" name="submit" class="btn blue">
+    </form>
+    <!--BEGIN TABS-->
+    <div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a class="tabForTable" rel="#tab_1_1" href="#tab_1_1" style="color: black !important;" data-toggle="tab">All</a></li>
+
+            {% if is_granted("ROLE_INVENTORY_DELIVERY_ADD") or is_granted("ROLE_SUPER_ADMIN") %}
+                <li style="float: right;margin-right: -1px;">
+                    <a href="{{ path('delivery_project_list',{status:'project-to-item'}) }}" data-target="#ajax" data-toggle="modal"
+                       class="btn btn-xs" style="background: #4b8df8; float: right; height: 40px; color:#ffffff; padding: 9px 14px !important;">
+                        Project List
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="tab-content style-content">
+            <div class="tab-pane active" id="tab_1_1">
+                <div class="" data-always-visible="1" data-rail-visible="0">
+
+                    <div class="fluid" id="project-list-div">
+                        <div class="form-group">
+                            <div class="portlet-body flip-scroll">
+                                <table class="table-bordered table-striped table-condensed flip-content responsiveDiv">
+                                    <thead class="flip-content"  style="background: #4b8df8">
+                                    <tr>
+                                        <th class="numeric">Sl</th>
+                                        <th class="numeric">Item</th>
+                                        <th class="numeric">Unit</th>
+                                        <th class="numeric">Qty</th>
+                                        <th class="numeric">Issue Date</th>
+                                        <th class="numeric">Issued By</th>
+                                        <th class="numeric">Issued To</th>
+                                        <th class="numeric">Project</th>
+                                        <th class="numeric">Gate Pass No</th>
+                                        <th class="numeric">Category</th>
+                                        <th class="numeric">Sub Category</th>
+                                        <th class="numeric">Cost Header</th>
+                                        <th class="numeric">Attachment</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for index, deliveryList in deliveryLists %}
+                                        <tr>
+                                            <td class="numeric">{{ index+1 }}</td>
+                                            <td class="numeric">{{ deliveryList.item.itemName }}</td>
+                                            <td class="numeric">{{ deliveryList.item.itemUnit }}</td>
+                                            <td class="numeric">{{ deliveryList.quantity }}</td>
+                                            <td class="numeric">{{ deliveryList.delivery.CreatedDate | date('d M Y') }}</td>
+
+                                            <td class="numeric">{{ deliveryList.delivery.CreatedBy }}</td>
+                                            <td class="numeric">{{ deliveryList.delivery.customerId }}</td>
+                                            <td class="numeric">{{ deliveryList.delivery.project.projectName }}</td>
+                                            <td class="numeric">{{ deliveryList.delivery.getPass }}</td>
+                                            <td class="numeric">{{ deliveryList.delivery.category.categoryName|default }}</td>
+                                            <td class="numeric">{{ deliveryList.delivery.subCategory.subCategoryName|default }}</td>
+                                            <td class="numeric">{{ deliveryList.delivery.costHeader.title|default }}</td>
+                                            <td class="numeric">
+                                                <a class="btn btn-xs" target="_blank" href="{{ asset('uploads/DeliveryDocuments/') }}{{ deliveryList.delivery.path|default }}">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                </a>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="navigation text-right">
+                                    {{ knp_pagination_render(deliveryLists) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END TABS-->
+
+{% endblock %}
+
+{% block documentready %}
+    {{ parent() }}
+
+     $('select').select2();
+
+    var $url = Routing.generate('item_auto_delivery_complete');
+    var selectedItemId = {{ app.request.query.get('item')}}
+
+    $(".select2AutoComplete").select2({
+
+        ajax: {
+
+            url: $url,
+            dataType: 'json',
+            delay: 250,
+            data: function (params, page) {
+                return {
+                    q: params,
+                    page_limit: 100
+                };
+            },
+            results: function (data, page) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (m) {
+
+            return m;
+        },
+        formatResult: function(item){ return item.text}, // omitted for brevity, see the source of this page
+        formatSelection: function(item){return item.text}, // omitted for brevity, see the source of this page
+        initSelection: function(element, callback) {
+
+            $.ajax({
+                url: $url,
+                data: 'item=' + selectedItemId,
+                dataType: 'json'
+            }).done(function(data){
+                callback(data);
+            });
+        },
+        allowClear: true,
+        minimumInputLength:1
+    });
+
+    $('.deliveryDocumentShow').change( function () {
+        var fileName = $(this).val();
+        if(fileName){
+        window.open('/uploads/DeliveryDocuments/'+fileName)
+        } else {
+            return false;
+        }
+    });
+
+    $('body').on('change', "#pms_inventorybundle_projecctList_project" , function(){
+        var id = $(this).val();
+        if(id == "") {
+            id = "#";
+        }
+
+        var btn = $("#pms_inventorybundle_projecctList_next");
+        var url = btn.data('url').replace('PROJECT_ID', id)
+        btn.attr("href", url)
+    });
+
+
+
+
+{% endblock %}
