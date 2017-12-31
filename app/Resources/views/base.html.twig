@@ -87,12 +87,12 @@
             <li class="dropdown user">
                 <a href="{{ path('homepage') }}" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
                    data-close-others="true">
-                    {% if app.user.profile.path != null  %}
-                        <img src='{{ asset('uploads/user/'~app.user.profile.path) }}' style="width: 29px;height: 29px;"/>
-                    {% endif %}
-                    {% if app.user.profile.path == null  %}
-                        <img src='{{ asset('assets/img/avatar1.png') }}' style="width: 29px;height: 29px;"/>
-                    {% endif %}
+                    {#{% if app.user.profile.path != null  %}#}
+                        {#<img src='{{ asset('uploads/user/'~app.user.profile.path) }}' style="width: 29px;height: 29px;"/>#}
+                    {#{% endif %}#}
+                    {#{% if app.user.profile.path == null  %}#}
+                        {#<img src='{{ asset('assets/img/avatar1.png') }}' style="width: 29px;height: 29px;"/>#}
+                    {#{% endif %}#}
                     <span class="username">{{ app.user.fullName }}</span>
                     <i class="fa fa-angle-down"></i>
                 </a>
